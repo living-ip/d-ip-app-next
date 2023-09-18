@@ -1,0 +1,40 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  uid            String   @id @default(uuid())
+  name           String?
+  walletAddress  String?
+  email          String
+  githubUsername String
+}
+
+model Document {
+  did           String   @id @default(uuid())
+  name          String
+  description   String?  @db.Text
+  owner         String
+  repo          String
+  chaptersFile  String
+}
+
+model Change {
+  cid         String   @id @default(uuid())
+  suggestor   String
+  prNumber    String
+  documentId  String
+}
+
+model Vote {
+  vid       String   @id @default(uuid())
+  voter     String
+  changeId  String
+  vote      Int
+}
