@@ -1,17 +1,30 @@
 // components/ChapterCard.js
 import Link from "next/link";
 import ChapterSection from "@/components/doc/ChapterSection";
+import {Label} from "@/components/ui/label";
 
-function ChapterCard({chapter}) {
+function ChapterCard({chapter, setContent, showChapters}) {
+
+    const sectionOnClick = (url) => {
+        console.log(url);
+        fetch(url).then((response) => {
+            response.text().then((text) => {
+                setContent(text);
+                showChapters(false)
+            })
+        })
+    }
+
+
     return (
         <div className="pointer-events-auto flex flex-col w-full last:pb-16">
-            <Link href={chapter.slug}
-                  className="text-black no-underline cursor-pointer flex mt-[18px] mb-4 font-suisse text-[15px] sm:text-lg font-bold leading-6">
+            <Label
+              className="text-black no-underline cursor-pointer flex mt-[18px] mb-4 font-suisse text-[15px] sm:text-lg font-bold leading-6">
                 {chapter.title}
-            </Link>
+            </Label>
             <div className="flex flex-col w-full border border-gray-300 rounded-xl">
                 {chapter.sections.map((section, index) => (
-                    <ChapterSection href={section.slug} name={section.title} key={index}/>
+                    <ChapterSection onClick={sectionOnClick} name={section.title} url={section.url} key={index}/>
                 ))}
             </div>
         </div>

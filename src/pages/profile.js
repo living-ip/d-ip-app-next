@@ -35,6 +35,7 @@ export async function getServerSideProps({req}) {
         },
     };
     const sessionJWT = req.cookies["stytch_session_jwt"];
+    const sessionToken = req.cookies["stytch_session"];
 
     if (!sessionJWT) {
         return redirectRes;
@@ -46,8 +47,10 @@ export async function getServerSideProps({req}) {
     try {
         // Authenticate the session JWT. If an error is thrown the session authentication has failed.
         const response = await stytchClient.sessions.authenticateJwt(sessionJWT);
+
         return {props: {}};
     } catch (e) {
+        console.log(e)
         return redirectRes;
     }
 }

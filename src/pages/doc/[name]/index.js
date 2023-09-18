@@ -45,7 +45,10 @@ export default function Index({doc, contributors, chapters, firstPage}) {
                             <div>
                                 {chapters.map((chapter, index) => {
                                     return (
-                                        <ChapterCard key={index} chapter={chapter}/>
+                                        <ChapterCard key={index}
+                                                     chapter={chapter}
+                                                     setContent={setPageContent}
+                                                     showChapters={setShowChapters}/>
                                     )
                                 })}
                             </div>
