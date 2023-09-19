@@ -4,6 +4,7 @@ import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
 import prisma from "@/lib/prisma";
 import {getRepoPulls} from "@/lib/github";
+import {authStytchRequest} from "@/lib/stytch";
 
 export default function Index({doc, changes}) {
 
@@ -38,6 +39,15 @@ export default function Index({doc, changes}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
+    const session = await authStytchRequest(req)
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
     const {name} = query
     const data = await prisma.Document.findFirst({
         where: {

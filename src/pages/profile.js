@@ -35,8 +35,6 @@ export async function getServerSideProps({req}) {
         },
     };
     const sessionJWT = req.cookies["stytch_session_jwt"];
-    const sessionToken = req.cookies["stytch_session"];
-
     if (!sessionJWT) {
         return redirectRes;
     }

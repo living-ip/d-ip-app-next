@@ -7,6 +7,7 @@ import ArticleCard from "@/components/ui/ArticleCard";
 import prisma from "@/lib/prisma";
 import {useState} from "react";
 import ChapterCard from "@/components/doc/ChapterCard";
+import {authStytchRequest} from "@/lib/stytch";
 
 export default function Index({doc, contributors, chapters, firstPage}) {
     const router = useRouter();
@@ -64,8 +65,17 @@ export default function Index({doc, contributors, chapters, firstPage}) {
     );
 }
 
-export const getServerSideProps = async (context) => {
-    const {name} = context.query;
+export const getServerSideProps = async ({req, query}) => {
+    const session = await authStytchRequest(req)
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
+    const {name} = query;
     const data = await prisma.Document.findFirst({
         where: {
             name: name

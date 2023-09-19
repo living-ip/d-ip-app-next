@@ -1,10 +1,11 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import NavBar from "@/components/NavBar";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 import {Button} from "@/components/ui/button";
 import prisma from "@/lib/prisma";
+import {authStytchRequest} from "@/lib/stytch";
 
-const DocCards = ({ docs }) => {
+const DocCards = ({docs}) => {
     const router = useRouter();
 
     const handleTitleClick = (articleName) => {
@@ -27,7 +28,8 @@ const DocCards = ({ docs }) => {
                                     <CardTitle onClick={() => handleTitleClick(doc.name)}>{doc.name}</CardTitle>
                                     <CardDescription>Be right with you</CardDescription>
                                     <Button onClick={() => handleTitleClick(doc.name)}>Read it</Button>
-                                    <Button variant="outline" onClick={() => handleSuggestionsClick(doc.name)}>Votes</Button>
+                                    <Button variant="outline"
+                                            onClick={() => handleSuggestionsClick(doc.name)}>Votes</Button>
                                 </CardHeader>
                             </Card>
                         </div>
@@ -40,7 +42,16 @@ const DocCards = ({ docs }) => {
 
 export default DocCards;
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ({req}) => {
+    const session = await authStytchRequest(req)
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
     const docs = await prisma.Document.findMany();
     console.log(docs)
     return {
