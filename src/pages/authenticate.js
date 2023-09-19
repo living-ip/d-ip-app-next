@@ -38,7 +38,7 @@ const Authenticate = () => {
             return;
         }
         if (user) {
-            router.replace("/profile");
+            router.replace("/discover");
         }
     }, [router, user, isInitialized]);
 
