@@ -23,7 +23,7 @@ export default function Index({doc, contributors, ghData}) {
     };
 
     const toggleChapters = () => {
-        setShowChapters(!showChapters);
+        router.push(`/doc/${encodeURIComponent(doc.name)}`);
     }
 
     const files = parseDiff(ghData.diffData);
@@ -45,7 +45,7 @@ export default function Index({doc, contributors, ghData}) {
                             Votes
                         </Button>
                         <Button className="mx-2" onClick={toggleChapters}>
-                            Chapters
+                            Back to Reading
                         </Button>
                     </div>
                     <div className="mt-4 ml-2">

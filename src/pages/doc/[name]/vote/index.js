@@ -5,13 +5,18 @@ import {useRouter} from "next/router";
 import prisma from "@/lib/prisma";
 import {getRepoPulls} from "@/lib/github";
 import {authStytchRequest} from "@/lib/stytch";
+import sha256 from "sha256"
 
 export default function Index({doc, changes}) {
 
     const router = useRouter();
 
-    const onClick = () => {
+    const onClick = (changeId) => {
         router.push(`/doc/${doc.name}`)
+    }
+
+    const changeCardClick = (changeId) => {
+        router.push(`/doc/${doc.name}/vote/${changeId}`)
     }
 
     return (
@@ -23,7 +28,7 @@ export default function Index({doc, changes}) {
             <div className="flex flex-col h-full mb-4 p-6">
                 <div className="md:grid md:gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
                     {changes.map((change, index) => (
-                        <div key={index} onClick={() => handleClick(change.title)}>
+                        <div key={index} onClick={() => changeCardClick(change.changeId)}>
                             <Card className="w-[350px]">
                                 <CardHeader>
                                     <CardTitle>{change.title}</CardTitle>
@@ -56,7 +61,11 @@ export const getServerSideProps = async ({req, query}) => {
     })
     console.log(data)
     const pulls = await getRepoPulls(data.owner, data.repo, req.cookies["gho_token"])
-    console.log(pulls)
+    pulls.map((pull) => {
+        pull.changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`)
+        console.log(pull.changeId)
+    })
+    // console.log(JSON.stringify(pulls))
     return {
         props: {
             doc: {
