@@ -66,7 +66,7 @@ export const getPullRequestData = async (owner, repo, pullNumber, authToken) => 
         throw new Error(`Bad response from GitHub: ${diffData.status}`);
     }
     return {
-        response,
-        diffData
+        response: response.data,
+        diffData: diffData.data
     }
 }

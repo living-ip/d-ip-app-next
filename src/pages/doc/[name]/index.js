@@ -15,7 +15,7 @@ export default function Index({doc, contributors, chapters, firstPage}) {
     const [pageContent, setPageContent] = useState(firstPage);
 
     const goToVotes = () => {
-        router.push(`/doc/${encodeURIComponent(doc.name)}/votes`);
+        router.push(`/doc/${encodeURIComponent(doc.name)}/vote`);
     };
 
     const toggleChapters = () => {

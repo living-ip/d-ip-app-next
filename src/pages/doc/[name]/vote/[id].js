@@ -7,25 +7,38 @@ import prisma from "@/lib/prisma";
 import {useState} from "react";
 import {authStytchRequest} from "@/lib/stytch";
 import {getPullRequestData} from "@/lib/github";
+import {parseDiff, Diff, Hunk} from 'react-diff-view';
 
-export default function Index({doc, contributors, chapters, firstPage}) {
+import 'react-diff-view/style/index.css';
+
+
+export default function Index({doc, contributors, ghData}) {
     const router = useRouter();
     const [showChapters, setShowChapters] = useState(false);
-    const [pageContent, setPageContent] = useState(firstPage);
+
+    console.log(ghData)
 
     const goToVotes = () => {
-        router.push(`/doc/${encodeURIComponent(doc.name)}/votes`);
+        router.push(`/doc/${encodeURIComponent(doc.name)}/vote`);
     };
 
     const toggleChapters = () => {
         setShowChapters(!showChapters);
     }
 
+    const files = parseDiff(ghData.diffData);
+
+    const renderFile = ({oldRevision, newRevision, type, hunks}) => (
+        <Diff key={oldRevision + '-' + newRevision} viewType="unified" diffType={type} hunks={hunks}>
+            {hunks => hunks.map(hunk => <Hunk key={hunk.content} hunk={hunk} />)}
+        </Diff>
+    );
+
 
     return (
         <NavBar>
-            <div className="flex">
-                <div className="w-1/2 p-4">
+            <div className="flex max-h-screen">
+                <div className="w-1/4 p-4">
                     <h1 className="text-4xl font-extrabold m-1 pl-2">{doc.name}</h1>
                     <div className="mt-4">
                         <Button variant="outline" className="mx-2" onClick={goToVotes}>
@@ -41,8 +54,10 @@ export default function Index({doc, contributors, chapters, firstPage}) {
                     </div>
                     <ArticleCard description={doc.description}/>
                 </div>
-                <div className="w-1/2 p-4 border-l ml-2 max-h-screen">
-                    {/*    TODO code here for rendering the diff    */}
+                <div className="flex-1 max-w-full p-4 border-l ml-2 max-h-screen prose lg:prose-xl">
+                    <div className="overflow-x-scroll overflow-y-scroll">
+                        {files.map(renderFile)}
+                    </div>
                 </div>
             </div>
         </NavBar>
@@ -87,6 +102,7 @@ export const getServerSideProps = async ({req, query}) => {
                 }
             ],
             doc: data,
+            ghData,
         },
     };
 };

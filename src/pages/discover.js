@@ -13,7 +13,7 @@ const DocCards = ({docs}) => {
     };
 
     const handleSuggestionsClick = (articleName) => {
-        router.push(`/doc/${encodeURIComponent(articleName)}/votes`);
+        router.push(`/doc/${encodeURIComponent(articleName)}/vote`);
     }
 
     return (
