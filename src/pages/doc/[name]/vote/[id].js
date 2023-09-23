@@ -52,7 +52,7 @@ export default function Index({doc, contributors, ghData}) {
                         {/*TODO change this to the diff contributors*/}
                         <UserCarousel users={contributors}/>
                     </div>
-                    <ArticleCard description={doc.description}/>
+                    <ArticleCard description={ghData.response.body}/>
                 </div>
                 <div className="flex-1 max-w-full p-4 border-l ml-2 max-h-screen prose lg:prose-xl">
                     <div className="overflow-x-scroll overflow-y-scroll">
