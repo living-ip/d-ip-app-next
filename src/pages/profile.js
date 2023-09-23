@@ -11,7 +11,6 @@ export default function ProfilePage() {
     // If the Stytch SDK no longer has a User then redirect to login; for example after logging out.
     useEffect(() => {
         if (isInitialized && !user) {
-            console.log("PROFILE PAGE HAS NO USER REDIRECT")
             router.replace("/login");
         }
     }, [user, isInitialized, router]);

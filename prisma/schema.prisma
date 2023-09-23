@@ -9,32 +9,44 @@ generator client {
 }
 
 model User {
-  uid            String   @id @default(uuid())
+  uid            String   @id
   name           String?
   walletAddress  String?
   email          String
   githubUsername String
+  changes        Change[]
+  votes          Vote[]
 }
 
 model Document {
-  did           String   @id @default(uuid())
-  name          String
-  description   String?  @db.Text
+  did           String    @id @default(uuid())
+  name          String    @unique
+  description   String?   @db.Text
   owner         String
   repo          String
   chaptersFile  String
+  changes       Change[]
 }
 
 model Change {
-  cid         String   @id @default(uuid())
-  suggestor   String
+  cid         String    @id  // the sha256 of owner/repo/prNumber
+  suggestor   User      @relation(fields: [suggestorId], references: [uid])
+  suggestorId String
   prNumber    String
+  document    Document @relation(fields: [documentId], references: [did])
   documentId  String
+  votes       Vote[]
+
+  @@index([suggestorId, documentId])
 }
 
 model Vote {
   vid       String   @id @default(uuid())
-  voter     String
+  voter     User     @relation(fields: [voterId], references: [uid])
+  voterId   String
+  change    Change   @relation(fields: [changeId], references: [cid])
   changeId  String
   vote      Int
+
+  @@index([voterId, changeId])
 }
