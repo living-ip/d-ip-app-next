@@ -2,13 +2,16 @@ import NavBar from "@/components/NavBar";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
 import prisma from "@/lib/prisma";
-import {getRepoPulls} from "@/lib/github";
 import {authStytchRequest} from "@/lib/stytch";
-import sha256 from "sha256";
 import {Label} from "@/components/ui/label";
+import {useState} from "react";
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 
 export default function Index({doc, changes}) {
     const router = useRouter();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editTitle, setEditTitle] = useState('');
+    const [selectedChapter, setSelectedChapter] = useState(null);
 
     const onClick = () => {
         router.back();
@@ -27,9 +30,47 @@ export default function Index({doc, changes}) {
                 <Button variant="secondary" className="ml-2" onClick={onClick}>
                     Back
                 </Button>
-                <Button className="ml-2" onClick={newEditHandler}>
-                    New Change
-                </Button>
+                <Dialog>
+                <DialogTrigger asChild>
+                    <Button className="ml-2">New Change</Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Create a New Edit</DialogTitle>
+                    </DialogHeader>
+                    <div className="mb-4">
+                        <label htmlFor="editTitle" className="block text-sm font-medium text-gray-700">
+                            Edit Title
+                        </label>
+                        <input
+                            type="text"
+                            id="editTitle"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="chapterSelect" className="block text-sm font-medium text-gray-700">
+                            Select Chapter
+                        </label>
+                        <select
+                            id="chapterSelect"
+                            value={selectedChapter}
+                            onChange={(e) => setSelectedChapter(e.target.value)}
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                        >
+                            {/* Replace with your chapter options */}
+                            <option value="Chapter 1">Chapter 1</option>
+                            <option value="Chapter 2">Chapter 2</option>
+                            {/* ... */}
+                        </select>
+                    </div>
+                    <Button type="submit" className="ml-2" onClick={() => newEditHandler(changeId)}>
+                        Create Edit
+                    </Button>
+                </DialogContent>
+            </Dialog>
             </div>
             <div className="flex flex-col h-full mb-4 p-6">
                 <div className="w-full">
