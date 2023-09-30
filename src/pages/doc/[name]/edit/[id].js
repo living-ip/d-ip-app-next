@@ -24,12 +24,7 @@ export default function Index({doc, change}) {
     const router = useRouter();
 
     const onClick = () => {
-        router.push(`/doc/${doc.name}`);
-    };
-
-    const changeCardClick = (changeId) => {
-        // TODO Create popup modal to create name and save to db, then route to /doc/[name]/edit/[changeId]
-        router.push(`/doc/${doc.name}/edit/${changeId}`);
+        router.back();
     };
 
     const PlainTextCodeEditorDescriptor = {

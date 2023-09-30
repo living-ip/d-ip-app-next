@@ -11,10 +11,10 @@ export default function Index({doc, changes}) {
     const router = useRouter();
 
     const onClick = () => {
-        router.push(`/doc/${doc.name}`);
+        router.back();
     };
 
-    const changeCardClick = (changeId) => {
+    const newEditHandler = (changeId) => {
         // TODO Create popup modal to create name and save to db, then route to /doc/[name]/edit/[changeId]
         router.push(`/doc/${doc.name}/edit/${changeId}`);
     };
@@ -27,13 +27,39 @@ export default function Index({doc, changes}) {
                 <Button variant="secondary" className="ml-2" onClick={onClick}>
                     Back
                 </Button>
-                <Button className="ml-2" onClick={onClick}>
+                <Button className="ml-2" onClick={newEditHandler}>
                     New Change
                 </Button>
             </div>
             <div className="flex flex-col h-full mb-4 p-6">
                 <div className="w-full">
-
+                    {changes.map((change, index) => (
+                        <div
+                            key={index}
+                            onClick={() => newEditHandler(change.id)}
+                            className="border-b-2 py-4"
+                        >
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-xl font-bold">{change.title}</h2>
+                            </div>
+                            <div className="flex justify-between mt-2">
+                                <div className="text-sm text-gray-600">
+                                    Last Edited: {change.updatedAt}
+                                </div>
+                                {
+                                    change.submit ? (
+                                        <div className="text-sm text-gray-600">
+                                            Submitted
+                                        </div>
+                                    ) : (
+                                        <div className="text-sm text-gray-600">
+                                            Not Submitted
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </NavBar>
@@ -65,7 +91,13 @@ export const getServerSideProps = async ({req, query}) => {
     return {
         props: {
             doc: document,
-            changes
+            changes: [
+                {
+                    id: 1,
+                    title: "Change 1",
+                    submit: false
+                }
+            ]
         }
     }
 }

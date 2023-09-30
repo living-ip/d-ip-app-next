@@ -22,6 +22,10 @@ export default function Index({doc, contributors, chapters, firstPage}) {
         setShowChapters(!showChapters);
     }
 
+    const goToEdits = () => {
+        router.push(`/doc/${encodeURIComponent(doc.name)}/edit`);
+    }
+
 
     return (
         <NavBar>
@@ -31,6 +35,9 @@ export default function Index({doc, contributors, chapters, firstPage}) {
                     <div className="mt-4">
                         <Button variant="outline" className="mx-2" onClick={goToVotes}>
                             Votes
+                        </Button>
+                        <Button variant="outline" onClick={goToEdits}>
+                            Edit
                         </Button>
                         <Button className="mx-2" onClick={toggleChapters}>
                             Chapters
