@@ -7,7 +7,7 @@ import {Label} from "@/components/ui/label";
 import {useState} from "react";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 
-export default function Index({doc, changes}) {
+export default function Index({doc, changes, chapters}) {
     const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editTitle, setEditTitle] = useState('');
@@ -60,10 +60,11 @@ export default function Index({doc, changes}) {
                             onChange={(e) => setSelectedChapter(e.target.value)}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
                         >
-                            {/* Replace with your chapter options */}
-                            <option value="Chapter 1">Chapter 1</option>
-                            <option value="Chapter 2">Chapter 2</option>
-                            {/* ... */}
+                            {chapters.map((chapter, i) => (
+                                chapter.sections.map((section, index) => (
+                                    <option key={index} value={section.id}>{section.title}</option>
+                                ))
+                            ))}
                         </select>
                     </div>
                     <Button type="submit" className="ml-2" onClick={() => newEditHandler(changeId)}>
@@ -124,6 +125,8 @@ export const getServerSideProps = async ({req, query}) => {
             name: name
         }
     })
+    const response = await fetch(`https://raw.githubusercontent.com/${document.owner}/${document.repo}/main/${document.chaptersFile}`)
+    const chapters = await response.json()
     const changes = await prisma.Change.findMany({
         where: {
             suggestorId: session.userId,
@@ -138,7 +141,8 @@ export const getServerSideProps = async ({req, query}) => {
                     title: "Change 1",
                     submit: false
                 }
-            ]
+            ],
+            chapters
         }
     }
 }

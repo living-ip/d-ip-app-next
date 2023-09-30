@@ -83,13 +83,13 @@ export const getServerSideProps = async ({req, query}) => {
         };
     }
     const {name} = query;
-    const data = await prisma.Document.findFirst({
+    const document = await prisma.Document.findFirst({
         where: {
             name: name
         }
     })
-    console.log(data)
-    const response = await fetch(`https://raw.githubusercontent.com/${data.owner}/${data.repo}/main/${data.chaptersFile}`)
+    console.log(document)
+    const response = await fetch(`https://raw.githubusercontent.com/${document.owner}/${document.repo}/main/${document.chaptersFile}`)
     const chapters = await response.json()
     const pageResponse = await fetch(chapters[0].sections[0].url)
     const firstPage = await pageResponse.text()
@@ -106,7 +106,7 @@ export const getServerSideProps = async ({req, query}) => {
                     image: "https://pbs.twimg.com/profile_images/1677306057457127424/e3aHKSEs_400x400.jpg"
                 }
             ],
-            doc: data,
+            doc: document,
             chapters,
             firstPage
         },
