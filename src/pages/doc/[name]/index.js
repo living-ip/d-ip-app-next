@@ -26,7 +26,7 @@ export default function Index({doc, contributors, chapters, firstPage}) {
     return (
         <NavBar>
             <div className="flex">
-                <div className="w-1/2 p-4">
+                <div className="w-1/3 p-4">
                     <h1 className="text-4xl font-extrabold m-1 pl-2">{doc.name}</h1>
                     <div className="mt-4">
                         <Button variant="outline" className="mx-2" onClick={goToVotes}>
@@ -41,7 +41,7 @@ export default function Index({doc, contributors, chapters, firstPage}) {
                     </div>
                     <ArticleCard description={doc.description}/>
                 </div>
-                <div className="w-1/2 p-4 border-l ml-2 max-h-screen">
+                <div className="flex-1 p-4 border-l ml-2 max-h-screen">
                     {showChapters ? (
                             <div>
                                 {chapters.map((chapter, index) => {

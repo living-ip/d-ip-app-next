@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@mdxeditor/editor": "^1.0.1",
     "@octokit/auth-app": "^4.0.13",
     "@octokit/rest": "^19.0.11",
     "@prisma/client": "^5.3.1",

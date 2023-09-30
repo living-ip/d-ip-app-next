@@ -39,7 +39,7 @@ export default function Index({doc, contributors, ghData}) {
         <NavBar>
             <div className="flex max-h-screen">
                 <div className="w-1/4 p-4">
-                    <h1 className="text-4xl font-extrabold m-1 pl-2">{doc.name}</h1>
+                    <h1 className="text-4xl font-extrabold m-1 pl-2">{ghData.response.title}</h1>
                     <div className="mt-4">
                         <Button variant="outline" className="mx-2" onClick={goToVotes}>
                             Votes

@@ -4,15 +4,15 @@ import {StytchLogin} from '@stytch/nextjs';
 
 const Login = () => {
 
-    const REDIRECT_URL = process.env.REDIRECT_URL || "https://delphi.sibylline.xyz/authenticate"
-    // const REDIRECT_URL = "http://localhost:3000/authenticate"
+    // const REDIRECT_URL = process.env.REDIRECT_URL || "https://delphi.sibylline.xyz/authenticate"
+    const REDIRECT_URL = "http://localhost:3000/authenticate"
 
     const config = {
         "products": [
             "oauth"
         ],
         "oauthOptions": {
-            // "loginRedirectURL": "http://localhost:3000/authenticate",
+            "loginRedirectURL": "http://localhost:3000/authenticate",
             "providers": [
                 {
                     "type": "github"
