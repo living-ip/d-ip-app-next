@@ -13,7 +13,7 @@ model User {
   name           String?
   walletAddress  String?
   email          String
-  githubUsername String
+  githubUsername String?
   changes        Change[]
   votes          Vote[]
 }

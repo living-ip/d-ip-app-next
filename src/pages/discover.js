@@ -4,6 +4,7 @@ import {useRouter} from "next/router";
 import {Button} from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import {authStytchRequest} from "@/lib/stytch";
+import { getUserProfile } from "@/lib/user";
 
 const DocCards = ({docs}) => {
     const router = useRouter();
@@ -48,6 +49,15 @@ export const getServerSideProps = async ({req}) => {
         return {
             redirect: {
                 destination: "/login",
+                permanent: false,
+            },
+        };
+    }
+    const { userProfile } = await getUserProfile(session.user_id)
+    if (!userProfile) {
+        return {
+            redirect: {
+                destination: "/onboard",
                 permanent: false,
             },
         };
