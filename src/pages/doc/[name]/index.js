@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import {useState} from "react";
 import ChapterCard from "@/components/doc/ChapterCard";
 import {authStytchRequest} from "@/lib/stytch";
+import {getBookChapters} from "@/lib/github";
 
 export default function Index({doc, contributors, chapters, firstPage}) {
     const router = useRouter();
@@ -89,10 +90,7 @@ export const getServerSideProps = async ({req, query}) => {
         }
     })
     console.log(document)
-    const response = await fetch(`https://raw.githubusercontent.com/${document.owner}/${document.repo}/main/${document.chaptersFile}`)
-    const chapters = await response.json()
-    const pageResponse = await fetch(chapters[0].sections[0].url)
-    const firstPage = await pageResponse.text()
+    const {chapters, firstPage} = await getBookChapters(document.owner, document.repo, document.chaptersFile)
     console.log(chapters)
     return {
         props: {

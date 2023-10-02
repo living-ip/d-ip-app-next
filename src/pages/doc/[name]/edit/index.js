@@ -78,7 +78,7 @@ export default function Index({doc, changes, chapters}) {
                     {changes.map((change, index) => (
                         <div
                             key={index}
-                            onClick={() => newEditHandler(change.id)}
+                            onClick={() => newEditHandler(change.cid)}
                             className="border-b-2 py-4"
                         >
                             <div className="flex justify-between items-center">
@@ -130,18 +130,14 @@ export const getServerSideProps = async ({req, query}) => {
     const changes = await prisma.Change.findMany({
         where: {
             suggestorId: session.userId,
+            documentId: document.did
         }
     })
+    console.log(changes)
     return {
         props: {
             doc: document,
-            changes: [
-                {
-                    id: 1,
-                    title: "Change 1",
-                    submit: false
-                }
-            ],
+            changes,
             chapters
         }
     }

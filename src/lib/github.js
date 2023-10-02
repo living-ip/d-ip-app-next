@@ -70,3 +70,44 @@ export const getPullRequestData = async (owner, repo, pullNumber, authToken) => 
         diffData: diffData.data
     }
 }
+
+export const getRepoTree = async (owner, repo, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const response = await octokit.request(`GET /repos/${owner}/${repo}/git/trees/main`, {
+        owner: 'OWNER',
+        repo: 'REPO',
+        tree_sha: 'TREE_SHA',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        },
+    });
+}
+
+export const getBookChapters = async (owner, repo, chaptersFile) => {
+    const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/main/${chaptersFile}`)
+    const chapters = await response.json()
+    const pageResponse = await fetch(chapters[0].sections[0].url)
+    const firstPage = await pageResponse.text()
+    return {
+        chapters,
+        firstPage
+    }
+}
+
+export const getGithubContents = async (owner, repo, path, ref, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const response = await octokit.request(`GET /repos/${owner}/${repo}/contents/${path}?ref=${ref}`, {
+        owner: 'OWNER',
+        repo: 'REPO',
+        path: 'PATH',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    })
+    console.log(JSON.stringify(response))
+    return response.data;
+}

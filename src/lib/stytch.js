@@ -21,7 +21,7 @@ const loadStytch = () => {
 
 export const authStytchRequest = async (req) => {
     const sessionJWT = req.cookies["stytch_session_jwt"];
-    console.log('Got token', sessionJWT)
+    // console.log('Got token', sessionJWT)
     if (!sessionJWT) {
         return undefined;
     }
