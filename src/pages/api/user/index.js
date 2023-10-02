@@ -3,7 +3,7 @@ import { authStytchToken } from "@/lib/stytch"
 
 const handler = async (req, res) => {
   if (req.method === 'POST') {
-    const token = req.headers['x-stytch-token']
+    const token = req.headers['x-sib-token']
     const session = await authStytchToken(token)
     if (!session) {
       return res.status(401).json({ error: 'Unauthorized' })

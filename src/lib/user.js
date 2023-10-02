@@ -16,7 +16,7 @@ export const createUserProfile = async (data) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-stytch-token": getCookie("stytch_session_jwt"),
+        "x-sib-token": getCookie("stytch_session_jwt"),
       },
       body: JSON.stringify(data),
     });
