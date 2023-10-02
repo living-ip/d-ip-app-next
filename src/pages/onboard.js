@@ -2,6 +2,7 @@ import {Inter} from 'next/font/google'
 import NavBar from "@/components/NavBar";
 import {RegisterCard} from "@/components/RegisterCard";
 import {authStytchRequest} from "@/lib/stytch";
+import { getUserProfile } from '@/lib/user';
 
 const inter = Inter({subsets: ['latin']})
 
@@ -28,17 +29,15 @@ export const getServerSideProps = async ({req, query}) => {
         if (!session) {
             return noAuthResponse
         }
-        // const userProfile = await getUserProfile(session.user_id)
-        // if (userProfile) {
-        //     return {
-        //         redirect: {
-        //             destination: "/matches",
-        //             permanent: false,
-        //         }
-        //     }
-        // } return {
-        //     props: {}
-        // }
+        const { userProfile } = await getUserProfile(session.user_id)
+        if (userProfile) {
+            return {
+                redirect: {
+                    destination: "/discover",
+                    permanent: false,
+                }
+            }
+        }
         return {
             props: {}
         }

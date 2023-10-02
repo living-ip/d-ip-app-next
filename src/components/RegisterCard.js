@@ -7,21 +7,15 @@ import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 import {useRouter} from "next/router";
 import {getCookie} from "cookies-next";
-// import {createUserProfile} from "@/lib/api";
+import { createUserProfile } from "@/lib/user";
 
 export function RegisterCard() {
     const [name, setName] = useState("");
-    const [persona, setPersona] = useState("");
 
     const router = useRouter();
 
-    const handlePersonaChange = (value) => {
-        setPersona(value);
-    };
-
     const handleSubmit = async () => {
-        console.log({name, persona});
-        const response = await createUserProfile({name, persona});
+        const response = await createUserProfile({name});
         console.log("success", response);
         await router.push("/onboard")
     };
@@ -43,20 +37,6 @@ export function RegisterCard() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="persona">Persona</Label>
-                            <Select onValueChange={handlePersonaChange}>
-                                <SelectTrigger id="personas">
-                                    <SelectValue placeholder="Select"/>
-                                </SelectTrigger>
-                                <SelectContent position="popper">
-                                    <SelectItem value="explorer">Explorer</SelectItem>
-                                    <SelectItem value="founder">Founder</SelectItem>
-                                    <SelectItem value="philanthropist">Philanthropist</SelectItem>
-                                    <SelectItem value="politician">Politician</SelectItem>
-                                </SelectContent>
-                            </Select>
                         </div>
                     </div>
                 </form>
