@@ -1,6 +1,7 @@
 import {
+    BlockTypeSelect,
     BoldItalicUnderlineToggles,
-    codeBlockPlugin,
+    codeBlockPlugin, imagePlugin, InsertImage,
     linkPlugin,
     markdownShortcutPlugin,
     toolbarPlugin,
@@ -14,6 +15,7 @@ import {MDXEditor} from "@mdxeditor/editor/MDXEditor";
 import '@mdxeditor/editor/style.css';
 
 export default function Editor({markdown}) {
+
     const PlainTextCodeEditorDescriptor = {
         match: () => true,
         priority: 0,
@@ -27,22 +29,36 @@ export default function Editor({markdown}) {
             )
         }
     }
+
+    const toolbarContents = () => {
+        return (
+            <>
+                <UndoRedo/>
+                <BlockTypeSelect/>
+                <BoldItalicUnderlineToggles/>
+                <InsertImage/>
+            </>
+        )
+    }
+
     return (
-        <MDXEditor
-            // onChange={console.log}
-            className="w-full h-full prose"
-            markdown={markdown}
-            plugins={[
-                codeBlockPlugin({codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor]}),
-                headingsPlugin(),
-                listsPlugin(),
-                linkPlugin(),
-                quotePlugin(),
-                markdownShortcutPlugin(),
-                toolbarPlugin({
-                    toolbarContents: () => (<> <UndoRedo/><BoldItalicUnderlineToggles/></>)
-                })
-            ]}
-        />
+        <div className={"w-full h-full overflow-y-scroll prose max-w-none"}>
+            <MDXEditor
+                // onChange={console.log}
+                markdown={markdown}
+                plugins={[
+                    codeBlockPlugin({codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor]}),
+                    headingsPlugin(),
+                    listsPlugin(),
+                    linkPlugin(),
+                    quotePlugin(),
+                    markdownShortcutPlugin(),
+                    imagePlugin(),
+                    toolbarPlugin({
+                        toolbarContents: () => (toolbarContents())
+                    })
+                ]}
+            />
+        </div>
     )
 }

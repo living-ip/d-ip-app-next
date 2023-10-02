@@ -37,6 +37,11 @@ export const getServerSideProps = async ({req, query}) => {
             name: name
         }
     })
+    const change = await prisma.Change.findFirst({
+        where: {
+            cid: id
+        }
+    })
     return {
         props: {
             doc: document,

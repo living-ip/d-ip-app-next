@@ -36,6 +36,7 @@ model Change {
   document    Document @relation(fields: [documentId], references: [did])
   documentId  String
   votes       Vote[]
+  filePath    String?
 
   @@index([suggestorId, documentId])
 }
