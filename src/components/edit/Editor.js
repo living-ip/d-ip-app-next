@@ -14,7 +14,7 @@ import {quotePlugin} from "@mdxeditor/editor/plugins/quote";
 import {MDXEditor} from "@mdxeditor/editor/MDXEditor";
 import '@mdxeditor/editor/style.css';
 
-export default function Editor({markdown}) {
+export default function Editor({markdown, onChange}) {
 
     const PlainTextCodeEditorDescriptor = {
         match: () => true,
@@ -44,7 +44,7 @@ export default function Editor({markdown}) {
     return (
         <div className={"w-full h-full overflow-y-scroll prose max-w-none"}>
             <MDXEditor
-                // onChange={console.log}
+                onChange={onChange}
                 markdown={markdown}
                 plugins={[
                     codeBlockPlugin({codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor]}),

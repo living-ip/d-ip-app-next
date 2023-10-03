@@ -1,4 +1,5 @@
 import {Octokit} from '@octokit/rest';
+import prisma from "@/lib/prisma";
 
 export const getRepoPulls = async (owner, repo, authToken) => {
     const octokit = new Octokit({
@@ -110,4 +111,33 @@ export const getGithubContents = async (owner, repo, path, ref, authToken) => {
     })
     console.log(JSON.stringify(response))
     return response.data;
+}
+
+export const updateGithubFile = async (doc, change, content, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const response = await octokit.request(`PUT /repos/${doc.owner}/${doc.repo}/contents/${change.lastEditFilePath}`, {
+        owner: 'OWNER',
+        repo: 'REPO',
+        path: 'PATH',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        },
+        branch: change.branchName,
+        sha: change.lastEditFileSha,
+        message: "Change from Decentralized IP App",
+        content: content
+    })
+    // TODO update Change with new sha hash.
+    const dbResponse = await prisma.Change.update({
+        where: {
+            cid: change.cid
+        },
+        data: {
+            lastEditFileSha: response.data.content.sha
+        }
+    })
+    console.log(dbResponse)
+    return response
 }
