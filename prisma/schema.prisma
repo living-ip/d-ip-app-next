@@ -39,6 +39,7 @@ model Change {
   title            String
 
   lastEditFilePath String?
+  lastEditFileSha  String?
   branchName       String
   submit           Boolean
 
