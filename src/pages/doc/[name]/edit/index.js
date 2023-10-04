@@ -6,6 +6,7 @@ import {authStytchRequest} from "@/lib/stytch";
 import {Label} from "@/components/ui/label";
 import {useState} from "react";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import { createChange } from "@/lib/change";
 
 export default function Index({doc, changes, chapters}) {
     const router = useRouter();
@@ -17,9 +18,16 @@ export default function Index({doc, changes, chapters}) {
         router.back();
     };
 
-    const newEditHandler = (changeId) => {
+    const newEditHandler = async () => {
         // TODO Create popup modal to create name and save to db, then route to /doc/[name]/edit/[changeId]
-        router.push(`/doc/${doc.name}/edit/${changeId}`);
+        // router.push(`/doc/${doc.name}/edit/${changeId}`);
+        const data = await createChange({
+            documentId: doc.did,
+            owner: "ben-harper27",
+            repo: "glowing-bassoon",
+            title: editTitle,
+        })
+        console.log(data)
     };
 
     return (
@@ -67,7 +75,7 @@ export default function Index({doc, changes, chapters}) {
                             ))}
                         </select>
                     </div>
-                    <Button type="submit" className="ml-2" onClick={() => newEditHandler(changeId)}>
+                    <Button type="submit" className="ml-2" onClick={() => newEditHandler()}>
                         Create Edit
                     </Button>
                 </DialogContent>

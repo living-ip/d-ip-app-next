@@ -8,8 +8,8 @@ function ChapterCard({chapter, setContent, showChapters}) {
     const sectionOnClick = (url) => {
         console.log(url);
         fetch(url).then((response) => {
-            response.text().then((text) => {
-                setContent(text);
+            response.json().then((json) => {
+                setContent(Buffer.from(json.content, 'base64').toString('utf-8'));
                 showChapters(false)
             })
         })
