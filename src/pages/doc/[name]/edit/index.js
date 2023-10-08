@@ -7,6 +7,8 @@ import {Label} from "@/components/ui/label";
 import {useState} from "react";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import { createChange } from "@/lib/change";
+import { getRepoTreeRecursive } from "@/lib/github";
+import { getCookie } from "cookies-next";
 
 export default function Index({doc, changes, chapters}) {
     const router = useRouter();
@@ -19,15 +21,13 @@ export default function Index({doc, changes, chapters}) {
     };
 
     const newEditHandler = async () => {
-        // TODO Create popup modal to create name and save to db, then route to /doc/[name]/edit/[changeId]
-        // router.push(`/doc/${doc.name}/edit/${changeId}`);
-        const data = await createChange({
+        const { changeId } = await createChange({
             documentId: doc.did,
-            owner: "ben-harper27",
-            repo: "glowing-bassoon",
+            owner: doc.owner,
+            repo: doc.repo,
             title: editTitle,
         })
-        console.log(data)
+        router.push(`/doc/${doc.name}/edit/${changeId}`);
     };
 
     return (
@@ -133,8 +133,7 @@ export const getServerSideProps = async ({req, query}) => {
             name: name
         }
     })
-    const response = await fetch(`https://raw.githubusercontent.com/${document.owner}/${document.repo}/main/${document.chaptersFile}`)
-    const chapters = await response.json()
+    const { chapters } = await getRepoTreeRecursive(document.owner, document.repo, getCookie('gho_token'))
     const changes = await prisma.Change.findMany({
         where: {
             suggestorId: session.userId,
