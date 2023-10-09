@@ -69,18 +69,54 @@ export const getServerSideProps = async ({req, query}) => {
         }
     })
     console.log(data)
-    const pulls = await getRepoPulls(data.owner, data.repo, req.cookies["gho_token"])
-    pulls.map((pull) => {
-        pull.changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`)
-        console.log(pull.changeId)
-    })
-    // console.log(JSON.stringify(pulls))
+    const pulls = await getRepoPulls(data.owner, data.repo, req.cookies["gho_token"]);
+
+    const changeIds = pulls.map(pull => {
+        return sha256(`${pull.head.repo.full_name}/${pull.number}`);
+    });
+    
+    const changes = await prisma.Change.findMany({
+        where: {
+            cid: {
+                in: changeIds
+            }
+        }
+    });
+
+    const changesWithVotes = await Promise.all(changes.map(async (change) => {
+        const voteSum = await prisma.Vote.aggregate({
+            where: {
+                changeId: change.cid
+            },
+            _sum: {
+                vote: true
+            }
+        });
+      
+        return {
+            ...change,
+            votes: voteSum._sum.vote || 0
+        };
+    }));
+
+    const pullsWithVoteData = pulls.map(pull => {
+        const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
+        const changeData = changesWithVotes.find(change => change.cid === changeId);
+        return {
+            ...pull,
+            votes: changeData ? changeData.votes : 0,
+            changeId
+        };
+    });
+
+    console.log(pullsWithVoteData);
+
     return {
         props: {
             doc: {
                 name
             },
-            changes: pulls
+            changes: pullsWithVoteData
         }
     }
 }
