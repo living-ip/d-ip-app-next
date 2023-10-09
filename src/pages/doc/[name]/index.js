@@ -8,7 +8,8 @@ import prisma from "@/lib/prisma";
 import {useState} from "react";
 import ChapterCard from "@/components/doc/ChapterCard";
 import {authStytchRequest} from "@/lib/stytch";
-import {getBookChapters} from "@/lib/github";
+import {getRepoTreeRecursive} from "@/lib/github";
+import { getCookie } from "cookies-next";
 
 export default function Index({doc, contributors, chapters, firstPage}) {
     const router = useRouter();
@@ -89,9 +90,7 @@ export const getServerSideProps = async ({req, query}) => {
             name: name
         }
     })
-    console.log(document)
-    const {chapters, firstPage} = await getBookChapters(document.owner, document.repo, document.chaptersFile)
-    console.log(chapters)
+    const { chapters, firstPage } = await getRepoTreeRecursive(document.owner, document.repo, getCookie('gho_token'))
     return {
         props: {
             contributors: [
