@@ -12,7 +12,7 @@ const handler = async (req, res) => {
       return res.status(401).json({error: "Unauthorized"});
     }
     const ghoToken = req.headers["x-sib-gho-token"];
-    const { documentId, owner, repo, title } = req.body;
+    const { documentId, chapter, owner, repo, title } = req.body;
     const branchName = `${owner}/${title}`;
     const prNumber = await createDraftPullRequest(owner, repo, title, branchName, ghoToken);
     const changeId = sha256(`${owner}/${repo}/${prNumber}`);
@@ -24,6 +24,8 @@ const handler = async (req, res) => {
         documentId,
         title,
         published: false,
+        lastEditFilePath: chapter.path,
+        lastEditFileSha: chapter.sha,
         branchName,
         submit: false,
       }

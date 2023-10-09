@@ -148,7 +148,8 @@ export const getRepoTreeRecursive = async (owner, repo, authToken) => {
             chapterObj.sections.push({
                 title: titleize(parts[1].replace('.md', '')),
                 sha: blob.sha,
-                url: blob.url
+                url: blob.url,
+                path: blob.path
             });
         }
     });
