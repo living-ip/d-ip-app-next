@@ -10,9 +10,10 @@ import {getPullRequestData} from "@/lib/github";
 import {parseDiff, Diff, Hunk} from 'react-diff-view';
 
 import 'react-diff-view/style/index.css';
+import { voteOnChange } from "@/lib/change";
 
 
-export default function Index({doc, contributors, ghData}) {
+export default function Index({doc, contributors, cid, ghData}) {
     const router = useRouter();
     const [showChapters, setShowChapters] = useState(false);
 
@@ -34,6 +35,13 @@ export default function Index({doc, contributors, ghData}) {
         </Diff>
     );
 
+    const incrementVote = () => {
+        voteOnChange(cid, {vote: 1})
+    }
+
+    const decrementVote = () => {
+        voteOnChange(cid, {vote: -1})
+    }
 
     return (
         <NavBar>
@@ -53,6 +61,14 @@ export default function Index({doc, contributors, ghData}) {
                         <UserCarousel users={contributors}/>
                     </div>
                     <ArticleCard description={ghData.response.body}/>
+                    <div className="mt-4">
+                        <Button variant="outline" className="mx-2" onClick={decrementVote}>
+                            -1
+                        </Button>
+                        <Button variant="outline" className="mx-2" onClick={incrementVote}>
+                            +1
+                        </Button>
+                    </div>
                 </div>
                 <div className="flex-1 max-w-full p-4 border-l ml-2 max-h-screen prose lg:prose-xl">
                     <div className="overflow-x-scroll overflow-y-scroll">
@@ -102,6 +118,7 @@ export const getServerSideProps = async ({req, query}) => {
                 }
             ],
             doc: data,
+            cid: id,
             ghData,
         },
     };

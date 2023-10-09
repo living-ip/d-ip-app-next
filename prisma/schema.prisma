@@ -56,4 +56,5 @@ model Vote {
   vote     Int
 
   @@index([voterId, changeId])
+  @@unique([voterId, changeId])
 }
