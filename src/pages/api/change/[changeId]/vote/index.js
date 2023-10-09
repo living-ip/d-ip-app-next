@@ -25,7 +25,16 @@ const handler = async (req, res) => {
           vote,
         }
       })
-      return res.status(200).json({voteId: voteExists.vid});
+      const voteSum = await prisma.Vote.aggregate({
+        where: {
+            changeId: changeId
+        },
+        _sum: {
+            vote: true
+        }
+      });
+      console.log(voteSum);
+      return res.status(200).json({voteId: voteExists.vid, totalVotes: voteSum._sum.vote || 0});
     }
     const {vid: voteId} = await prisma.Vote.create({
       data: {
@@ -35,7 +44,15 @@ const handler = async (req, res) => {
       }
     })
     console.log(voteId);
-    return res.status(201).json({voteId});
+    const voteSum = await prisma.Vote.aggregate({
+        where: {
+            changeId: changeId
+        },
+        _sum: {
+            vote: true
+        }
+    });
+    return res.status(201).json({voteId, totalVotes: voteSum._sum.vote || 0});
   }
 }
 

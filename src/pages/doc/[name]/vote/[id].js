@@ -13,9 +13,10 @@ import 'react-diff-view/style/index.css';
 import { voteOnChange } from "@/lib/change";
 
 
-export default function Index({doc, contributors, cid, ghData}) {
+export default function Index({doc, contributors, cid, ghData, votes}) {
     const router = useRouter();
     const [showChapters, setShowChapters] = useState(false);
+    const [totalVotes, setTotalVotes] = useState(votes || 0);
 
     console.log(ghData)
 
@@ -35,12 +36,14 @@ export default function Index({doc, contributors, cid, ghData}) {
         </Diff>
     );
 
-    const incrementVote = () => {
-        voteOnChange(cid, {vote: 1})
+    const incrementVote = async () => {
+        const result = await voteOnChange(cid, {vote: 1})
+        setTotalVotes(result.totalVotes);
     }
 
-    const decrementVote = () => {
-        voteOnChange(cid, {vote: -1})
+    const decrementVote = async () => {
+        const result = await voteOnChange(cid, {vote: -1})
+        setTotalVotes(result.totalVotes);
     }
 
     return (
@@ -68,6 +71,7 @@ export default function Index({doc, contributors, cid, ghData}) {
                         <Button variant="outline" className="mx-2" onClick={incrementVote}>
                             +1
                         </Button>
+                        Votes: {totalVotes}
                     </div>
                 </div>
                 <div className="flex-1 max-w-full p-4 border-l ml-2 max-h-screen prose lg:prose-xl">
@@ -103,6 +107,14 @@ export const getServerSideProps = async ({req, query}) => {
         }
     })
     console.log(changeData)
+    const voteAggregate = await prisma.Vote.aggregate({
+        where: {
+            changeId: id,
+        },
+        _sum: {
+            vote: true,
+        },
+    });
     const ghData = await getPullRequestData(data.owner, data.repo, changeData.prNumber, req.cookies["gho_token"]);
     console.log(ghData)
     return {
@@ -120,6 +132,7 @@ export const getServerSideProps = async ({req, query}) => {
             doc: data,
             cid: id,
             ghData,
+            votes: voteAggregate._sum.vote || 0,
         },
     };
 };
