@@ -36,3 +36,21 @@ export const voteOnChange = async (cid, data) => {
     return {};
   }
 };
+
+export const mergeChange = async (cid) => {
+  try {
+    const response = await fetch(`/api/change/${cid}/merge`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-sib-token": getCookie("stytch_session_jwt"),
+        "x-sib-gho-token": getCookie("gho_token"),
+      },
+    });
+    const json = await response.json();
+    return json;
+  } catch (e) {
+    console.error(e);
+    return {};
+  }
+}

@@ -10,7 +10,7 @@ import {getPullRequestData} from "@/lib/github";
 import {parseDiff, Diff, Hunk} from 'react-diff-view';
 
 import 'react-diff-view/style/index.css';
-import { voteOnChange } from "@/lib/change";
+import { mergeChange, voteOnChange } from "@/lib/change";
 
 
 export default function Index({doc, contributors, cid, ghData, votes}) {
@@ -73,6 +73,13 @@ export default function Index({doc, contributors, cid, ghData, votes}) {
                         </Button>
                         Votes: {totalVotes}
                     </div>
+                    {totalVotes > 3 && (
+                        <div className="mt-4">
+                            <Button variant="outline" className="mx-2" onClick={() => mergeChange(cid)}>
+                                Merge
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <div className="flex-1 max-w-full p-4 border-l ml-2 max-h-screen prose lg:prose-xl">
                     <div className="overflow-x-scroll overflow-y-scroll">
