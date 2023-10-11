@@ -13,10 +13,11 @@ import 'react-diff-view/style/index.css';
 import { mergeChange, voteOnChange } from "@/lib/change";
 
 
-export default function Index({doc, contributors, cid, ghData, votes}) {
+export default function Index({doc, contributors, cid, ghData, votes, userVoteProp}) {
     const router = useRouter();
     const [showChapters, setShowChapters] = useState(false);
     const [totalVotes, setTotalVotes] = useState(votes || 0);
+    const [userVote, setUserVote] = useState(userVoteProp);
 
     console.log(ghData)
 
@@ -39,11 +40,13 @@ export default function Index({doc, contributors, cid, ghData, votes}) {
     const incrementVote = async () => {
         const result = await voteOnChange(cid, {vote: 1})
         setTotalVotes(result.totalVotes);
+        setUserVote(1);
     }
 
     const decrementVote = async () => {
         const result = await voteOnChange(cid, {vote: -1})
         setTotalVotes(result.totalVotes);
+        setUserVote(-1);
     }
 
     const merge = async () => {
@@ -71,10 +74,10 @@ export default function Index({doc, contributors, cid, ghData, votes}) {
                     </div>
                     <ArticleCard description={ghData.response.body}/>
                     <div className="mt-4">
-                        <Button variant="outline" className="mx-2" onClick={decrementVote}>
+                        <Button variant={userVote === -1 ? "" : "outline"} className="mx-2" onClick={decrementVote}>
                             -1
                         </Button>
-                        <Button variant="outline" className="mx-2" onClick={incrementVote}>
+                        <Button variant={userVote === 1 ? "" : "outline"} className="mx-2" onClick={incrementVote}>
                             +1
                         </Button>
                         Votes: {totalVotes}
@@ -128,6 +131,12 @@ export const getServerSideProps = async ({req, query}) => {
             vote: true,
         },
     });
+    const userVote = await prisma.Vote.findFirst({
+        where: {
+            changeId: id,
+            voterId: session.user_id,
+        },
+    });
     const ghData = await getPullRequestData(data.owner, data.repo, changeData.prNumber, req.cookies["gho_token"]);
     console.log(ghData)
     return {
@@ -146,6 +155,7 @@ export const getServerSideProps = async ({req, query}) => {
             cid: id,
             ghData,
             votes: voteAggregate._sum.vote || 0,
+            userVoteProp: userVote.vote || 0,
         },
     };
 };
