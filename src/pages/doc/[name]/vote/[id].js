@@ -46,6 +46,12 @@ export default function Index({doc, contributors, cid, ghData, votes}) {
         setTotalVotes(result.totalVotes);
     }
 
+    const merge = async () => {
+        const result = await mergeChange(cid)
+        console.log(result)
+        router.push(`/doc/${encodeURIComponent(doc.name)}`);
+    }
+
     return (
         <NavBar>
             <div className="flex max-h-screen">
@@ -75,7 +81,7 @@ export default function Index({doc, contributors, cid, ghData, votes}) {
                     </div>
                     {totalVotes > 3 && (
                         <div className="mt-4">
-                            <Button variant="outline" className="mx-2" onClick={() => mergeChange(cid)}>
+                            <Button variant="outline" className="mx-2" onClick={merge}>
                                 Merge
                             </Button>
                         </div>
