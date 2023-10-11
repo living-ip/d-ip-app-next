@@ -70,17 +70,42 @@ export const getServerSideProps = async ({req, query}) => {
     })
     console.log(data)
     const pulls = await getRepoPulls(data.owner, data.repo, req.cookies["gho_token"])
-    pulls.map((pull) => {
-        pull.changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`)
-        console.log(pull.changeId)
-    })
+    const changeIds = pulls.map(pull => {
+        return sha256(`${pull.head.repo.full_name}/${pull.number}`);
+    });
+
+    const publishedChanges = await prisma.Change.findMany({
+        where: {
+            cid: {
+                in: changeIds
+            },
+            published: true
+        }
+    });
+
+    console.log(publishedChanges);
+
+    const publishedPulls = pulls.map(pull => {
+        const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
+        const change = publishedChanges.find(change => change.cid === changeId);
+        if (change) {
+            return {
+                changeId,
+                ...pull
+            }
+        }
+        return null;
+    }).filter(pull => pull !== null);
+
+    console.log(publishedPulls);
+
     // console.log(JSON.stringify(pulls))
     return {
         props: {
             doc: {
                 name
             },
-            changes: pulls
+            changes: publishedPulls
         }
     }
 }
