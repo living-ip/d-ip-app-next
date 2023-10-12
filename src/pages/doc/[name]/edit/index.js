@@ -112,13 +112,13 @@ export default function Index({doc, changes, chapters}) {
                                     Last Edited: {change.updatedAt}
                                 </div>
                                 {
-                                    change.submit ? (
+                                    change.published ? (
                                         <div className="text-sm text-gray-600">
-                                            Submitted
+                                            Published
                                         </div>
                                     ) : (
                                         <div className="text-sm text-gray-600">
-                                            Not Submitted
+                                            Not Published
                                         </div>
                                     )
                                 }

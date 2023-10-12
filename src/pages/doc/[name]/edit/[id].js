@@ -27,7 +27,7 @@ export default function Index({doc, change, contents}) {
         router.push(`/doc/${encodeURIComponent(doc.name)}`);
     }
 
-    const submitHandler = async () => {
+    const publishHandler = async () => {
         const response = await submitChange(change.cid);
         console.log(response);
         router.push(`/doc/${encodeURIComponent(doc.name)}`);
@@ -35,7 +35,7 @@ export default function Index({doc, change, contents}) {
 
     return (
         <NavBar>
-            <EditMenu saveHandler={saveHandler} submitHandler={submitHandler}/>
+            <EditMenu saveHandler={saveHandler} publishHandler={publishHandler}/>
             <div className="flex justify-center items-center h-screen">
                 <div className="flex h-full w-3/4 border border-gray-300 shadow-lg rounded-lg p-4 mt-2">
                     <Editor markdown={originalDoc} onChange={editorCallback}/>
