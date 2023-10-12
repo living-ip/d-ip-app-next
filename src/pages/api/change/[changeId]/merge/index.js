@@ -37,7 +37,7 @@ const handler = async (req, res) => {
       },
     });
     console.log(updatedChange);
-    return res.status(201).json(ghResponse.data);
+    return res.status(200).json(ghResponse.data);
   }
 }
 
