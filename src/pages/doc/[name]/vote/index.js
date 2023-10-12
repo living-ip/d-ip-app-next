@@ -69,11 +69,12 @@ export const getServerSideProps = async ({req, query}) => {
         }
     })
     console.log(data)
-    const pulls = await getRepoPulls(data.owner, data.repo, req.cookies["gho_token"])
+    const pulls = await getRepoPulls(data.owner, data.repo, req.cookies["gho_token"]);
+
     const changeIds = pulls.map(pull => {
         return sha256(`${pull.head.repo.full_name}/${pull.number}`);
     });
-
+    
     const publishedChanges = await prisma.Change.findMany({
         where: {
             cid: {
@@ -85,27 +86,43 @@ export const getServerSideProps = async ({req, query}) => {
 
     console.log(publishedChanges);
 
-    const publishedPulls = pulls.map(pull => {
-        const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
-        const change = publishedChanges.find(change => change.cid === changeId);
-        if (change) {
-            return {
-                changeId,
-                ...pull
+    const changesWithVotes = await Promise.all(publishedChanges.map(async (change) => {
+        const voteSum = await prisma.Vote.aggregate({
+            where: {
+                changeId: change.cid
+            },
+            _sum: {
+                vote: true
             }
+        });
+      
+        return {
+            ...change,
+            votes: voteSum._sum.vote || 0
+        };
+    }));
+
+    const pullsWithVoteData = pulls.map(pull => {
+        const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
+        const changeData = changesWithVotes.find(change => change.cid === changeId);
+        if (changeData) {
+            return {
+                ...pull,
+                votes: changeData ? changeData.votes : 0,
+                changeId
+            };
         }
         return null;
     }).filter(pull => pull !== null);
 
-    console.log(publishedPulls);
+    console.log(pullsWithVoteData);
 
-    // console.log(JSON.stringify(pulls))
     return {
         props: {
             doc: {
                 name
             },
-            changes: publishedPulls
+            changes: pullsWithVoteData
         }
     }
 }

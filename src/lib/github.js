@@ -312,3 +312,15 @@ export const createDraftPullRequest = async (owner, repo, title, newBranch, auth
     const prNumber = await createPR(owner, repo, title, newBranch, defaultBranch, authToken);
     return prNumber;
 }
+
+export const mergePullRequest = async (owner, repo, prNumber, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.pulls.merge({
+        owner,
+        repo,
+        pull_number: prNumber,
+    });
+    return data;
+}
