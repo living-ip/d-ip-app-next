@@ -75,15 +75,18 @@ export const getServerSideProps = async ({req, query}) => {
         return sha256(`${pull.head.repo.full_name}/${pull.number}`);
     });
     
-    const changes = await prisma.Change.findMany({
+    const publishedChanges = await prisma.Change.findMany({
         where: {
             cid: {
                 in: changeIds
-            }
+            },
+            published: true
         }
     });
 
-    const changesWithVotes = await Promise.all(changes.map(async (change) => {
+    console.log(publishedChanges);
+
+    const changesWithVotes = await Promise.all(publishedChanges.map(async (change) => {
         const voteSum = await prisma.Vote.aggregate({
             where: {
                 changeId: change.cid
@@ -102,12 +105,15 @@ export const getServerSideProps = async ({req, query}) => {
     const pullsWithVoteData = pulls.map(pull => {
         const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
         const changeData = changesWithVotes.find(change => change.cid === changeId);
-        return {
-            ...pull,
-            votes: changeData ? changeData.votes : 0,
-            changeId
-        };
-    });
+        if (changeData) {
+            return {
+                ...pull,
+                votes: changeData ? changeData.votes : 0,
+                changeId
+            };
+        }
+        return null;
+    }).filter(pull => pull !== null);
 
     console.log(pullsWithVoteData);
 

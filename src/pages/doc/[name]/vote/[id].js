@@ -155,7 +155,7 @@ export const getServerSideProps = async ({req, query}) => {
             cid: id,
             ghData,
             votes: voteAggregate._sum.vote || 0,
-            userVoteProp: userVote.vote || 0,
+            userVoteProp: userVote ? userVote.vote : 0,
         },
     };
 };

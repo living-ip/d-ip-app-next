@@ -8,6 +8,7 @@ import {getGithubContents, updateGithubFile} from "@/lib/github";
 import {useState} from "react";
 import {getCookie} from "cookies-next";
 import {useRouter} from "next/router";
+import { submitChange, updateChange } from "@/lib/change";
 
 
 export default function Index({doc, change, contents}) {
@@ -20,31 +21,21 @@ export default function Index({doc, change, contents}) {
     }
 
     const saveHandler = async () => {
-        console.log('Updating Change', pageData)
-        const base64Data = Buffer.from(pageData, 'utf-8').toString('base64')
-        console.log(doc, change)
-        const response = await fetch(`/api/change/${change.cid}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-sib-token': getCookie('stytch_session_jwt'),
-                'x-sib-gho-token': getCookie('gho_token')
-            },
-            body: JSON.stringify({
-                fileData: base64Data
-            })
-        })
-        console.log(response)
-        router.push(`/doc/${encodeURIComponent(doc.name)}`)
+        console.log('Updating Change', pageData);
+        const response = await updateChange(change.cid, pageData);
+        console.log(response);
+        router.push(`/doc/${encodeURIComponent(doc.name)}`);
     }
 
-    const submitHandler = async () => {
-        console.log("Suppose this should get implemented.")
+    const publishHandler = async () => {
+        const response = await submitChange(change.cid);
+        console.log(response);
+        router.push(`/doc/${encodeURIComponent(doc.name)}`);
     }
 
     return (
         <NavBar>
-            <EditMenu saveHandler={saveHandler} submitHandler={submitHandler}/>
+            <EditMenu saveHandler={saveHandler} publishHandler={publishHandler}/>
             <div className="flex justify-center items-center h-screen">
                 <div className="flex h-full w-3/4 border border-gray-300 shadow-lg rounded-lg p-4 mt-2">
                     <Editor markdown={originalDoc} onChange={editorCallback}/>

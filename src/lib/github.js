@@ -17,7 +17,7 @@ export const getRepoPulls = async (owner, repo, authToken) => {
             'accept': 'application/vnd.github+json'
         },
         // By default this only shows open PRs
-        state: 'all',
+        state: 'open',
     });
 
     if (response.status !== 200) {
