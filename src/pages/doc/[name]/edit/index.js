@@ -9,12 +9,14 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@
 import { createChange } from "@/lib/change";
 import { getRepoTreeRecursive } from "@/lib/github";
 import { getCookie } from "cookies-next";
+import { Select, SelectValue, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 
 export default function Index({doc, changes, chapters}) {
     const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editTitle, setEditTitle] = useState('');
     const [selectedChapter, setSelectedChapter] = useState(chapters[0]?.sections[0] || null);
+    const [filteredStatus, setFilteredStatus] = useState('not-published');
 
     const onClick = () => {
         router.back();
@@ -55,6 +57,21 @@ export default function Index({doc, changes, chapters}) {
                 <DialogTrigger asChild>
                     <Button className="ml-2">New Change</Button>
                 </DialogTrigger>
+                <Select
+                    className="ml-2"
+                    onValueChange={value => setFilteredStatus(value)}
+                    value={filteredStatus}
+                >
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue>
+                            {filteredStatus === 'published' ? 'Published' : 'Not Published'}
+                        </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="published">Published</SelectItem>
+                        <SelectItem value="not-published">Not Published</SelectItem>
+                    </SelectContent>
+                </Select>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Create a New Edit</DialogTitle>
@@ -98,7 +115,16 @@ export default function Index({doc, changes, chapters}) {
             </div>
             <div className="flex flex-col h-full mb-4 p-6">
                 <div className="w-full">
-                    {changes.map((change, index) => (
+                    {changes.filter(change => {
+                        switch (filteredStatus) {
+                            case 'published':
+                                return change.published;
+                            case 'not-published':
+                                return !change.published;
+                            default:
+                                return true;
+                        }
+                    }).map((change, index) => (
                         <div
                             key={index}
                             onClick={() => existingEditHandler(change.cid)}
@@ -151,7 +177,7 @@ export const getServerSideProps = async ({req, query}) => {
     const { chapters } = await getRepoTreeRecursive(document.owner, document.repo, getCookie('gho_token'))
     const changes = await prisma.Change.findMany({
         where: {
-            suggestorId: session.userId,
+            suggestorId: session.user_id,
             documentId: document.did
         }
     })
