@@ -42,7 +42,7 @@ model Change {
   lastEditFilePath String?
   lastEditFileSha  String?
   branchName       String
-  submit           Boolean
+  merged           Boolean
 
   @@index([suggestorId, documentId])
 }
@@ -56,4 +56,5 @@ model Vote {
   vote     Int
 
   @@index([voterId, changeId])
+  @@unique([voterId, changeId])
 }
