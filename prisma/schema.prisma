@@ -32,16 +32,17 @@ model Change {
   cid              String   @id // the sha256 of owner/repo/prNumber
   suggestor        User     @relation(fields: [suggestorId], references: [uid])
   suggestorId      String
-  prNumber         String
+  prNumber         Int
   document         Document @relation(fields: [documentId], references: [did])
   documentId       String
   votes            Vote[]
   title            String
+  published        Boolean
 
   lastEditFilePath String?
   lastEditFileSha  String?
   branchName       String
-  submit           Boolean
+  merged           Boolean
 
   @@index([suggestorId, documentId])
 }
@@ -55,4 +56,5 @@ model Vote {
   vote     Int
 
   @@index([voterId, changeId])
+  @@unique([voterId, changeId])
 }

@@ -17,7 +17,7 @@ export const getRepoPulls = async (owner, repo, authToken) => {
             'accept': 'application/vnd.github+json'
         },
         // By default this only shows open PRs
-        state: 'all',
+        state: 'open',
     });
 
     if (response.status !== 200) {
@@ -86,6 +86,81 @@ export const getRepoTree = async (owner, repo, authToken) => {
     });
 }
 
+export const getBlob = async (owner, repo, sha, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const response = await octokit.request(`GET /repos/${owner}/${repo}/git/blobs/${sha}`, {
+        owner: 'OWNER',
+        repo: 'REPO',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        },
+    });
+    const content = Buffer.from(response.data.content, 'base64').toString('utf-8');
+    return content;
+}
+
+const titleize = (slug) => {
+    const words = slug.split('-');
+    return words
+        .map((word, index, arr) => {
+            if (index === 0 && !isNaN(word) && index < arr.length - 1) {
+                // If the word is a number and it's not the last word
+                return word + ' -';
+            } else {
+                return word.charAt(0).toUpperCase() + word.slice(1)
+            }
+        })
+        .join(' ');
+}
+
+export const getRepoTreeRecursive = async (owner, repo, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const response = await octokit.request(`GET /repos/${owner}/${repo}/git/trees/main?recursive=1`, {
+        owner: 'OWNER',
+        repo: 'REPO',
+        tree_sha: 'TREE_SHA',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        },
+    });
+    const blobs = response.data.tree.filter(item => item.type === "blob" && item.path.endsWith(".md") && item.path !== "README.md" && item.path !== "SUMMARY.md");
+    // Grouping by chapter
+    const chapters = [];
+
+    blobs.forEach(blob => {
+        const parts = blob.path.split('/');
+        if (parts.length === 2) { // Ensure the format is 'chapter/section'
+            const title = titleize(parts[0]);
+            let chapterObj = chapters.find(chap => chap.title === title);
+
+            if (!chapterObj) {
+                chapterObj = {
+                    title,
+                    sections: []
+                };
+                chapters.push(chapterObj);
+            }
+
+            chapterObj.sections.push({
+                title: titleize(parts[1].replace('.md', '')),
+                sha: blob.sha,
+                url: blob.url,
+                path: blob.path
+            });
+        }
+    });
+    console.log(JSON.stringify(chapters));
+    const firstPage = await getBlob(owner, repo, chapters[0].sections[0].sha, authToken);
+    return {
+        chapters,
+        firstPage
+    };
+}
+
 export const getBookChapters = async (owner, repo, chaptersFile) => {
     const response = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/main/${chaptersFile}`)
     const chapters = await response.json()
@@ -129,15 +204,123 @@ export const updateGithubFile = async (doc, change, content, authToken) => {
         message: "Change from Decentralized IP App",
         content: content
     })
-    // TODO update Change with new sha hash.
-    const dbResponse = await prisma.Change.update({
-        where: {
-            cid: change.cid
-        },
-        data: {
-            lastEditFileSha: response.data.content.sha
-        }
-    })
-    console.log(dbResponse)
     return response
+}
+
+const getDefaultBranch = async (owner, repo, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.repos.get({ owner, repo });
+    return data.default_branch;
+}
+
+const getLatestCommit = async (owner, repo, branch, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.repos.getBranch({ owner, repo, branch });
+    return data.commit.sha;
+}
+
+const createBranch = async (owner, repo, newBranch, sha, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    await octokit.git.createRef({
+        owner,
+        repo,
+        ref: `refs/heads/${newBranch}`,
+        sha
+    });
+}
+
+const createBlob = async (owner, repo, content, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.git.createBlob({
+        owner,
+        repo,
+        content,
+        encoding: 'utf-8'
+    });
+    return data.sha;
+}
+
+const createTree = async (owner, repo, baseTreeSha, path, blobSha, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.git.createTree({
+      owner,
+      repo,
+      base_tree: baseTreeSha,
+      tree: [{ path, mode: '100644', type: 'blob', sha: blobSha }]
+    });
+    return data.sha;
+}
+
+const createCommit = async (owner, repo, message, treeSha, parentCommitSha, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.git.createCommit({
+        owner,
+        repo,
+        message,
+        tree: treeSha,
+        parents: [parentCommitSha]
+    });
+    return data.sha;
+}
+
+const updateBranch = async (owner, repo, branch, commitSha, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    await octokit.git.updateRef({
+        owner,
+        repo,
+        ref: `heads/${branch}`,
+        sha: commitSha
+    });
+}
+
+const createPR = async (owner, repo, title, head, base, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.pulls.create({
+        owner,
+        repo,
+        title,
+        head,
+        base,
+    });
+    return data.number;
+}
+
+export const createDraftPullRequest = async (owner, repo, title, newBranch, authToken) => {
+    const defaultBranch = await getDefaultBranch(owner, repo, authToken);
+    const latestCommit = await getLatestCommit(owner, repo, defaultBranch, authToken);
+    await createBranch(owner, repo, newBranch, latestCommit, authToken);
+    const blobSha = await createBlob(owner, repo, "", authToken);
+    const treeSha = await createTree(owner, repo, latestCommit, `.${owner}`, blobSha, authToken);
+    const commitSha = await createCommit(owner, repo, "init", treeSha, latestCommit, authToken);
+    await updateBranch(owner, repo, newBranch, commitSha, authToken);
+    const prNumber = await createPR(owner, repo, title, newBranch, defaultBranch, authToken);
+    return prNumber;
+}
+
+export const mergePullRequest = async (owner, repo, prNumber, authToken) => {
+    const octokit = new Octokit({
+        auth: authToken
+    })
+    const { data } = await octokit.pulls.merge({
+        owner,
+        repo,
+        pull_number: prNumber,
+    });
+    return data;
 }

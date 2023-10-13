@@ -10,11 +10,14 @@ import {getPullRequestData} from "@/lib/github";
 import {parseDiff, Diff, Hunk} from 'react-diff-view';
 
 import 'react-diff-view/style/index.css';
+import { mergeChange, voteOnChange } from "@/lib/change";
 
 
-export default function Index({doc, contributors, ghData}) {
+export default function Index({doc, contributors, cid, ghData, votes, userVoteProp}) {
     const router = useRouter();
     const [showChapters, setShowChapters] = useState(false);
+    const [totalVotes, setTotalVotes] = useState(votes || 0);
+    const [userVote, setUserVote] = useState(userVoteProp);
 
     console.log(ghData)
 
@@ -34,6 +37,23 @@ export default function Index({doc, contributors, ghData}) {
         </Diff>
     );
 
+    const incrementVote = async () => {
+        const result = await voteOnChange(cid, {vote: 1})
+        setTotalVotes(result.totalVotes);
+        setUserVote(1);
+    }
+
+    const decrementVote = async () => {
+        const result = await voteOnChange(cid, {vote: -1})
+        setTotalVotes(result.totalVotes);
+        setUserVote(-1);
+    }
+
+    const merge = async () => {
+        const result = await mergeChange(cid)
+        console.log(result)
+        router.push(`/doc/${encodeURIComponent(doc.name)}`);
+    }
 
     return (
         <NavBar>
@@ -53,6 +73,22 @@ export default function Index({doc, contributors, ghData}) {
                         <UserCarousel users={contributors}/>
                     </div>
                     <ArticleCard description={ghData.response.body}/>
+                    <div className="mt-4">
+                        <Button variant={userVote === -1 ? "" : "outline"} className="mx-2" onClick={decrementVote}>
+                            -1
+                        </Button>
+                        <Button variant={userVote === 1 ? "" : "outline"} className="mx-2" onClick={incrementVote}>
+                            +1
+                        </Button>
+                        Votes: {totalVotes}
+                    </div>
+                    {totalVotes > 3 && (
+                        <div className="mt-4">
+                            <Button variant="outline" className="mx-2" onClick={merge}>
+                                Merge
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <div className="flex-1 max-w-full p-4 border-l ml-2 max-h-screen prose lg:prose-xl">
                     <div className="overflow-x-scroll overflow-y-scroll">
@@ -87,6 +123,20 @@ export const getServerSideProps = async ({req, query}) => {
         }
     })
     console.log(changeData)
+    const voteAggregate = await prisma.Vote.aggregate({
+        where: {
+            changeId: id,
+        },
+        _sum: {
+            vote: true,
+        },
+    });
+    const userVote = await prisma.Vote.findFirst({
+        where: {
+            changeId: id,
+            voterId: session.user_id,
+        },
+    });
     const ghData = await getPullRequestData(data.owner, data.repo, changeData.prNumber, req.cookies["gho_token"]);
     console.log(ghData)
     return {
@@ -102,7 +152,10 @@ export const getServerSideProps = async ({req, query}) => {
                 }
             ],
             doc: data,
+            cid: id,
             ghData,
+            votes: voteAggregate._sum.vote || 0,
+            userVoteProp: userVote ? userVote.vote : 0,
         },
     };
 };

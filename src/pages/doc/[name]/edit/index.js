@@ -4,23 +4,44 @@ import {useRouter} from "next/router";
 import prisma from "@/lib/prisma";
 import {authStytchRequest} from "@/lib/stytch";
 import {Label} from "@/components/ui/label";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import { createChange } from "@/lib/change";
+import { getRepoTreeRecursive } from "@/lib/github";
+import { getCookie } from "cookies-next";
 
 export default function Index({doc, changes, chapters}) {
     const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editTitle, setEditTitle] = useState('');
-    const [selectedChapter, setSelectedChapter] = useState(null);
+    const [selectedChapter, setSelectedChapter] = useState(chapters[0]?.sections[0] || null);
 
     const onClick = () => {
         router.back();
     };
 
-    const newEditHandler = (changeId) => {
-        // TODO Create popup modal to create name and save to db, then route to /doc/[name]/edit/[changeId]
-        router.push(`/doc/${doc.name}/edit/${changeId}`);
+    const newEditHandler = async () => {
+        const { changeId } = await createChange({
+            documentId: doc.did,
+            chapter: selectedChapter,
+            owner: doc.owner,
+            repo: doc.repo,
+            title: editTitle,
+        })
+        router.push(`/doc/${encodeURIComponent(doc.name)}/edit/${changeId}`);
     };
+
+    const existingEditHandler = (changeId) => {
+        router.push(`/doc/${encodeURIComponent(doc.name)}/edit/${changeId}`);
+    }
+
+    function handleChange(event) {
+        const selectedSha = event.target.value;
+        // Find the section with the selected sha
+        const selectedSection = chapters.flatMap(chapter => chapter.sections).find(section => section.sha === selectedSha);
+        
+        setSelectedChapter(selectedSection);
+    }
 
     return (
         <NavBar>
@@ -56,18 +77,20 @@ export default function Index({doc, changes, chapters}) {
                         </label>
                         <select
                             id="chapterSelect"
-                            value={selectedChapter}
-                            onChange={(e) => setSelectedChapter(e.target.value)}
+                            value={selectedChapter?.sha}
+                            onChange={handleChange}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
                         >
-                            {chapters.map((chapter, i) => (
-                                chapter.sections.map((section, index) => (
-                                    <option key={index} value={section.id}>{section.title}</option>
+                            {chapters.flatMap(chapter => (
+                                chapter.sections.map(section => (
+                                    <option key={section.sha} value={section.sha}>
+                                        {section.title}
+                                    </option>
                                 ))
                             ))}
                         </select>
                     </div>
-                    <Button type="submit" className="ml-2" onClick={() => newEditHandler(changeId)}>
+                    <Button type="submit" className="ml-2" onClick={() => newEditHandler()}>
                         Create Edit
                     </Button>
                 </DialogContent>
@@ -78,7 +101,7 @@ export default function Index({doc, changes, chapters}) {
                     {changes.map((change, index) => (
                         <div
                             key={index}
-                            onClick={() => newEditHandler(change.cid)}
+                            onClick={() => existingEditHandler(change.cid)}
                             className="border-b-2 py-4"
                         >
                             <div className="flex justify-between items-center">
@@ -89,13 +112,13 @@ export default function Index({doc, changes, chapters}) {
                                     Last Edited: {change.updatedAt}
                                 </div>
                                 {
-                                    change.submit ? (
+                                    change.published ? (
                                         <div className="text-sm text-gray-600">
-                                            Submitted
+                                            Published
                                         </div>
                                     ) : (
                                         <div className="text-sm text-gray-600">
-                                            Not Submitted
+                                            Not Published
                                         </div>
                                     )
                                 }
@@ -125,8 +148,7 @@ export const getServerSideProps = async ({req, query}) => {
             name: name
         }
     })
-    const response = await fetch(`https://raw.githubusercontent.com/${document.owner}/${document.repo}/main/${document.chaptersFile}`)
-    const chapters = await response.json()
+    const { chapters } = await getRepoTreeRecursive(document.owner, document.repo, getCookie('gho_token'))
     const changes = await prisma.Change.findMany({
         where: {
             suggestorId: session.userId,
