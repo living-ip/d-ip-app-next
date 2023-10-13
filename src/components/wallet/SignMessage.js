@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Buffer } from 'buffer';
+import { MESSAGE } from "@/lib/const"
+import { connectWallet } from '@/lib/user';
+import bs58 from 'bs58';
 
-const SignMessageComponent = () => {
+const SignMessageComponent = ({userId}) => {
     const { publicKey, signMessage } = useWallet();
-    const [message, setMessage] = useState('This is a message');
     const [signedMessage, setSignedMessage] = useState(null);
 
     const handleSignMessage = useCallback(async () => {
@@ -13,7 +15,7 @@ const SignMessageComponent = () => {
             return;
         }
         // Create a buffer from your message
-        const messageBuffer = Buffer.from(message);
+        const messageBuffer = Buffer.from(MESSAGE);
 
         try {
             // Sign the message
@@ -23,19 +25,15 @@ const SignMessageComponent = () => {
             // or used however you need to.
 
             setSignedMessage(signature);
+            const connected = await connectWallet(userId, publicKey.toBase58(), bs58.encode(signature));
+            console.log(connected);
         } catch (error) {
             console.error('Failed to sign message:', error);
         }
-    }, [publicKey, signMessage, message]);
+    }, [userId, publicKey, signMessage]);
 
     return (
         <div>
-            <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Enter message to sign"
-            />
             <button onClick={handleSignMessage}>Sign Message</button>
             {signedMessage && (
                 <div>

@@ -15,7 +15,7 @@ const handler = async (req, res) => {
       },
     });
     if (change.suggestorId !== session.user_id) {
-      return res.status(401).json({error: "Unauthorized"});
+      return res.status(403).json({error: "Forbidden"});
     }
     const updatedChange = await prisma.Change.update({
       where: {

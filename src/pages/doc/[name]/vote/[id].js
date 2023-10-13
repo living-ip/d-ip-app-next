@@ -13,7 +13,7 @@ import 'react-diff-view/style/index.css';
 import { mergeChange, voteOnChange } from "@/lib/change";
 
 
-export default function Index({doc, contributors, cid, ghData, votes, userVoteProp}) {
+export default function Index({doc, contributors, cid, ghData, user, votes, userVoteProp}) {
     const router = useRouter();
     const [showChapters, setShowChapters] = useState(false);
     const [totalVotes, setTotalVotes] = useState(votes || 0);
@@ -73,7 +73,7 @@ export default function Index({doc, contributors, cid, ghData, votes, userVotePr
                         <UserCarousel users={contributors}/>
                     </div>
                     <ArticleCard description={ghData.response.body}/>
-                    <div className="mt-4">
+                    {user.walletAddress ? (<div className="mt-4">
                         <Button variant={userVote === -1 ? "" : "outline"} className="mx-2" onClick={decrementVote}>
                             -1
                         </Button>
@@ -82,6 +82,13 @@ export default function Index({doc, contributors, cid, ghData, votes, userVotePr
                         </Button>
                         Votes: {totalVotes}
                     </div>
+                    ) : (
+                        <div className="mt-4">
+                            <Button variant="outline" className="mx-2" onClick={() => router.push("/wallet")}>
+                                Connect wallet to vote
+                            </Button>
+                        </div>
+                    )}
                     {totalVotes > 3 && (
                         <div className="mt-4">
                             <Button variant="outline" className="mx-2" onClick={merge}>
@@ -123,6 +130,11 @@ export const getServerSideProps = async ({req, query}) => {
         }
     })
     console.log(changeData)
+    const user = await prisma.User.findFirst({
+        where: {
+            uid: session.user_id,
+        },
+    });
     const voteAggregate = await prisma.Vote.aggregate({
         where: {
             changeId: id,
@@ -154,6 +166,7 @@ export const getServerSideProps = async ({req, query}) => {
             doc: data,
             cid: id,
             ghData,
+            user,
             votes: voteAggregate._sum.vote || 0,
             userVoteProp: userVote ? userVote.vote : 0,
         },

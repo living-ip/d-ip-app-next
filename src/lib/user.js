@@ -27,3 +27,24 @@ export const createUserProfile = async (data) => {
     return {};
   }
 };
+
+export const connectWallet = async (userId, publicKey, signature) => {
+  try {
+    const response = await fetch(`/api/user/${userId}/wallet`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-sib-token": getCookie("stytch_session_jwt"),
+      },
+      body: JSON.stringify({
+        publicKey,
+        signature,
+      }),
+    });
+    const json = await response.json();
+    return json;
+  } catch (e) {
+    console.error(e);
+    return {};
+  }
+}

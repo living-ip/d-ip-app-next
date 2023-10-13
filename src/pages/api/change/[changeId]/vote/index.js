@@ -10,6 +10,14 @@ const handler = async (req, res) => {
     }
     const {changeId} = req.query;
     const {vote} = req.body;
+    const user = await prisma.User.findFirst({
+      where: {
+        uid: session.user_id,
+      }
+    })
+    if (user && !user.walletAddress) {
+      return res.status(403).json({error: "Wallet not verified"});
+    }
     const voteExists = await prisma.Vote.findFirst({
       where: {
         changeId,
