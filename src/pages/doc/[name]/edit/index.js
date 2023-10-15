@@ -17,7 +17,13 @@ import { getRepoTreeRecursive } from '@/lib/github'
 import { getCookie } from 'cookies-next'
 import { Footer } from '@/components/ui/footer'
 import { Container } from '@/components/ui/container'
-import { Select, SelectValue, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
+import {
+	Select,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+} from '@/components/ui/select'
 
 export default function Index({ doc, changes, chapters }) {
 	const router = useRouter()
@@ -26,7 +32,7 @@ export default function Index({ doc, changes, chapters }) {
 	const [selectedChapter, setSelectedChapter] = useState(
 		chapters[0]?.sections[0] || null
 	)
-    const [filteredStatus, setFilteredStatus] = useState('not-published');
+	const [filteredStatus, setFilteredStatus] = useState('not-published')
 
 	const onClick = () => {
 		router.back()
@@ -60,40 +66,45 @@ export default function Index({ doc, changes, chapters }) {
 	return (
 		<>
 			<Container>
-				<NavBar>
+				<NavBar />
+				<main className="flex-1">
 					<h1 className="my-10 text-4xl font-extrabold">
 						{doc.name}
 					</h1>
 					<Label className="py-6 text-sm text-muted-foreground">
 						Your Changes:
 					</Label>
-					<div className="mt-8">
-						<Button
-							variant="outline"
-							className="mr-8"
-							onClick={onClick}
-						>
+					<div className="mt-8 mb-4">
+						<Button variant="outline" onClick={onClick}>
 							Back
 						</Button>
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button className="mx-8">New Change</Button>
 							</DialogTrigger>
-                <Select
-                    className="ml-2"
-                    onValueChange={value => setFilteredStatus(value)}
-                    value={filteredStatus}
-                >
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue>
-                            {filteredStatus === 'published' ? 'Published' : 'Not Published'}
-                        </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="published">Published</SelectItem>
-                        <SelectItem value="not-published">Not Published</SelectItem>
-                    </SelectContent>
-                </Select>
+							<Select
+								className="ml-2"
+								onValueChange={(value) =>
+									setFilteredStatus(value)
+								}
+								value={filteredStatus}
+							>
+								<SelectTrigger className="w-[180px] mt-8">
+									<SelectValue>
+										{filteredStatus === 'published'
+											? 'Published'
+											: 'Not Published'}
+									</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="published">
+										Published
+									</SelectItem>
+									<SelectItem value="not-published">
+										Not Published
+									</SelectItem>
+								</SelectContent>
+							</Select>
 							<DialogContent>
 								<DialogHeader>
 									<DialogTitle>Create a New Edit</DialogTitle>
@@ -150,50 +161,52 @@ export default function Index({ doc, changes, chapters }) {
 							</DialogContent>
 						</Dialog>
 					</div>
-					<div className="flex flex-col h-full mb-10">
+					<div className="flex flex-col h-full mb-96">
 						<div className="w-full">
-							{changes.filter(change => {
-                        switch (filteredStatus) {
-                            case 'published':
-                                return change.published;
-                            case 'not-published':
-                                return !change.published;
-                            default:
-                                return true;
-                        }
-                    }).map((change, index) => (
-								<div
-									key={index}
-									onClick={() =>
-										existingEditHandler(change.cid)
+							{changes
+								.filter((change) => {
+									switch (filteredStatus) {
+										case 'published':
+											return change.published
+										case 'not-published':
+											return !change.published
+										default:
+											return true
 									}
-									className="py-8 border-b-2"
-								>
-									<div className="flex items-center justify-between">
-										<h2 className="text-xl font-bold">
-											{change.title}
-										</h2>
-									</div>
-									<div className="flex justify-between mt-2">
-										<div className="text-sm text-gray-600">
-											Last Edited: {change.updatedAt}
+								})
+								.map((change, index) => (
+									<div
+										key={index}
+										onClick={() =>
+											existingEditHandler(change.cid)
+										}
+										className="py-8 border-b-2 cursor-pointer"
+									>
+										<div className="flex items-center justify-between">
+											<h2 className="text-xl font-bold">
+												{change.title}
+											</h2>
 										</div>
-										{change.published ? (
+										<div className="flex justify-between mt-2">
 											<div className="text-sm text-gray-600">
-												Published
+												Last Edited: {change.updatedAt}
 											</div>
-										) : (
-											<div className="text-sm text-gray-600">
-												Not Published
-											</div>
-										)}
+											{change.published ? (
+												<div className="text-sm text-gray-600">
+													Published
+												</div>
+											) : (
+												<div className="text-sm text-gray-600">
+													Not Published
+												</div>
+											)}
+										</div>
 									</div>
-								</div>
-							))}
+								))}
 						</div>
 					</div>
 					<Footer />
-				</NavBar>
+				</main>
 			</Container>
 		</>
 	)
