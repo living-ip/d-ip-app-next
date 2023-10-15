@@ -39,20 +39,19 @@ export default function Index({ doc, change, contents }) {
 	return (
 		<>
 			<Container>
-				<NavBar>
-					<div className="relative flex items-center justify-center h-screen my-24 lg:mb-12">
-						<div className="relative w-full px-4 py-6 border border-gray-300 rounded-lg shadow-lg lg:w-3/4 lg:h-full">
-							<EditMenu
-								saveHandler={saveHandler}
-								publishHandler={publishHandler}
-							/>
-							<Editor
-								markdown={originalDoc}
-								onChange={editorCallback}
-							/>
-						</div>
+				<NavBar />
+				<div className="relative flex items-center justify-center h-screen my-24 lg:mb-12">
+					<div className="relative w-full px-4 py-6 border border-gray-300 rounded-lg shadow-lg lg:w-3/4 lg:h-full">
+						<EditMenu
+							saveHandler={saveHandler}
+							publishHandler={publishHandler}
+						/>
+						<Editor
+							markdown={originalDoc}
+							onChange={editorCallback}
+						/>
 					</div>
-				</NavBar>
+				</div>
 				<Footer />
 			</Container>
 		</>
