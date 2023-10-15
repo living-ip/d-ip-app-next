@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import prisma from '@/lib/prisma'
 import { authStytchRequest } from '@/lib/stytch'
 import { Label } from '@/components/ui/label'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	Dialog,
 	DialogContent,
@@ -17,7 +17,6 @@ import { getRepoTreeRecursive } from '@/lib/github'
 import { getCookie } from 'cookies-next'
 import { Footer } from '@/components/ui/footer'
 import { Container } from '@/components/ui/container'
-import { Select, SelectValue, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 
 export default function Index({ doc, changes, chapters }) {
 	const router = useRouter()
@@ -26,7 +25,6 @@ export default function Index({ doc, changes, chapters }) {
 	const [selectedChapter, setSelectedChapter] = useState(
 		chapters[0]?.sections[0] || null
 	)
-    const [filteredStatus, setFilteredStatus] = useState('not-published');
 
 	const onClick = () => {
 		router.back()
@@ -58,17 +56,16 @@ export default function Index({ doc, changes, chapters }) {
 	}
 
 	return (
-		<Container>
-			<div className="flex flex-col min-h-screen">
-				<NavBar />
-				<main className="flex-1">
+		<>
+			<Container>
+				<NavBar>
 					<h1 className="my-10 text-4xl font-extrabold">
 						{doc.name}
 					</h1>
 					<Label className="py-6 text-sm text-muted-foreground">
 						Your Changes:
 					</Label>
-					<div className="mt-8 mb-4">
+					<div className="mt-8">
 						<Button
 							variant="outline"
 							className="mr-8"
@@ -80,21 +77,6 @@ export default function Index({ doc, changes, chapters }) {
 							<DialogTrigger asChild>
 								<Button className="mx-8">New Change</Button>
 							</DialogTrigger>
-                <Select
-                    className="ml-2"
-                    onValueChange={value => setFilteredStatus(value)}
-                    value={filteredStatus}
-                >
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue>
-                            {filteredStatus === 'published' ? 'Published' : 'Not Published'}
-                        </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="published">Published</SelectItem>
-                        <SelectItem value="not-published">Not Published</SelectItem>
-                    </SelectContent>
-                </Select>
 							<DialogContent>
 								<DialogHeader>
 									<DialogTitle>Create a New Edit</DialogTitle>
@@ -214,7 +196,7 @@ export const getServerSideProps = async ({ req, query }) => {
 	)
 	const changes = await prisma.Change.findMany({
 		where: {
-			suggestorId: session.user_id,
+			suggestorId: session.userId,
 			documentId: document.did,
 		},
 	})
