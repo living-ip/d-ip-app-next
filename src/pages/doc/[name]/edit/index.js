@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import prisma from '@/lib/prisma'
 import { authStytchRequest } from '@/lib/stytch'
 import { Label } from '@/components/ui/label'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
 	Dialog,
 	DialogContent,
@@ -17,6 +17,7 @@ import { getRepoTreeRecursive } from '@/lib/github'
 import { getCookie } from 'cookies-next'
 import { Footer } from '@/components/ui/footer'
 import { Container } from '@/components/ui/container'
+import { Select, SelectValue, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 
 export default function Index({ doc, changes, chapters }) {
 	const router = useRouter()
@@ -25,6 +26,7 @@ export default function Index({ doc, changes, chapters }) {
 	const [selectedChapter, setSelectedChapter] = useState(
 		chapters[0]?.sections[0] || null
 	)
+    const [filteredStatus, setFilteredStatus] = useState('not-published');
 
 	const onClick = () => {
 		router.back()
@@ -77,6 +79,21 @@ export default function Index({ doc, changes, chapters }) {
 							<DialogTrigger asChild>
 								<Button className="mx-8">New Change</Button>
 							</DialogTrigger>
+                <Select
+                    className="ml-2"
+                    onValueChange={value => setFilteredStatus(value)}
+                    value={filteredStatus}
+                >
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue>
+                            {filteredStatus === 'published' ? 'Published' : 'Not Published'}
+                        </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="published">Published</SelectItem>
+                        <SelectItem value="not-published">Not Published</SelectItem>
+                    </SelectContent>
+                </Select>
 							<DialogContent>
 								<DialogHeader>
 									<DialogTitle>Create a New Edit</DialogTitle>
@@ -135,7 +152,16 @@ export default function Index({ doc, changes, chapters }) {
 					</div>
 					<div className="flex flex-col h-full mb-10">
 						<div className="w-full">
-							{changes.map((change, index) => (
+							{changes.filter(change => {
+                        switch (filteredStatus) {
+                            case 'published':
+                                return change.published;
+                            case 'not-published':
+                                return !change.published;
+                            default:
+                                return true;
+                        }
+                    }).map((change, index) => (
 								<div
 									key={index}
 									onClick={() =>
@@ -196,7 +222,7 @@ export const getServerSideProps = async ({ req, query }) => {
 	)
 	const changes = await prisma.Change.findMany({
 		where: {
-			suggestorId: session.userId,
+			suggestorId: session.user_id,
 			documentId: document.did,
 		},
 	})
