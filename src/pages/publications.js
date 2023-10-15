@@ -27,51 +27,48 @@ const DocCards = ({ docs }) => {
 
 	return (
 		<Container>
-			<NavBar>
-				<h1 className="my-10 text-4xl font-extrabold">Publications</h1>
-				<div className="flex flex-col h-full mb-4">
-					<div className="mb-12 md:grid md:gap-6 md:grid-cols-2 lg:grid-cols-3">
-						{docs.map((doc, index) => (
-							<div key={index}>
-								<Card>
-									<CardHeader>
-										<CardTitle
-											onClick={() =>
-												handleTitleClick(doc.name)
-											}
-										>
-											{doc.name}
-										</CardTitle>
-										<CardImage src="/book-covers/living-book.png" />
-										<CardDescription>
-											This book is a dynamic guide to this
-											digital frontier. It will continue
-											to evolve and improve via
-											contributions through LivingIP.
-										</CardDescription>
-										<Button
-											onClick={() =>
-												handleTitleClick(doc.name)
-											}
-										>
-											Read it
-										</Button>
-										<Button
-											variant="outline"
-											onClick={() =>
-												handleSuggestionsClick(doc.name)
-											}
-										>
-											Votes
-										</Button>
-									</CardHeader>
-								</Card>
-							</div>
-						))}
-					</div>
+			<NavBar />
+			<h1 className="my-10 text-4xl font-extrabold">Publications</h1>
+			<div className="flex flex-col h-screen">
+				<div className="grid md:gap-28 sm:grid-cols-2 lg:grid-cols-3">
+					{docs.map((doc, index) => (
+						<div key={index}>
+							<Card>
+								<CardHeader>
+									<CardTitle
+										onClick={() =>
+											handleTitleClick(doc.name)
+										}
+									>
+										{doc.name}
+									</CardTitle>
+									<CardImage src="/book-covers/living-book.png" />
+									<CardDescription>
+										{doc.description}
+									</CardDescription>
+
+									<Button
+										onClick={() =>
+											handleTitleClick(doc.name)
+										}
+									>
+										Read it
+									</Button>
+									<Button
+										variant="outline"
+										onClick={() =>
+											handleSuggestionsClick(doc.name)
+										}
+									>
+										Votes
+									</Button>
+								</CardHeader>
+							</Card>
+						</div>
+					))}
 				</div>
-				<Footer />
-			</NavBar>
+			</div>
+			<Footer />
 		</Container>
 	)
 }
