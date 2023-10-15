@@ -1,40 +1,58 @@
 import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList, navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import React from "react";
-import Link from "next/link"
+	NavigationMenu,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	navigationMenuTriggerStyle,
+	MobileNavigationToggle,
+} from '@/components/ui/navigation-menu'
+import React from 'react'
+import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 
-
-export default function NavBar({children}) {
-    return <>
-        <NavigationMenu>
-            <NavigationMenuList>
-                <NavigationMenuItem>
-                    <Link href="/" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Home
-                        </NavigationMenuLink>
-                    </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                    <Link href="/discover" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Discover
-                        </NavigationMenuLink>
-                    </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                    <Link href="/projects" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            All Projects
-                        </NavigationMenuLink>
-                    </Link>
-                </NavigationMenuItem>
-            </NavigationMenuList>
-        </NavigationMenu>
-        {children}
-    </>
+export default function NavBar({ children }) {
+	const [isMobileNavOpen, setMobileNavOpen] = useState(false)
+	return (
+		<>
+			<NavigationMenu>
+				<MobileNavigationToggle
+					isOpen={isMobileNavOpen}
+					onClick={() => setMobileNavOpen(!isMobileNavOpen)}
+				/>
+				<NavigationMenuList
+					className={`${isMobileNavOpen ? 'flex' : 'hidden'} lg:flex`}
+				>
+					<NavigationMenuItem>
+						<Link href="/" legacyBehavior passHref>
+							<NavigationMenuLink
+								className={navigationMenuTriggerStyle()}
+							>
+								Home
+							</NavigationMenuLink>
+						</Link>
+					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<Link href="/publications" legacyBehavior passHref>
+							<NavigationMenuLink
+								className={navigationMenuTriggerStyle()}
+							>
+								Publications
+							</NavigationMenuLink>
+						</Link>
+					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<Link href="/logout" legacyBehavior passHref>
+							<NavigationMenuLink
+								className={navigationMenuTriggerStyle()}
+							>
+								Logout
+							</NavigationMenuLink>
+						</Link>
+					</NavigationMenuItem>
+				</NavigationMenuList>
+			</NavigationMenu>
+			{children}
+		</>
+	)
 }
