@@ -1,7 +1,7 @@
 export default function ArticleCard({ description }) {
-  return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <p>{description}</p>
-    </div>
-  );
+	return (
+		<div className="p-4 mt-8 bg-white rounded-lg drop-shadow-lg">
+			<p>{description}</p>
+		</div>
+	)
 }
