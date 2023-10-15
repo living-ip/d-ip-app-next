@@ -44,7 +44,7 @@ const DocCards = ({ docs }) => {
 									</CardTitle>
 									<CardImage src="/book-covers/living-book.png" />
 									<CardDescription>
-										{doc.description}
+										{/* {doc.description} */}
 									</CardDescription>
 
 									<Button
