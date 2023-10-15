@@ -44,7 +44,10 @@ const DocCards = ({ docs }) => {
 									</CardTitle>
 									<CardImage src="/book-covers/living-book.png" />
 									<CardDescription>
-										qwiduqhdni
+										This book is a dynamic guide to this
+										digital frontier. It will continue to
+										evolve and improve via contributions
+										through LivingIP.
 									</CardDescription>
 
 									<Button
