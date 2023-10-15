@@ -42,7 +42,7 @@ model Change {
   lastEditFilePath String?
   lastEditFileSha  String?
   branchName       String
-  merged           Boolean
+  merged           Boolean  @default(false)
 
   @@index([suggestorId, documentId])
 }
