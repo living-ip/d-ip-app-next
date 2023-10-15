@@ -27,6 +27,7 @@ const handler = async (req, res) => {
         lastEditFilePath: chapter.path,
         lastEditFileSha: chapter.sha,
         branchName,
+        submit: false,
       }
     })
     return res.status(201).json({changeId});
