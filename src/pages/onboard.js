@@ -3,10 +3,19 @@ import NavBar from "@/components/NavBar";
 import {RegisterCard} from "@/components/RegisterCard";
 import {authStytchRequest} from "@/lib/stytch";
 import { getUserProfile } from '@/lib/user';
+import WalletConnectorAndModal from '@/components/wallet/WalletConnectorAndModal';
+import SignMessageComponent from '@/components/wallet/SignMessage';
 
 const inter = Inter({subsets: ['latin']})
 
 export default function Onboard({user}) {
+    if (user) {
+        return (
+            <WalletConnectorAndModal>
+                <SignMessageComponent userId={user.uid} />
+            </WalletConnectorAndModal>
+        )
+    }
     return (
         <NavBar>
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -31,6 +40,13 @@ export const getServerSideProps = async ({req, query}) => {
         }
         const { userProfile } = await getUserProfile(session.user_id)
         if (userProfile) {
+            if (!userProfile.walletAddress) {
+                return {
+                    props: {
+                        user: userProfile
+                    }
+                }
+            }
             return {
                 redirect: {
                     destination: "/discover",
