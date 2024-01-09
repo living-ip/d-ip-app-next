@@ -8,7 +8,7 @@ import {Container} from "@/components/ui/container";
 import {useRouter} from "next/router";
 
 
-export default function Collections({collections}) {
+export default function Collections2({collections}) {
   const router = useRouter()
 
   const handleTitleClick = (collectionName) => {

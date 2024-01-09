@@ -11,9 +11,9 @@ import {useRouter} from "next/router";
 export default function Collections({collections}) {
   const router = useRouter()
 
-  const handleTitleClick = (collectionName) => {
+  const handleClick = (collectionName) => {
     console.log(collectionName)
-    // router.push(`/doc/${encodeURIComponent(articleName)}`)
+    router.push(`/doc/${encodeURIComponent(collectionName)}`)
   }
 
   return (
@@ -31,17 +31,18 @@ export default function Collections({collections}) {
                   <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={collection.image_location}/>
                 </CardHeader>
                 <CardContent className={"mt-4"}>
-                  <CardTitle className={"mb-2"} onClick={() => handleTitleClick(collection.name)}>
+                  <CardTitle className={"mb-2"}>
                     {collection.name}
                   </CardTitle>
                   <CardDescription className={"py-2"}>
                     {collection.description}
                   </CardDescription>
-                  <div className={"flex justify-between py-2"}>
-                    <Button onClick={() => handleTitleClick(collection.name)}>
-                      Learn More
-                    </Button>
-                  </div>
+                  <Button
+                    className={"my-2"}
+                    onClick={() => router.push(`/collections/${collection.name}`)}
+                  >
+                    Learn More
+                  </Button>
                 </CardContent>
               </Card>
             </div>
