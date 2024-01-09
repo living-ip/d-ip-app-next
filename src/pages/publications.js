@@ -42,7 +42,7 @@ const DocCards = ({ docs }) => {
 									>
 										{doc.name}
 									</CardTitle>
-									<CardImage src="/book-covers/living-book.png" />
+									<CardImage className={"rounded-lg"} src="/book-covers/living-book.png" />
 									<CardDescription>
 										{doc.description}
 									</CardDescription>

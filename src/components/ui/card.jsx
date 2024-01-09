@@ -52,7 +52,6 @@ const CardImage = React.forwardRef(({ src, alt, className, ...props }, ref) => (
 			height={600}
 			objectFit="cover"
 			objectPosition="center"
-			className="rounded-t-lg"
 		/>
 	</div>
 ))

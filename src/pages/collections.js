@@ -11,14 +11,9 @@ import {useRouter} from "next/router";
 export default function Collections({collections}) {
   const router = useRouter()
 
-  const handleTitleClick = (articleName) => {
-    console.log(articleName)
+  const handleTitleClick = (collectionName) => {
+    console.log(collectionName)
     // router.push(`/doc/${encodeURIComponent(articleName)}`)
-  }
-
-  const handleSuggestionsClick = (articleName) => {
-    console.log(articleName)
-    // router.push(`/doc/${encodeURIComponent(articleName)}/vote`)
   }
 
   return (
@@ -33,7 +28,7 @@ export default function Collections({collections}) {
             <div key={index} className={"w-full my-2"}>
               <Card className={"flex-grow w-full"}>
                 <CardHeader className={"p-0 w-full"}>
-                  <CardImage className={"w-full h-auto max-h-[480px] object-cover"} src={collection.image_location}/>
+                  <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={collection.image_location}/>
                 </CardHeader>
                 <CardContent className={"mt-4"}>
                   <CardTitle className={"mb-2"} onClick={() => handleTitleClick(collection.name)}>
