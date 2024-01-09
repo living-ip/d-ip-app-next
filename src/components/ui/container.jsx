@@ -9,7 +9,7 @@ export function Container({ children, className, ...props }) {
 			<div className="fixed top-0 w-full z-10 bg-white">
 				<NavBar/>
 			</div>
-			<div className={clsx('mb-4 mx-auto max-w-full px-3 sm:px-16 lg:px-32', className)}>
+			<div className={clsx('mx-auto max-w-full px-3 sm:px-16 lg:px-32', className)}>
 				{children}
 			</div>
 			<Footer className="w-full"/>

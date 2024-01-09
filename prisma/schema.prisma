@@ -16,6 +16,7 @@ model User {
   githubUsername String?
   changes        Change[]
   votes          Vote[]
+  collections    Collection[] @relation("UserOwnsCollection")
 }
 
 model Document {
@@ -26,6 +27,11 @@ model Document {
   repo         String
   chaptersFile String
   changes      Change[]
+  collectionID String
+  collection   Collection @relation(fields: [collectionID], references: [coid])
+  image_uri    String
+
+  @@index([collectionID])
 }
 
 model Change {
@@ -57,4 +63,12 @@ model Vote {
 
   @@index([voterId, changeId])
   @@unique([voterId, changeId])
+}
+
+model Collection {
+  coid      String   @id @default(uuid())
+  name      String   @unique
+  ownerId   String   @unique
+  owner     User     @relation(name: "UserOwnsCollection", fields: [ownerId], references: [uid])
+  documents Document[]
 }
