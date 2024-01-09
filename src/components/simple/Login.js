@@ -9,7 +9,7 @@ const Login = () => {
 	const config = {
 		products: ['oauth'],
 		oauthOptions: {
-			// loginRedirectURL: 'http://localhost:3000/authenticate',
+			loginRedirectURL: 'http://localhost:3000/authenticate',
 			providers: [
 				{
 					type: 'github',

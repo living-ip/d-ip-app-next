@@ -9,6 +9,9 @@ const nextConfig = {
         // config.experiments.topLevelAwait = true
         return config;
     },
+    env: {
+        REDIRECT_URL: process.env.REDIRECT_URL
+    }
 }
 
 module.exports = nextConfig
