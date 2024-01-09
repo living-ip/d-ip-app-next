@@ -17,11 +17,7 @@ export default function Collections({collections}) {
   }
 
   return (
-    <Container>
-      <div className="fixed top-0 mx-auto w-full pb-2 sm:pb-4 lg:pb-8 z-10 bg-white">
-        <NavBar/>
-      </div>
-      <div className={"pt-16"}>
+    <Container className={"pt-24"}>
         <div className="mt-10 mb-4 text-4xl font-extrabold">Collections</div>
         <div className="flex flex-col w-full overflow-auto">
           {collections.map((collection, index) => (
@@ -48,8 +44,6 @@ export default function Collections({collections}) {
             </div>
           ))}
         </div>
-      </div>
-      <Footer className="fixed bottom-0 w-full"/>
     </Container>
   )
 

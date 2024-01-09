@@ -1,4 +1,4 @@
-import {NavigationMenu,} from '@/components/ui/navigation-menu'
+import {NavigationMenu, NavigationMenuItem,} from '@/components/ui/navigation-menu'
 import React from 'react'
 import Image from 'next/image'
 import {useRouter} from "next/router";
@@ -7,16 +7,20 @@ export default function NavBar({children}) {
   const router = useRouter();
 
   return (
-    <NavigationMenu>
-      <Image
-        src="/living-ip.png"
-        className="hidden sm:mr-4 sm:flex hover:cursor-pointer"
-        width={40}
-        height={40}
-        alt="LivingIP"
-        onClick={() => router.push('/')}
-      />
-    </NavigationMenu>
+    <div className={"pb-8 border-b border-gray-200 mx-auto max-w-full px-4 sm:px-8 lg:px-16"}>
+      <NavigationMenu>
+        <NavigationMenuItem className={"flex hover:cursor-pointer"} onClick={() => router.push('/')}>
+          <Image
+            src="/living-ip.png"
+            className="hidden sm:mr-4 sm:flex"
+            width={40}
+            height={40}
+            alt="LivingIP"
+          />
+          <div className="text-2xl font-bold">LivingIP</div>
+        </NavigationMenuItem>
+      </NavigationMenu>
+    </div>
   )
 
   // const [isMobileNavOpen, setMobileNavOpen] = useState(false)
