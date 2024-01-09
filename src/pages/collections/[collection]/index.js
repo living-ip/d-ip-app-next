@@ -1,49 +1,37 @@
 import {Card, CardDescription, CardHeader, CardImage, CardTitle,} from '@/components/ui/card'
-import NavBar from '@/components/NavBar'
 import {useRouter} from 'next/router'
 import {Button} from '@/components/ui/button'
 import {authStytchRequest} from '@/lib/stytch'
 import {getUserProfile} from '@/lib/user'
 import {Container} from '@/components/ui/container'
-import {Footer} from '@/components/ui/footer'
 
 const DocCards = ({collection, docs}) => {
   const router = useRouter()
 
   return (
-    <Container>
-      <div className="fixed top-0 mx-auto w-full pb-2 sm:pb-4 lg:pb-8 z-10 bg-white">
-        <NavBar/>
-      </div>
-      <div className={"pt-16"}>
-        <div className="my-10 text-4xl font-extrabold">{collection.name}</div>
-        <div className="flex flex-col h-screen">
-          <div className="grid md:gap-28 sm:grid-cols-2 lg:grid-cols-3">
-            {docs.map((doc, index) => (
-              <div key={index}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>
-                      {doc.name}
-                    </CardTitle>
-                    <CardImage className={"rounded-lg"} src="/book-covers/living-book.png"/>
-                    <CardDescription>
-                      {doc.description}
-                    </CardDescription>
-                    <Button onClick={() => router.push(`/collections/${collection.name}/doc/${encodeURIComponent(doc.name)}`)}>
-                      Read it
-                    </Button>
-                    <Button variant="outline" onClick={() => router.push(`/collections/${collection.name}/doc/${encodeURIComponent(doc.name)}/vote`)}>
-                      See votes
-                    </Button>
-                  </CardHeader>
-                </Card>
-              </div>
-            ))}
-          </div>
+    <Container className={"pt-24"}>
+      <div className="my-10 text-4xl font-extrabold">{collection.name}</div>
+      <div className="flex flex-col w-full overflow-auto">
+        <div className="flex flex-wrap -mx-2">
+          {docs.map((doc, index) => (
+            <div key={index} className={"w-full sm:w-1 md:w-1/2 lg:w-1/2 xl:w-1/3 px-2 mb-4"}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{doc.name}</CardTitle>
+                  <CardImage className={"rounded-lg"} src="/book-covers/living-book.png"/>
+                  <CardDescription>{doc.description}</CardDescription>
+                  <Button onClick={() => router.push(`/collections/${collection.name}/doc/${encodeURIComponent(doc.name)}`)}>
+                    Read it
+                  </Button>
+                  <Button variant="outline" onClick={() => router.push(`/collections/${collection.name}/doc/${encodeURIComponent(doc.name)}/vote`)}>
+                    See votes
+                  </Button>
+                </CardHeader>
+              </Card>
+            </div>
+          ))}
         </div>
       </div>
-      <Footer className="fixed bottom-0 w-full"/>
     </Container>
   )
 }
