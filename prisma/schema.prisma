@@ -66,9 +66,11 @@ model Vote {
 }
 
 model Collection {
-  coid      String   @id @default(uuid())
-  name      String   @unique
-  ownerId   String   @unique
-  owner     User     @relation(name: "UserOwnsCollection", fields: [ownerId], references: [uid])
-  documents Document[]
+  coid        String     @id @default(uuid())
+  name        String     @unique
+  description String
+  ownerId     String     @unique
+  owner       User       @relation(name: "UserOwnsCollection", fields: [ownerId], references: [uid])
+  documents   Document[]
+  image_uri   String
 }

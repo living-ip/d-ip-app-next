@@ -9,11 +9,6 @@ import {useRouter} from "next/router";
 export default function Collections({collections}) {
   const router = useRouter()
 
-  const handleClick = (collectionName) => {
-    console.log(collectionName)
-    router.push(`/doc/${encodeURIComponent(collectionName)}`)
-  }
-
   return (
     <Container className={"pt-24"}>
         <div className="mt-10 mb-4 text-4xl font-extrabold">Collections</div>
