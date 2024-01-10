@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google'
 import NavBar from '@/components/NavBar'
 import { RegisterCard } from '@/components/RegisterCard'
 import { authStytchRequest } from '@/lib/stytch'
-import { getUserProfile } from '@/lib/user'
+import { getUserProfile } from '@/lib/server/user'
 
 const inter = Inter({ subsets: ['latin'] })
 

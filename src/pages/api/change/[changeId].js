@@ -1,6 +1,6 @@
-import prisma from "@/lib/prisma"
+import prisma from "@/lib/server/prisma"
 import {authStytchToken} from "@/lib/stytch"
-import {updateGithubFile} from "@/lib/github";
+import {updateGithubFile} from "@/lib/server/github";
 
 const handler = async (req, res) => {
     if (req.method === 'PUT') {

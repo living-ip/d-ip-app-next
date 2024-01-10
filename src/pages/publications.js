@@ -8,9 +8,9 @@ import {
 import NavBar from '@/components/NavBar'
 import { useRouter } from 'next/router'
 import { Button } from '@/components/ui/button'
-import prisma from '@/lib/prisma'
+import prisma from '@/lib/server/prisma'
 import { authStytchRequest } from '@/lib/stytch'
-import { getUserProfile } from '@/lib/user'
+import { getUserProfile } from '@/lib/server/user'
 import { Container } from '@/components/ui/container'
 import { Footer } from '@/components/ui/footer'
 

@@ -1,5 +1,5 @@
-import { createDraftPullRequest } from "@/lib/github";
-import { default as prisma } from "@/lib/prisma";
+import { createDraftPullRequest } from "@/lib/server/github";
+import { default as prisma } from "@/lib/server/prisma";
 import { authStytchToken } from "@/lib/stytch";
 import sha256 from "sha256";
 
