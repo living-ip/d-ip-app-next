@@ -1,9 +1,7 @@
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile} from "@/lib/user";
-import NavBar from "@/components/NavBar";
+import {getUserProfile} from "@/lib/server/user";
 import {Card, CardContent, CardDescription, CardHeader, CardImage, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
-import {Footer} from "@/components/ui/footer";
 import {Container} from "@/components/ui/container";
 import {useRouter} from "next/router";
 

@@ -2,7 +2,7 @@ import {Card, CardDescription, CardHeader, CardImage, CardTitle,} from '@/compon
 import {useRouter} from 'next/router'
 import {Button} from '@/components/ui/button'
 import {authStytchRequest} from '@/lib/stytch'
-import {getUserProfile} from '@/lib/user'
+import {getUserProfile} from '@/lib/server/user'
 import {Container} from '@/components/ui/container'
 
 const DocCards = ({collection, docs}) => {
