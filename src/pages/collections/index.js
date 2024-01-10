@@ -11,32 +11,35 @@ export default function Collections({collections}) {
 
   return (
     <Container className={"pt-24"}>
-        <div className="mt-10 mb-4 text-4xl font-extrabold">Collections</div>
-        <div className="flex flex-col w-full overflow-auto">
-          {collections.map((collection, index) => (
-            <div key={index} className={"w-full my-2"}>
-              <Card className={"flex-grow w-full"}>
-                <CardHeader className={"p-0 w-full"}>
-                  <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={collection.image_location}/>
-                </CardHeader>
-                <CardContent className={"mt-4"}>
-                  <CardTitle className={"mb-2"}>
-                    {collection.name}
-                  </CardTitle>
-                  <CardDescription className={"py-2"}>
-                    {collection.description}
-                  </CardDescription>
-                  <Button
-                    className={"my-2"}
-                    onClick={() => router.push(`/collections/${collection.name}`)}
-                  >
-                    Learn More
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
+      <div className="my-10 flex justify-between items-center w-full">
+        <div className={"text-4xl font-extrabold"}>Collections</div>
+        <Button onClick={() => router.push(`/collections/new`)}>Create a New Collection</Button>
+      </div>
+      <div className="flex flex-col w-full overflow-auto">
+        {collections.map((collection, index) => (
+          <div key={index} className={"w-full my-2"}>
+            <Card className={"flex-grow w-full"}>
+              <CardHeader className={"p-0 w-full"}>
+                <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={collection.image_location}/>
+              </CardHeader>
+              <CardContent className={"mt-4"}>
+                <CardTitle className={"mb-2"}>
+                  {collection.name}
+                </CardTitle>
+                <CardDescription className={"py-2"}>
+                  {collection.description}
+                </CardDescription>
+                <Button
+                  className={"my-2"}
+                  onClick={() => router.push(`/collections/${collection.name}`)}
+                >
+                  Learn More
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+      </div>
     </Container>
   )
 
