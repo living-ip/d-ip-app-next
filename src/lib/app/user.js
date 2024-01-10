@@ -1,14 +1,4 @@
-import { getCookie } from "cookies-next";
-import prisma from "./prisma";
-
-export const getUserProfile = async (userId) => {
-  const user = await prisma.User.findFirst({
-    where: {
-      uid: userId,
-    },
-  });
-  return { userProfile: user };
-};
+import {getCookie} from "cookies-next";
 
 export const createUserProfile = async (data) => {
   try {
@@ -20,8 +10,7 @@ export const createUserProfile = async (data) => {
       },
       body: JSON.stringify(data),
     });
-    const json = await response.json();
-    return json;
+      return await response.json();
   } catch (e) {
     console.error(e);
     return {};

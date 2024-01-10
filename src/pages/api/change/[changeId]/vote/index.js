@@ -1,4 +1,4 @@
-import { default as prisma } from "@/lib/prisma";
+import { default as prisma } from "@/lib/server/prisma";
 import { authStytchToken } from "@/lib/stytch";
 
 const handler = async (req, res) => {

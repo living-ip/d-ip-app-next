@@ -1,5 +1,5 @@
 import {Octokit} from '@octokit/rest';
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/server/prisma";
 
 export const getRepoPulls = async (owner, repo, authToken) => {
     const octokit = new Octokit({

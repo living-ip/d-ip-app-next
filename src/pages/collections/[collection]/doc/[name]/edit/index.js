@@ -1,7 +1,7 @@
 import NavBar from '@/components/NavBar'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/router'
-import prisma from '@/lib/prisma'
+import prisma from '@/lib/server/prisma'
 import { authStytchRequest } from '@/lib/stytch'
 import { Label } from '@/components/ui/label'
 import { useState } from 'react'
@@ -12,8 +12,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import { createChange } from '@/lib/change'
-import { getRepoTreeRecursive } from '@/lib/github'
+import { createChange } from '@/lib/app/change'
+import { getRepoTreeRecursive } from '@/lib/server/github'
 import { getCookie } from 'cookies-next'
 import { Footer } from '@/components/ui/footer'
 import { Container } from '@/components/ui/container'

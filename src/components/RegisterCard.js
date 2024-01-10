@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import { useRouter } from 'next/router'
 import { getCookie } from 'cookies-next'
-import { createUserProfile } from '@/lib/user'
+import { createUserProfile } from '@/lib/app/user'
 
 export function RegisterCard() {
 	const [name, setName] = useState('')

@@ -1,5 +1,5 @@
-import { mergePullRequest } from "@/lib/github";
-import prisma from "@/lib/prisma"
+import { mergePullRequest } from "@/lib/server/github";
+import prisma from "@/lib/server/prisma"
 import { authStytchToken } from "@/lib/stytch"
 
 const handler = async (req, res) => {
