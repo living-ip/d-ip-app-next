@@ -1,6 +1,7 @@
 import {Container} from "@/components/ui/container";
 import {Card, CardContent} from "@/components/ui/card";
 import CreationForm from "@/components/CreationForm";
+import {createCollection} from "@/lib/app/collection";
 
 export default function CreateNewCollection() {
 
@@ -12,7 +13,7 @@ export default function CreateNewCollection() {
           <CreationForm
             titlePlaceholder="Enter the name of your collection"
             descriptionPlaceholder="Write a description about your collection"
-            onSubmitFunction={() => console.log("Submitted")}  //TODO: Update this with database write function
+            onSubmitFunction={createCollection}
           />
         </Card>
       </div>

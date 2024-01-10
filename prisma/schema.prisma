@@ -27,11 +27,11 @@ model Document {
   repo         String
   chaptersFile String
   changes      Change[]
-  collectionID String
-  collection   Collection @relation(fields: [collectionID], references: [coid])
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [coid])
   image_uri    String
 
-  @@index([collectionID])
+  @@index([collectionId])
 }
 
 model Change {

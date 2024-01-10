@@ -9,13 +9,13 @@ const handler = async (req, res) => {
       return res.status(401).json({error: 'Unauthorized'})
     }
 
-    const {name, description, image} = req.body;
+    const {title, description, image} = req.body;
 
     // TODO: Process the image as needed for GCP and convert to Base64 or upload to GCP to get the URI.
 
     const newCollection = await prisma.Collection.create({
       data: {
-        name: name,
+        name: title,
         description: description,
         ownerId: session.user_id,
         image_uri: "image_string_holder",  //TODO: update with image URI

@@ -27,7 +27,7 @@ export default function CreationForm({titlePlaceholder, descriptionPlaceholder, 
   const onSubmit = async (data) => {
     data["image"] = data.image[0];
     console.log(data);
-    //TODO: write to database with {onSubmitFunction}
+    onSubmitFunction(data);
   };
 
   return (

@@ -37,11 +37,6 @@ export function RegisterCard() {
 		<Card className="w-[350px]">
 			<CardHeader>
 				<CardTitle>Create profile</CardTitle>
-				<CardDescription>
-					Get matches that are truly relevant to you
-				</CardDescription>
-			</CardHeader>
-			<CardContent>
 				<form>
 					<div className="grid items-center w-full gap-4">
 						<div className="flex flex-col space-y-1.5">
@@ -55,7 +50,7 @@ export function RegisterCard() {
 						</div>
 					</div>
 				</form>
-			</CardContent>
+			</CardHeader>
 			<CardFooter className="flex justify-center">
 				<Button onClick={handleSubmit}>Explore</Button>
 			</CardFooter>
