@@ -21,14 +21,14 @@ model User {
 
 model Document {
   did          String   @id @default(uuid())
-  name         String   @unique
-  description  String?  @db.Text
+  name         String
+  description  String
   owner        String
   repo         String
   chaptersFile String
   changes      Change[]
   collectionId String
-  collection   Collection @relation(fields: [collectionId], references: [coid])
+  collection   Collection @relation(name: "CollectionHasDocuments", fields: [collectionId], references: [coid])
   image_uri    String
 
   @@index([collectionId])
@@ -71,6 +71,6 @@ model Collection {
   description String
   ownerId     String
   owner       User       @relation(name: "UserOwnsCollection", fields: [ownerId], references: [uid])
-  documents   Document[]
+  documents   Document[] @relation("CollectionHasDocuments")
   image_uri   String
 }

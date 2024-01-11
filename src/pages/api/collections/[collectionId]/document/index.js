@@ -1,7 +1,3 @@
-// TODO create a new document in this collection on a POST request.
-// this requires creating a new doc in the DB, marking the owner as the requestor,
-// and making a new repo for the content in github.
-
 import {authStytchToken} from "@/lib/stytch";
 
 const handler = async (req, res) => {
@@ -11,25 +7,27 @@ const handler = async (req, res) => {
     if (!session) {
       return res.status(401).json({error: 'Unauthorized'})
     }
+
     const {title, description, image} = req.body;
     const {collectionId} = req.query;
-    await prisma.Document.create({
+
+    // TODO: Process the image as needed for GCP and convert to Base64 or upload to GCP to get the URI.
+
+    const newDocument = await prisma.Document.create({
       data: {
         name: title,
         description: description,
         owner: "living-ip",  //TODO: change this to the following... owner: session.user_id,
         repo: "psyc-dao-constitution", //TODO: make this dynamic
         chaptersFile: "chapters.json", //TODO: make this dynamic
-        changes: [],
-        collectionID: collectionId,
-        collection: {
-          connect: {
-            coid: collectionId,
-          }
-        },
-        image_uri: "image_string_holder",  //TODO: take the image given and turn into base64 and store as blob in gcp
+        collectionId: collectionId,
+        image_uri: "image_string_holder",  //TODO: update with image URI
       }
     })
+
+    return res.status(201).json({document: newDocument});
+  } else {
+    return res.status(405).json({error: 'Method not allowed'})
   }
 }
 
