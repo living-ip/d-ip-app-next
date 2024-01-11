@@ -15,6 +15,7 @@ import { Container } from '@/components/ui/container'
 import { Footer } from '@/components/ui/footer'
 
 export default function Index({
+	collection,
 	doc,
 	contributors,
 	cid,
@@ -30,7 +31,7 @@ export default function Index({
 	console.log(ghData)
 
 	const goToVotes = () => {
-		router.push(`/doc/${encodeURIComponent(doc.name)}/vote`)
+		router.push(`/collections/${encodeURI(collection.name)}/doc/${doc.did}/vote`)
 	}
 
 	const toggleChapters = () => {
@@ -144,19 +145,29 @@ export const getServerSideProps = async ({ req, query }) => {
 			},
 		}
 	}
-	const { name, id } = query
-	const data = await prisma.Document.findFirst({
+	const { name, documentId, id } = query
+
+	const collection = await prisma.Collection.findFirst({
 		where: {
 			name: name,
+		}
+	})
+	console.log(collection)
+
+	const data = await prisma.Document.findFirst({
+		where: {
+			did: documentId,
 		},
 	})
 	console.log(data)
+
 	const changeData = await prisma.Change.findFirst({
 		where: {
 			cid: id,
 		},
 	})
 	console.log(changeData)
+
 	const voteAggregate = await prisma.Vote.aggregate({
 		where: {
 			changeId: id,
@@ -165,12 +176,16 @@ export const getServerSideProps = async ({ req, query }) => {
 			vote: true,
 		},
 	})
+	console.log(voteAggregate)
+
 	const userVote = await prisma.Vote.findFirst({
 		where: {
 			changeId: id,
 			voterId: session.user_id,
 		},
 	})
+	console.log(userVote)
+
 	const ghData = await getPullRequestData(
 		data.owner,
 		data.repo,
@@ -178,8 +193,10 @@ export const getServerSideProps = async ({ req, query }) => {
 		req.cookies['gho_token']
 	)
 	console.log(ghData)
+
 	return {
 		props: {
+			collection,
 			contributors: [
 				{
 					name: 'Dan Miles',

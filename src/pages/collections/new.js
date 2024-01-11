@@ -13,9 +13,9 @@ export default function CreateNewCollection() {
     try {
       const response = await createCollection(data);
       console.log(response);
-      const collectionId = response.collection.coid;
-      console.log(collectionId)
-      await router.push(`/collections/${collectionId}`)
+      const collectionName = response.collection.name;
+      console.log(collectionName)
+      await router.push(`/collections/${encodeURI(collectionName)}`)
     } catch (e) {
       console.log(e);
     }

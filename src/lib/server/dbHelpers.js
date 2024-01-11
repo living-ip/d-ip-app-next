@@ -1,9 +1,9 @@
 import prisma from "@/lib/server/prisma";
 
-export const getDocAndChange = async (docName, cid) => {
+export const getDocAndChange = async (documentId, cid) => {
     const docSelect = prisma.Document.findFirst({
         where: {
-            name: docName
+            did: documentId
         }
     })
     const changeSelect = prisma.Change.findFirst({

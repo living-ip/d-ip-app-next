@@ -21,7 +21,7 @@ export default function Collections({collections}) {
           <div key={index} className={"w-full my-2"}>
             <Card className={"flex-grow w-full"}>
               <CardHeader className={"p-0 w-full"}>
-                <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={collection.image_location}/>
+                <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={"/collection-covers/living-ip-cover-1.jpeg"}/> {/*  TODO: update to image_uri */}
               </CardHeader>
               <CardContent className={"mt-4"}>
                 <CardTitle className={"mb-2"}>
@@ -32,7 +32,7 @@ export default function Collections({collections}) {
                 </CardDescription>
                 <Button
                   className={"my-2"}
-                  onClick={() => router.push(`/collections/${collection.coid}`)}
+                  onClick={() => router.push(`/collections/${encodeURIComponent(collection.name)}`)}
                 >
                   Learn More
                 </Button>

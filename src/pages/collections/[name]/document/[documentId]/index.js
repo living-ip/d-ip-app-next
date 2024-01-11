@@ -2,7 +2,6 @@ import {Button} from '@/components/ui/button'
 import {useRouter} from 'next/router'
 import ReadingPane from '@/components/doc/ReadingPane'
 import UserCarousel from '@/components/ui/UserCarousel'
-import ArticleCard from '@/components/ui/ArticleCard'
 import prisma from '@/lib/server/prisma'
 import {useState} from 'react'
 import ChapterCard from '@/components/doc/ChapterCard'
@@ -12,13 +11,13 @@ import {getCookie} from 'cookies-next'
 import {Container} from '@/components/ui/container'
 import Image from 'next/image'
 
-export default function Index({doc, contributors, chapters, firstPage}) {
+export default function Index({collection, document, contributors, chapters, firstPage}) {
   const router = useRouter()
   const [showChapters, setShowChapters] = useState(false)
   const [pageContent, setPageContent] = useState(firstPage)
 
   const goToVotes = () => {
-    router.push(`/doc/${encodeURIComponent(doc.name)}/vote`)
+    router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}/vote`)
   }
 
   const toggleChapters = () => {
@@ -26,7 +25,7 @@ export default function Index({doc, contributors, chapters, firstPage}) {
   }
 
   const goToEdits = () => {
-    router.push(`/doc/${encodeURIComponent(doc.name)}/edit`)
+    router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}/edit`)
   }
 
   return (
@@ -43,9 +42,9 @@ export default function Index({doc, contributors, chapters, firstPage}) {
               objectPosition="center"
               className="mr-4 rounded-lg"
             />
-            <div className="text-4xl font-extrabold ">{doc.name}</div>
+            <div className="text-4xl font-extrabold ">{document.name}</div>
           </div>
-          <div className="p-1 mt-2 text-sm italic text-gray-600">{doc.description}</div>
+          <div className="p-1 mt-2 text-sm italic text-gray-600">{document.description}</div>
           <div className="mt-6 flex justify-between items-center">
             <div className="flex">
               <Button variant="outline" className="mr-4" onClick={goToVotes}>Votes</Button>
@@ -53,7 +52,8 @@ export default function Index({doc, contributors, chapters, firstPage}) {
             </div>
             <Button className="mr-4" onClick={toggleChapters}>Chapters</Button>
           </div>
-          <div className="mx-2"><UserCarousel users={contributors}/></div> {/*  TODO: Turn the carousel into a list*/}
+          <div className="mx-2 mb-4"><UserCarousel users={contributors}/></div>
+          {/*  TODO: Turn the carousel into a list*/}
         </div>
         <div className="flex-1 max-h-screen p-4 ml-2 border-l">
           {showChapters ? (
@@ -90,30 +90,45 @@ export const getServerSideProps = async ({req, query}) => {
       },
     }
   }
-  const {documentId} = query
+
+  const {name, documentId} = query
+
+  const collection = await prisma.Collection.findFirst({
+    where: {
+      name: name,
+    },
+  })
+  console.log("Collection: ", collection)
+
   const document = await prisma.Document.findFirst({
     where: {
       did: documentId,
     },
   })
+  console.log("Document: ", document)
+
   const {chapters, firstPage} = await getRepoTreeRecursive(
     document.owner,
     document.repo,
     getCookie('gho_token')
   )
+
+  const contributors = [
+    {
+      name: 'Dan Miles',
+      image: 'https://pbs.twimg.com/profile_images/1702390471488659456/_bvR4h5f_400x400.jpg',
+    },
+    {
+      name: 'm3taversal',
+      image: 'https://pbs.twimg.com/profile_images/1677306057457127424/e3aHKSEs_400x400.jpg',
+    },
+  ]
+
   return {
     props: {
-      contributors: [
-        {
-          name: 'Dan Miles',
-          image: 'https://pbs.twimg.com/profile_images/1702390471488659456/_bvR4h5f_400x400.jpg',
-        },
-        {
-          name: 'm3taversal',
-          image: 'https://pbs.twimg.com/profile_images/1677306057457127424/e3aHKSEs_400x400.jpg',
-        },
-      ],
-      doc: document,
+      collection,
+      document,
+      contributors,
       chapters,
       firstPage,
     },

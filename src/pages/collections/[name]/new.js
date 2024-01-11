@@ -6,18 +6,18 @@ import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/server/user";
 import {createDocument} from "@/lib/app/document";
 
-export default function CreateNewDocument({collectionId}) {
+export default function CreateNewDocument({collection}) {
   const router = useRouter();
 
   const onFormSubmit = async (data) => {
     data["image"] = data.image[0];
     console.log(data);
     try {
-      const response = await createDocument(collectionId, data);
+      const response = await createDocument(collection.coid, data);
       console.log("Response: ", response);
       const documentId = response.document.did;
       console.log(documentId)
-      await router.push(`/collections/${collectionId}/document/${documentId}`);
+      await router.push(`/collections/${encodeURI(collection.name)}/document/${documentId}`);
     } catch (e) {
       console.log(e);
     }
@@ -60,12 +60,19 @@ export const getServerSideProps = async ({req, query}) => {
     }
   }
 
-  const {collectionId} = query;
-  console.log("collectionId: ", collectionId)
+  const {name} = query;
+  console.log("Collection Name: ", name)
+
+  const collection = await prisma.collection.findFirst({
+    where: {
+      name: name
+    }
+  })
+  console.log("Collection: ", collection)
 
   return {
     props: {
-      collectionId: collectionId,
+      collection,
     },
   }
 }
