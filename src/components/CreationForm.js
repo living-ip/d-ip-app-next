@@ -5,6 +5,8 @@ import {Button} from "@/components/ui/button";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
+import {useRouter} from "next/router";
+import {createCollection} from "@/lib/app/collection";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -19,20 +21,15 @@ const formSchema = z.object({
 });
 
 export default function CreationForm({titlePlaceholder, descriptionPlaceholder, onSubmitFunction}) {
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = async (data) => {
-    data["image"] = data.image[0];
-    console.log(data);
-    onSubmitFunction(data);
-  };
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 px-8 mb-8">
+      <form onSubmit={form.handleSubmit(onSubmitFunction)} className="w-full space-y-4 px-8 mb-8">
         <FormField control={form.control} name="title" render={({field}) => (
           <FormItem>
             <FormLabel>Title</FormLabel>

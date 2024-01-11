@@ -2,7 +2,7 @@ import {getCookie} from "cookies-next";
 
 export const createCollection = async (data) => {
   try {
-    const response = await fetch(`/api/collection`, {
+    const response = await fetch(`/api/collections`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
