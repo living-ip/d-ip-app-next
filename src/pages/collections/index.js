@@ -2,7 +2,7 @@ import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/server/user";
 import {Card, CardContent, CardDescription, CardHeader, CardImage, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
-import {Container} from "@/components/ui/container";
+import {Layout} from "@/components/ui/layout";
 import {useRouter} from "next/router";
 import prisma from "@/lib/server/prisma";
 
@@ -11,7 +11,7 @@ export default function Collections({collections}) {
   const router = useRouter()
 
   return (
-    <Container className={"pt-24"}>
+    <Layout>
       <div className="my-10 flex justify-between items-center w-full">
         <div className={"text-4xl font-extrabold"}>Collections</div>
         <Button onClick={() => router.push(`/collections/new`)}>Create a New Collection</Button>
@@ -41,7 +41,7 @@ export default function Collections({collections}) {
           </div>
         ))}
       </div>
-    </Container>
+    </Layout>
   )
 
 }

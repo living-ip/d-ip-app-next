@@ -3,17 +3,17 @@ import NavBar from '@/components/NavBar'
 import { RegisterCard } from '@/components/RegisterCard'
 import { authStytchRequest } from '@/lib/stytch'
 import { getUserProfile } from '@/lib/server/user'
-import {Container} from "@/components/ui/container";
+import {Layout} from "@/components/ui/layout";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Onboard({ user }) {
 	return (
-		<Container>
+		<Layout>
 			<div className="flex items-center justify-center min-h-screen">
 				<RegisterCard />
 			</div>
-		</Container>
+		</Layout>
 	)
 }
 

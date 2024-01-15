@@ -3,7 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import {useRouter} from "next/router";
 
-export default function NavBar({children}) {
+export default function NavBar() {
   const router = useRouter();
 
   return (
@@ -22,30 +22,4 @@ export default function NavBar({children}) {
       </NavigationMenu>
     </div>
   )
-
-  // const [isMobileNavOpen, setMobileNavOpen] = useState(false)
-  // return (
-  // 	<>
-  // 		<NavigationMenu>
-  // 			<MobileNavigationToggle
-  // 				isOpen={isMobileNavOpen}
-  // 				onClick={() => setMobileNavOpen(!isMobileNavOpen)}
-  // 			/>
-  // 			<NavigationMenuList
-  // 				className={`${isMobileNavOpen ? 'flex' : 'hidden'} lg:flex`}
-  // 			>
-  // 				<NavigationMenuItem>
-  // 					<Link href="/" legacyBehavior passHref>
-  // 						<NavigationMenuLink
-  // 							className={navigationMenuTriggerStyle()}
-  // 						>
-  // 							Home
-  // 						</NavigationMenuLink>
-  // 					</Link>
-  // 				</NavigationMenuItem>
-  // 			</NavigationMenuList>
-  // 		</NavigationMenu>
-  // 		{children}
-  // 	</>
-  // )
 }

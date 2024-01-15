@@ -9,7 +9,7 @@ import {createChange} from '@/lib/app/change'
 import {getRepoTreeRecursive} from '@/lib/server/github'
 import {getCookie} from 'cookies-next'
 import {Footer} from '@/components/ui/footer'
-import {Container} from '@/components/ui/container'
+import {Layout} from '@/components/ui/layout'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select'
 
 export default function Index({collection, document, changes, chapters}) {
@@ -45,7 +45,7 @@ export default function Index({collection, document, changes, chapters}) {
   }
 
   return (
-    <Container className={"pt-24"}>
+    <Layout>
       <div className="flex-1">
         <div className="my-10 text-4xl font-extrabold">{document.name}</div>
         <Label className="py-6 text-sm text-muted-foreground">Your Changes:</Label>
@@ -137,7 +137,7 @@ export default function Index({collection, document, changes, chapters}) {
           </div>
         </div>
       </div>
-    </Container>
+    </Layout>
   )
 }
 

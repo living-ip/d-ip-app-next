@@ -8,7 +8,7 @@ import ChapterCard from '@/components/doc/ChapterCard'
 import {authStytchRequest} from '@/lib/stytch'
 import {getRepoTreeRecursive} from '@/lib/server/github'
 import {getCookie} from 'cookies-next'
-import {Container} from '@/components/ui/container'
+import {Layout} from '@/components/ui/layout'
 import Image from 'next/image'
 
 export default function Index({collection, document, contributors, chapters, firstPage}) {
@@ -29,7 +29,7 @@ export default function Index({collection, document, contributors, chapters, fir
   }
 
   return (
-    <Container className={"pt-24"}>
+    <Layout>
       <div className="flex">
         <div className="mt-4 w-1/3">
           <div className="flex items-center">
@@ -76,7 +76,7 @@ export default function Index({collection, document, contributors, chapters, fir
           )}
         </div>
       </div>
-    </Container>
+    </Layout>
   )
 }
 

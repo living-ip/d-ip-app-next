@@ -4,13 +4,13 @@ import prisma from '@/lib/server/prisma'
 import {getRepoPulls} from '@/lib/server/github'
 import {authStytchRequest} from '@/lib/stytch'
 import sha256 from 'sha256'
-import {Container} from '@/components/ui/container'
+import {Layout} from '@/components/ui/layout'
 
 export default function Index({collection, document, changes}) {
   const router = useRouter()
 
   return (
-    <Container className={"pt-24"}>
+    <Layout>
       <div className={"flex justify-between items-center w-full"}>
         <div className="mt-8 text-4xl font-extrabold ">{document.name}</div>
         <Button variant="outline" className="mt-8" onClick={() => router.back()}>Back</Button>
@@ -32,7 +32,7 @@ export default function Index({collection, document, changes}) {
           ))}
         </div>
       </div>
-    </Container>
+    </Layout>
   )
 }
 

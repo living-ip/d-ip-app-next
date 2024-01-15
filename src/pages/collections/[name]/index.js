@@ -3,14 +3,14 @@ import {useRouter} from 'next/router'
 import {Button} from '@/components/ui/button'
 import {authStytchRequest} from '@/lib/stytch'
 import {getUserProfile} from '@/lib/server/user'
-import {Container} from '@/components/ui/container'
+import {Layout} from '@/components/ui/layout'
 import prisma from "@/lib/server/prisma";
 
 const DocCards = ({collection, docs}) => {
   const router = useRouter()
 
   return (
-    <Container className={"pt-24"}>
+    <Layout>
       <div className="my-10 flex justify-between items-center w-full">
         <div className="flex flex-col mr-4 w-full">
           <div className={"flex mb-4 justify-between items-center w-full"}>
@@ -41,7 +41,7 @@ const DocCards = ({collection, docs}) => {
           ))}
         </div>
       </div>
-    </Container>
+    </Layout>
   )
 }
 

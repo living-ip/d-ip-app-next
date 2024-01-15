@@ -7,7 +7,7 @@ import {getGithubContents} from '@/lib/server/github'
 import {useState} from 'react'
 import {useRouter} from 'next/router'
 import {submitChange, updateChange} from '@/lib/app/change'
-import {Container} from '@/components/ui/container'
+import {Layout} from '@/components/ui/layout'
 
 export default function Index({collection, document, change, contents}) {
   const originalDoc = Buffer.from(contents.content, 'base64').toString(
@@ -34,7 +34,7 @@ export default function Index({collection, document, change, contents}) {
   }
 
   return (
-    <Container className={"pt-24"}>
+    <Layout>
       <div className="relative flex items-center justify-center h-screen my-24 lg:mb-12">
         <div className="relative w-full px-4 py-6 border border-gray-300 rounded-lg shadow-lg lg:w-3/4 lg:h-full">
           <EditMenu
@@ -47,7 +47,7 @@ export default function Index({collection, document, change, contents}) {
           />
         </div>
       </div>
-    </Container>
+    </Layout>
   )
 }
 

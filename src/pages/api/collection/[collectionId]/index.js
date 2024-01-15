@@ -26,6 +26,8 @@ const handler = async (req, res) => {
     console.log("Collection Update: ", updateCollection)
 
     return res.status(201).json({collection: updateCollection})
+  } else {
+    return res.status(405).json({error: 'Method not allowed'})
   }
 }
 

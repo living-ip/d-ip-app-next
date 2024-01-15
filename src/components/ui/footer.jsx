@@ -1,10 +1,7 @@
 import Link from 'next/link'
 
 // import qrCode from "@/images/qr-code.svg";
-import {Container} from './container'
 import Image from 'next/image'
-import {TextField} from './fields'
-import {Button} from './button'
 
 const navigation = [
   {
@@ -56,9 +53,8 @@ const navigation = [
 
 export function Footer() {
   return (
-    <footer className="mx-auto max-w-full px-8 sm:px-16 lg:px-32 mb-2 border-t border-gray-200">
+    <>
       <div className="flex flex-col items-start justify-between pt-8 pb-6 gap-y-4 lg:flex-row lg:items-center lg:py-8">
-
         <div className="flex items-center text-gray-900">
           <Link href="/" aria-label="Home">
             <Image
@@ -74,41 +70,25 @@ export function Footer() {
             <p className="mt-1 text-sm">Giving Communities a Voice.</p>
           </div>
         </div>
-
-          <div className="flex justify-center space-x-6 md:order-2">
-            {navigation.map((item) => (
-              <Link
-                target="_blank"
-                rel="noopener noreferrer"
-                key={item.name}
-                href={item.href}
-                className="text-opacity-90 text-slate-900 hover:text-slate-600"
-              >
-                <item.icon className="w-6 h-6" aria-hidden="true"/>
-              </Link>
-            ))}
-          </div>
+        <div className="flex justify-center space-x-6 md:order-2">
+          {navigation.map((item) => (
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              key={item.name}
+              href={item.href}
+              className="text-opacity-90 text-slate-900 hover:text-slate-600"
+            >
+              <item.icon className="w-6 h-6" aria-hidden="true"/>
+            </Link>
+          ))}
+        </div>
       </div>
-
-      <div className="flex flex-col items-center pt-8 pb-4 border-t border-gray-200 md:flex-row-reverse md:justify-between md:pt-6">
-        <form className="flex justify-center w-full md:w-auto">
-          <TextField
-            type="email"
-            aria-label="Email address"
-            placeholder="Email address"
-            autoComplete="email"
-            required
-            className="min-w-0 w-60 shrink"
-          />
-          <Button type="submit" className="flex-none ml-4">
-            <span className="hidden lg:inline">Join our newsletter</span>
-            <span className="lg:hidden">Join newsletter</span>
-          </Button>
-        </form>
+      <div className="flex flex-col items-center pt-8 pb-4 border-t border-gray-200 md:justify-between md:pt-6">
         <div className="mt-6 text-sm text-gray-500 md:mt-0">
           &copy; Copyright {new Date().getFullYear()}. All rights reserved.
         </div>
       </div>
-    </footer>
+    </>
   )
 }

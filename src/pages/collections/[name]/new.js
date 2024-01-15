@@ -1,4 +1,4 @@
-import {Container} from "@/components/ui/container";
+import {Layout} from "@/components/ui/layout";
 import {Card, CardContent} from "@/components/ui/card";
 import CreationForm from "@/components/CreationForm";
 import {useRouter} from "next/router";
@@ -24,8 +24,8 @@ export default function CreateNewDocument({collection}) {
   };
 
   return (
-    <Container className={"pt-24 bg-gray-100"}>
-      <div className="flex flex-col w-full overflow-auto items-left min-h-screen">
+    <Layout>
+      <div className="flex flex-col w-full overflow-auto items-left min-h-screen bg-gray-100">
         <Card className="w-full bg-white mt-10">
           <CardContent className="mt-10 mb-4 text-4xl font-bold">Create a New Document</CardContent>
           <CreationForm
@@ -35,7 +35,7 @@ export default function CreateNewDocument({collection}) {
           />
         </Card>
       </div>
-    </Container>
+    </Layout>
   )
 }
 

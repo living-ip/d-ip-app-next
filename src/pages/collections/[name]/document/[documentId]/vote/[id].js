@@ -11,7 +11,7 @@ import { parseDiff, Diff, Hunk } from 'react-diff-view'
 
 import 'react-diff-view/style/index.css'
 import { mergeChange, voteOnChange } from '@/lib/app/change'
-import { Container } from '@/components/ui/container'
+import { Layout } from '@/components/ui/layout'
 import { Footer } from '@/components/ui/footer'
 
 export default function Index({
@@ -72,7 +72,7 @@ export default function Index({
 	}
 
 	return (
-		<Container>
+		<Layout>
 			<NavBar />
 			<div className="flex max-h-screen">
 				<div className="w-1/4 pr-6 mt-10">
@@ -131,7 +131,7 @@ export default function Index({
 				</div>
 			</div>
 			<Footer />
-		</Container>
+		</Layout>
 	)
 }
 
