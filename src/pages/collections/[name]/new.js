@@ -24,8 +24,8 @@ export default function CreateNewDocument({collection}) {
   };
 
   return (
-    <Layout>
-      <div className="flex flex-col w-full overflow-auto items-left min-h-screen bg-gray-100">
+    <Layout childClassName={"bg-gray-100"}>
+      <div className="flex flex-col w-full overflow-auto items-left min-h-screen">
         <Card className="w-full bg-white mt-10">
           <CardContent className="mt-10 mb-4 text-4xl font-bold">Create a New Document</CardContent>
           <CreationForm
