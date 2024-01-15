@@ -1,5 +1,6 @@
 import {authStytchToken} from "@/lib/stytch";
 import prisma from "@/lib/server/prisma";
+import {uploadBase64ToGCS} from "@/lib/server/blob";
 
 const handler = async (req, res) => {
   if (req.method === 'POST') {
@@ -10,15 +11,14 @@ const handler = async (req, res) => {
     }
 
     const {title, description, image} = req.body;
-
-    // TODO: Process the image as needed for GCP and convert to Base64 or upload to GCP to get the URI.
+    const imageURI = await uploadBase64ToGCS(image.content, image.filename);
 
     const newCollection = await prisma.Collection.create({
       data: {
         name: title,
         description: description,
         ownerId: session.user_id,
-        image_uri: "image_string_holder",  //TODO: update with image URI
+        image_uri: imageURI,
       }
     })
 

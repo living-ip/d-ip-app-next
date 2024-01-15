@@ -34,7 +34,7 @@ export default function Index({collection, document, contributors, chapters, fir
         <div className="mt-4 w-1/3">
           <div className="flex items-center">
             <Image
-              src={'/book-covers/living-book.png'}
+              src={document.image_uri}
               alt={'livingIP'}
               width={100}
               height={100}

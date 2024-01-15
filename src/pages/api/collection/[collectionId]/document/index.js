@@ -1,4 +1,6 @@
 import {authStytchToken} from "@/lib/stytch";
+import {Storage} from "@google-cloud/storage";
+import {uploadBase64ToGCS} from "@/lib/server/blob";
 
 const handler = async (req, res) => {
   if (req.method === 'POST') {
@@ -10,8 +12,7 @@ const handler = async (req, res) => {
 
     const {title, description, image} = req.body;
     const {collectionId} = req.query;
-
-    // TODO: Process the image as needed for GCP and convert to Base64 or upload to GCP to get the URI.
+    const imageURI = await uploadBase64ToGCS(image.content, image.filename);
 
     const newDocument = await prisma.Document.create({
       data: {
@@ -21,7 +22,7 @@ const handler = async (req, res) => {
         repo: "psyc-dao-constitution", //TODO: make this dynamic
         chaptersFile: "chapters.json", //TODO: make this dynamic
         collectionId: collectionId,
-        image_uri: "image_string_holder",  //TODO: update with image URI
+        image_uri: imageURI,
       }
     })
 

@@ -3,13 +3,19 @@ import {Card, CardContent} from "@/components/ui/card";
 import CreationForm from "@/components/CreationForm";
 import {createCollection} from "@/lib/app/collection";
 import {useRouter} from "next/router";
+import {fileToBase64} from "@/lib/utils";
 
 export default function CreateNewCollection() {
   const router = useRouter();
 
   const onFormSubmit = async (data) => {
-    data["image"] = data.image[0];
     console.log(data);
+
+    data.image = {
+      filename: data.image[0].name,
+      content: await fileToBase64(data.image[0]),
+    };
+    console.log(data.image);
     try {
       const response = await createCollection(data);
       console.log(response);
