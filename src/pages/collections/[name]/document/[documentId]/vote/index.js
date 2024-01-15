@@ -11,11 +11,8 @@ export default function Index({collection, document, changes}) {
 
   return (
     <Layout>
-      <div className={"flex justify-between items-center w-full"}>
-        <div className="mt-8 text-4xl font-extrabold ">{document.name}</div>
-        <Button variant="outline" className="mt-8" onClick={() => router.back()}>Back</Button>
-      </div>
-      <div className="flex flex-col h-full mb-4">
+      <div className="flex w-full mt-8 text-4xl font-extrabold ">{document.name}</div>
+      <div className="flex flex-col h-full mb-8">
         <div className="w-full">
           {changes.map((change, index) => (
             <div key={index} className="py-8 border-b-2"
