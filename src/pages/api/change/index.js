@@ -11,10 +11,9 @@ const handler = async (req, res) => {
     if (!session) {
       return res.status(401).json({error: "Unauthorized"});
     }
-    const ghoToken = req.headers["x-sib-gho-token"];
     const { documentId, chapter, owner, repo, title } = req.body;
     const branchName = `${owner}/${title}`;
-    const prNumber = await createDraftPullRequest(owner, repo, title, branchName, ghoToken);
+    const prNumber = await createDraftPullRequest(owner, repo, title, branchName);
     const changeId = sha256(`${owner}/${repo}/${prNumber}`);
     await prisma.Change.create({
       data: {

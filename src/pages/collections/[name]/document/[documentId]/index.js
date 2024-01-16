@@ -109,8 +109,7 @@ export const getServerSideProps = async ({req, query}) => {
 
   const {chapters, firstPage} = await getRepoTreeRecursive(
     document.owner,
-    document.repo,
-    getCookie('gho_token')
+    document.repo
   )
 
   const contributors = [

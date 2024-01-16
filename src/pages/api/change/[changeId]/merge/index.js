@@ -9,7 +9,6 @@ const handler = async (req, res) => {
     if (!session) {
       return res.status(401).json({error: "Unauthorized"});
     }
-    const ghoToken = req.headers["x-sib-gho-token"];
     const {changeId} = req.query;
     const change = await prisma.Change.findFirst({
       where: {
@@ -24,8 +23,7 @@ const handler = async (req, res) => {
     const ghResponse = await mergePullRequest(
       document.owner,
       document.repo,
-      change.prNumber,
-      ghoToken
+      change.prNumber
     );
     console.log(ghResponse);
     const updatedChange = await prisma.Change.update({

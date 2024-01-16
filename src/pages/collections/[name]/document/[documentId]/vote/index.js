@@ -62,8 +62,7 @@ export const getServerSideProps = async ({req, query}) => {
 
   const pulls = await getRepoPulls(
     document.owner,
-    document.repo,
-    req.cookies['gho_token']
+    document.repo
   )
 
   const changeIds = pulls.map((pull) => {

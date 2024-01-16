@@ -76,8 +76,7 @@ export const getServerSideProps = async ({req, query}) => {
     document.owner,
     document.repo,
     change.lastEditFilePath,
-    change.branchName,
-    req.cookies['gho_token']
+    change.branchName
   )
   console.log(ghData)
 
