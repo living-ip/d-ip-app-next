@@ -6,9 +6,18 @@ import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/server/user";
 import {createDocument} from "@/lib/app/document";
 import {fileToBase64} from "@/lib/utils";
+import {
+  AlertDialog, AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import {useState} from "react";
 
 export default function CreateNewDocument({collection}) {
   const router = useRouter();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const onFormSubmit = async (data) => {
     console.log(data);
@@ -24,23 +33,41 @@ export default function CreateNewDocument({collection}) {
       console.log("Response: ", response);
       const documentId = response.document.did;
       console.log(documentId)
-      await router.push(`/collections/${encodeURI(collection.name)}/document/${documentId}`);
+      setIsDialogOpen(true);
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    router.push(`/collections/${encodeURI(collection.name)}`);
   };
 
   return (
     <Layout childClassName={"bg-gray-100"}>
       <div className="flex flex-col w-full overflow-auto items-left min-h-screen">
         <Card className="w-full bg-white mt-10">
-          <CardContent className="mt-10 mb-4 text-4xl font-bold">Create a New Document</CardContent>
+          <CardContent className="mt-10 mb-4 text-4xl font-bold">Request New Document Creation</CardContent>
           <CreationForm
             titlePlaceholder="Enter the name of your document"
             descriptionPlaceholder="Write a description about your document"
             onSubmitFunction={onFormSubmit}
           />
         </Card>
+        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Document Creation Request Successful</AlertDialogTitle>
+              <AlertDialogDescription>
+                Your request to create a document has been logged. It is now pending approval.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={handleDialogClose}>OK</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Layout>
   )

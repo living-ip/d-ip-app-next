@@ -1,5 +1,4 @@
 import {authStytchToken} from "@/lib/stytch";
-import {Storage} from "@google-cloud/storage";
 import {uploadBase64ToGCS} from "@/lib/server/blob";
 
 const handler = async (req, res) => {
@@ -19,7 +18,7 @@ const handler = async (req, res) => {
         name: title,
         description: description,
         owner: "tcd3",  //TODO: change this to agreed owner
-        repo: "test-livingip", //TODO: change this to agreed mono-repo
+        repo: title.split(' ').join('-').toLowerCase(),
         chaptersFile: "chapters.json", //TODO: make this dynamic
         collectionId: collectionId,
         image_uri: imageURI,
