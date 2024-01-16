@@ -58,9 +58,9 @@ export default function CreateNewDocument({collection}) {
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Document Created Successfully</AlertDialogTitle>
+              <AlertDialogTitle>Document Creation Request Successful</AlertDialogTitle>
               <AlertDialogDescription>
-                Your new document has been created. You can now view it in the collection.
+                Your request to create a document has been logged. It is now pending approval.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

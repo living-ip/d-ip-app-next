@@ -106,7 +106,7 @@ export const getServerSideProps = async ({req, query}) => {
   console.log("Documents: ", docs)
 
   let adminUser = false
-  if (session.user_id === "user-test-8aa707f9-e062-467b-b3e5-f89eb722023b") {
+  if (session.user_id === "user-test-8aa707f9-e062-467b-b3e5-f89eb722023b") {  //TODO: replace with Cory's user_id
     adminUser = true;
   }
 
