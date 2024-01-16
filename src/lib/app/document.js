@@ -16,3 +16,19 @@ export const createDocument = async (collectionId, data) => {
     return {};
   }
 }
+
+export const approveDocument = async (collectionId, documentId) => {
+  try {
+    const response = await fetch(`/api/collection/${collectionId}/document/${documentId}/approve`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-sib-token": getCookie("stytch_session_jwt"),
+      },
+    });
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+    return {};
+  }
+}

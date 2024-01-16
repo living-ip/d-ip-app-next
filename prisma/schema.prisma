@@ -30,6 +30,7 @@ model Document {
   collectionId String
   collection   Collection @relation(name: "CollectionHasDocuments", fields: [collectionId], references: [coid])
   image_uri    String
+  draft        Boolean  @default(true)
 
   @@index([collectionId])
 }
