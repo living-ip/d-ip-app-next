@@ -168,8 +168,7 @@ export const getServerSideProps = async ({req, query}) => {
 
   const {chapters} = await getRepoTreeRecursive(
     document.owner,
-    document.repo,
-    getCookie('gho_token')
+    document.repo
   )
 
   const changes = await prisma.Change.findMany({

@@ -189,8 +189,7 @@ export const getServerSideProps = async ({ req, query }) => {
 	const ghData = await getPullRequestData(
 		data.owner,
 		data.repo,
-		changeData.prNumber,
-		req.cookies['gho_token']
+		changeData.prNumber
 	)
 	console.log(ghData)
 

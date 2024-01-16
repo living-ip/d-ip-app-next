@@ -18,8 +18,8 @@ const handler = async (req, res) => {
       data: {
         name: title,
         description: description,
-        owner: "living-ip",  //TODO: change this to the following... owner: session.user_id,
-        repo: "psyc-dao-constitution", //TODO: make this dynamic
+        owner: "tcd3",  //TODO: change this to agreed owner
+        repo: "test-livingip", //TODO: change this to agreed mono-repo
         chaptersFile: "chapters.json", //TODO: make this dynamic
         collectionId: collectionId,
         image_uri: imageURI,

@@ -9,7 +9,6 @@ const handler = async (req, res) => {
         if (!session) {
             return res.status(401).json({error: 'Unauthorized'})
         }
-        const ghoToken = req.headers['x-sib-gho-token'];
         const {changeId} = req.query;
         const {fileData} = req.body;
         const change = await prisma.Change.findFirst({
@@ -25,8 +24,7 @@ const handler = async (req, res) => {
         const ghResponse = await updateGithubFile(
             document,
             change,
-            fileData,
-            ghoToken
+            fileData
         );
         console.log(ghResponse)
         const updatedChange = await prisma.Change.update({
