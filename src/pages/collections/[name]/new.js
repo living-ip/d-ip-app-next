@@ -5,13 +5,20 @@ import {useRouter} from "next/router";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/server/user";
 import {createDocument} from "@/lib/app/document";
+import {fileToBase64} from "@/lib/utils";
 
 export default function CreateNewDocument({collection}) {
   const router = useRouter();
 
   const onFormSubmit = async (data) => {
-    data["image"] = data.image[0];
     console.log(data);
+
+    data.image = {
+      filename: data.image[0].name,
+      content: await fileToBase64(data.image[0]),
+    };
+    console.log(data.image);
+
     try {
       const response = await createDocument(collection.coid, data);
       console.log("Response: ", response);

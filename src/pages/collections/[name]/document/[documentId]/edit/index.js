@@ -50,7 +50,6 @@ export default function Index({collection, document, changes, chapters}) {
         <div className="my-10 text-4xl font-extrabold">{document.name}</div>
         <Label className="py-6 text-sm text-muted-foreground">Your Changes:</Label>
         <div className="mt-8 mb-4">
-          <Button variant="outline" onClick={() => router.back()}>Back</Button>
           <Dialog>
             <DialogTrigger asChild>
               <Button className="mx-8">New Change</Button>

@@ -14,7 +14,8 @@ const nextConfig = {
   },
   images: {
     domains: [
-      "pbs.twimg.com"
+      "pbs.twimg.com",
+      "storage.googleapis.com",
     ],
   }
 }

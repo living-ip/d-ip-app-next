@@ -16,12 +16,12 @@ export default function Collections({collections}) {
         <div className={"text-4xl font-extrabold"}>Collections</div>
         <Button onClick={() => router.push(`/collections/new`)}>Create a New Collection</Button>
       </div>
-      <div className="flex flex-col w-full overflow-auto mb-16">
+      <div className="flex flex-col w-full overflow-auto mb-8">
         {collections.map((collection, index) => (
-          <div key={index} className={"w-full my-2"}>
+          <div key={index} className={"w-full my-8"}>
             <Card className={"flex-grow w-full"}>
               <CardHeader className={"p-0 w-full"}>
-                <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={"/collection-covers/living-ip-cover-1.jpeg"}/> {/*  TODO: update to image_uri */}
+                <CardImage className={"w-full h-auto max-h-[480px] rounded-t-lg"} src={collection.image_uri}/>
               </CardHeader>
               <CardContent className={"mt-4"}>
                 <CardTitle className={"mb-2"}>

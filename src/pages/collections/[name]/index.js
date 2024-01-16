@@ -15,7 +15,8 @@ const DocCards = ({collection, docs}) => {
         <div className="flex flex-col mr-4 w-full">
           <div className={"flex mb-4 justify-between items-center w-full"}>
             <div className={"text-4xl font-extrabold"}>{collection.name}</div>
-            <Button onClick={() => router.push(`/collections/${encodeURI(collection.name)}/new`)}>Create New Document</Button>
+            <Button onClick={() => router.push(`/collections/${encodeURI(collection.name)}/new`)}>Create New
+              Document</Button>
           </div>
           <div className={"text-lg"}>{collection.description}</div>
         </div>
@@ -27,14 +28,18 @@ const DocCards = ({collection, docs}) => {
               <Card>
                 <CardHeader>
                   <CardTitle>{doc.name}</CardTitle>
-                  <CardImage className={"rounded-lg"} src="/book-covers/living-book.png"/>
-                  <CardDescription>{doc.description}</CardDescription>
-                  <Button onClick={() => router.push(`/collections/${encodeURI(collection.name)}/document/${doc.did}`)}>
-                    Read it
-                  </Button>
-                  <Button variant="outline" onClick={() => router.push(`/collections/${encodeURI(collection.name)}/document/${doc.did}/vote`)}>
-                    See votes
-                  </Button>
+                  <CardImage className={"w-full h-[240px] rounded-lg"} src={doc.image_uri}/>
+                  <div className="flex flex-col justify-between h-full">
+                    <CardDescription>{doc.description}</CardDescription>
+                    <div className="flex justify-between mt-auto">
+                      <Button onClick={() => router.push(`/collections/${encodeURI(collection.name)}/document/${doc.did}`)}>
+                        Read it
+                      </Button>
+                      <Button variant="outline" onClick={() => router.push(`/collections/${encodeURI(collection.name)}/document/${doc.did}/vote`)}>
+                        See votes
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
               </Card>
             </div>

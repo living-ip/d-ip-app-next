@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
     "@hookform/resolvers": "^3.3.4",
     "@mdxeditor/editor": "^1.0.1",
     "@octokit/auth-app": "^4.0.13",
