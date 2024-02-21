@@ -10,6 +10,10 @@ import {approveDocument} from "@/lib/app/document";
 const DocCards = ({collection, docs, adminUser}) => {
   const router = useRouter()
 
+  const convertNameToGithubRepo = (name) => {
+    return name.toLowerCase().replace(/\s/g, "-");
+  }
+
   return (
     <Layout>
       <div className="my-10 flex justify-between items-center w-full">
@@ -35,6 +39,9 @@ const DocCards = ({collection, docs, adminUser}) => {
                 <Card className={cardStyle}>
                   <CardHeader>
                     <CardTitle className={titleStyle}>{docName}</CardTitle>
+                    {adminUser && doc.draft ? (
+                      <div className="text-sm text-gray-500">Name of repo to be created: {convertNameToGithubRepo(doc.name)}</div>
+                    ) : null}
                     <CardImage className={`w-full h-[240px] rounded-lg ${imageStyle}`} src={doc.image_uri}/>
                     <div className="flex flex-col justify-between h-full">
                       <CardDescription>{docDescription}</CardDescription>
@@ -106,7 +113,7 @@ export const getServerSideProps = async ({req, query}) => {
   console.log("Documents: ", docs)
 
   let adminUser = false
-  if (session.user_id === "user-test-8aa707f9-e062-467b-b3e5-f89eb722023b") {  //TODO: replace with Cory's user_id
+  if (session.user_id === "user-test-3ab28bb3-e891-4912-bd84-2609a3808ede") {  //TODO: replace with Cory's user_id
     adminUser = true;
   }
 
