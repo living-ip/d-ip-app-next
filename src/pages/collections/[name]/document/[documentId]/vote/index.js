@@ -15,8 +15,8 @@ export default function Index({collection, document, changes}) {
       <div className="flex flex-col h-full mb-8">
         <div className="w-full">
           {changes.map((change, index) => (
-            <div key={index} className="py-8 border-b-2"
-                 onClick={() => router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}/vote/${changeId}`)}>
+            <div key={index} className="py-8 border-b-2 cursor-pointer"
+                 onClick={() => router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}/vote/${change.changeId}`)}>
               <div className="flex items-center justify-between">
                 <div className="text-xl font-bold">{change.title}</div>
                 <div className="text-gray-500">{change.votes || 0} votes</div>
@@ -115,7 +115,7 @@ export const getServerSideProps = async ({req, query}) => {
       return null
     })
     .filter((pull) => pull !== null)
-  console.log(pullsWithVoteData)
+  console.log("pulls with vote data: ", pullsWithVoteData)
 
   return {
     props: {

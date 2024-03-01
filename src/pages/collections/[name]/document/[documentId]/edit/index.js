@@ -11,6 +11,7 @@ import {getCookie} from 'cookies-next'
 import {Footer} from '@/components/ui/footer'
 import {Layout} from '@/components/ui/layout'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select'
+import {convertNameToGithubRepo} from "@/lib/utils";
 
 export default function Index({collection, document, changes, chapters}) {
   const router = useRouter()
@@ -77,7 +78,7 @@ export default function Index({collection, document, changes, chapters}) {
                   Edit Title
                 </label>
                 <input type="text" id="editTitle" value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
+                  onChange={(e) => setEditTitle(convertNameToGithubRepo(e.target.value))}
                   className="block w-full p-2 mt-1 border border-gray-300 rounded-lg"
                 />
               </div>

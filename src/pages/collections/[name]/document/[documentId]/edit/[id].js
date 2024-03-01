@@ -28,9 +28,12 @@ export default function Index({collection, document, change, contents}) {
   }
 
   const publishHandler = async () => {
-    const response = await submitChange(change.cid)
-    console.log(response)
-    await router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}`)
+    const updateResponse = await updateChange(change.cid, pageData)
+    if (updateResponse !== {}) {
+      const response = await submitChange(change.cid)
+      console.log(response)
+      await router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}`)
+    }
   }
 
   return (

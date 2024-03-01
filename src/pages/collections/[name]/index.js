@@ -6,13 +6,10 @@ import {getUserProfile} from '@/lib/server/user'
 import {Layout} from '@/components/ui/layout'
 import prisma from "@/lib/server/prisma";
 import {approveDocument} from "@/lib/app/document";
+import {convertNameToGithubRepo} from "@/lib/utils";
 
 const DocCards = ({collection, docs, adminUser}) => {
   const router = useRouter()
-
-  const convertNameToGithubRepo = (name) => {
-    return name.toLowerCase().replace(/\s/g, "-");
-  }
 
   return (
     <Layout>

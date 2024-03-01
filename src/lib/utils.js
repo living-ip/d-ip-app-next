@@ -13,3 +13,7 @@ export function fileToBase64(file) {
     reader.onerror = (error) => reject(error);
   });
 }
+
+export function convertNameToGithubRepo(name) {
+  return name.toLowerCase().replace(/[^a-z0-9._]/g, "-");
+}

@@ -52,8 +52,8 @@ export default function Index({collection, document, contributors, chapters, fir
             </div>
             <Button className="mr-4" onClick={toggleChapters}>Chapters</Button>
           </div>
+          <div className="text-2xl font-bold pt-4">Contributors</div>
           <div className="mx-2 mb-4"><UserCarousel users={contributors}/></div>
-          {/*  TODO: Turn the carousel into a list*/}
         </div>
         <div className="flex-1 max-h-screen p-4 ml-2 border-l">
           {showChapters ? (
@@ -112,16 +112,20 @@ export const getServerSideProps = async ({req, query}) => {
     document.repo
   )
 
-  const contributors = [
-    {
-      name: 'Dan Miles',
-      image: 'https://pbs.twimg.com/profile_images/1702390471488659456/_bvR4h5f_400x400.jpg',
+  const changes = await prisma.Change.findMany({
+    include: {
+      suggestor: true,
     },
-    {
-      name: 'm3taversal',
-      image: 'https://pbs.twimg.com/profile_images/1677306057457127424/e3aHKSEs_400x400.jpg',
+  });
+  const proposers = changes.map(change => change.suggestor.name);
+  const votes = await prisma.Vote.findMany({
+    include: {
+      voter: true,
     },
-  ]
+  });
+  const voters = votes.map(vote => vote.voter.name);
+  const allNames = [...proposers, ...voters];
+  const contributors = [...new Set(allNames)];
 
   return {
     props: {
