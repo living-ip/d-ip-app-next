@@ -12,7 +12,7 @@ const Login = () => {
             "oauth"
         ],
         "oauthOptions": {
-            "loginRedirectURL": "http://localhost:3000/authenticate",  //TODO: Comment this line out
+            // "loginRedirectURL": "http://localhost:3000/authenticate",
             "providers": [
                 {
                     "type": 'discord'

@@ -2,7 +2,7 @@ import {Octokit} from '@octokit/rest';
 import prisma from "@/lib/server/prisma";
 
 
-const githubToken = "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";  //TODO: Make this Cory's personal access token
+const githubToken = "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";
 const octokit = new Octokit({
         auth: githubToken
 })
