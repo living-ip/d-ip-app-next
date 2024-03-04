@@ -1,4 +1,3 @@
-INSERT INTO Collections (coid, name, description, ownerId, image_uri) VALUES ("1b3dc79d-d2f1-451e-9318-e8bc142b43da", "LivingIP", "A collection for LivingIP", "user-test-c9173102-05cb-4b30-8196-1d93c62f41bd", "https://storage.googleapis.com/livingip-cdn/living-ip-cover-1.jpeg");
-UPDATE Document SET collectionId="1b3dc79d-d2f1-451e-9318-e8bc142b43da" WHERE did="67b34144-93ce-4a49-9dda-161fdda1a076";
-UPDATE Document SET collectionId="1b3dc79d-d2f1-451e-9318-e8bc142b43da" WHERE did="7a7444fa-0837-42bf-8b4f-bad8cad88ef9";
-UPDATE Document SET collectionId="1b3dc79d-d2f1-451e-9318-e8bc142b43da" WHERE did="b7fb58c6-e7dc-4b20-ad67-63d23013b5be";
+INSERT INTO Collection (coid, name, description, ownerId, image_uri) VALUES ("1b3dc79d-d2f1-451e-9318-e8bc142b43da", "LivingIP", "A collection for LivingIP", "user-test-c9173102-05cb-4b30-8196-1d93c62f41bd", "https://storage.googleapis.com/livingip-cdn/living-ip-cover-1.jpeg");
+UPDATE Document SET collectionId="1b3dc79d-d2f1-451e-9318-e8bc142b43da";
+UPDATE Document SET image_uri="https://storage.googleapis.com/livingip-cdn/living-book.png";
