@@ -1,5 +1,4 @@
 import {authStytchToken} from "@/lib/stytch";
-import prisma from "@/lib/server/prisma";
 import {uploadBase64ToGCS} from "@/lib/server/blob";
 
 const handler = async (req, res) => {
@@ -11,21 +10,25 @@ const handler = async (req, res) => {
     }
 
     const {title, description, image} = req.body;
+    const {collectionId} = req.query;
     const imageURI = await uploadBase64ToGCS(image.content, image.filename);
 
-    const newCollection = await prisma.Collection.create({
+    const newDocument = await prisma.Document.create({
       data: {
         name: title,
         description: description,
-        ownerId: session.user_id,
+        owner: "LivingIP",
+        repo: title.split(' ').join('-').toLowerCase(),
+        chaptersFile: "chapters.json", //TODO: make this dynamic
+        collectionId: collectionId,
         image_uri: imageURI,
       }
     })
 
-    return res.status(201).json({collection: newCollection});
+    return res.status(201).json({document: newDocument});
   } else {
     return res.status(405).json({error: 'Method not allowed'})
   }
-};
+}
 
 export default handler

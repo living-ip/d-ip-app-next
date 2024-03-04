@@ -1,0 +1,3 @@
+INSERT INTO Collection (coid, name, description, ownerId, image_uri) VALUES ("1b3dc79d-d2f1-451e-9318-e8bc142b43da", "LivingIP", "A collection for LivingIP", "user-test-c9173102-05cb-4b30-8196-1d93c62f41bd", "https://storage.googleapis.com/livingip-cdn/living-ip-cover-1.jpeg");
+UPDATE Document SET collectionId="1b3dc79d-d2f1-451e-9318-e8bc142b43da";
+UPDATE Document SET image_uri="https://storage.googleapis.com/livingip-cdn/living-book.png";

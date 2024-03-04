@@ -15,8 +15,7 @@ const Login = () => {
             // "loginRedirectURL": "http://localhost:3000/authenticate",
             "providers": [
                 {
-                    "type": "github",
-                    "custom_scopes": ['repo']
+                    "type": 'discord'
                 }
             ]
         }

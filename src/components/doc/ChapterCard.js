@@ -18,8 +18,7 @@ function ChapterCard({chapter, setContent, showChapters}) {
 
     return (
         <div className="pointer-events-auto flex flex-col w-full last:pb-16">
-            <Label
-              className="text-black no-underline cursor-pointer flex mt-[18px] mb-4 font-suisse text-[15px] sm:text-lg font-bold leading-6">
+            <Label className="text-black no-underline cursor-pointer flex mt-[18px] mb-4 font-suisse text-[15px] sm:text-lg font-bold leading-6">
                 {chapter.title}
             </Label>
             <div className="flex flex-col w-full border border-gray-300 rounded-xl">

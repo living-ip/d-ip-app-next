@@ -16,16 +16,23 @@ model User {
   githubUsername String?
   changes        Change[]
   votes          Vote[]
+  collections    Collection[] @relation("UserOwnsCollection")
 }
 
 model Document {
   did          String   @id @default(uuid())
-  name         String   @unique
-  description  String?  @db.Text
+  name         String
+  description  String
   owner        String
   repo         String
   chaptersFile String
   changes      Change[]
+  collectionId String
+  collection   Collection @relation(name: "CollectionHasDocuments", fields: [collectionId], references: [coid])
+  image_uri    String
+  draft        Boolean  @default(true)
+
+  @@index([collectionId])
 }
 
 model Change {
@@ -57,4 +64,14 @@ model Vote {
 
   @@index([voterId, changeId])
   @@unique([voterId, changeId])
+}
+
+model Collection {
+  coid        String     @id @default(uuid())
+  name        String     @unique
+  description String
+  ownerId     String
+  owner       User       @relation(name: "UserOwnsCollection", fields: [ownerId], references: [uid])
+  documents   Document[] @relation("CollectionHasDocuments")
+  image_uri   String
 }

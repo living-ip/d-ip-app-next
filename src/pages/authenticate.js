@@ -24,9 +24,6 @@ const Authenticate = () => {
 					.then((r) => {
 						console.log('OAUTH TOKEN AUTHENTICATED')
 						console.log(r)
-						setCookie('gho_token', r.provider_values.access_token, {
-							maxAge: 60 * 60 * 24 * 30,
-						})
 					})
 			} else if (token && stytch_token_type === MAGIC_LINKS_TOKEN) {
 				stytch.magicLinks.authenticate(token, {
@@ -42,7 +39,7 @@ const Authenticate = () => {
 			return
 		}
 		if (user) {
-			router.replace('/publications')
+			router.replace('/collections')
 		}
 	}, [router, user, isInitialized])
 

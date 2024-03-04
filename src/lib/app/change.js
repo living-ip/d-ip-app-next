@@ -7,7 +7,6 @@ export const createChange = async (data) => {
       headers: {
         "Content-Type": "application/json",
         "x-sib-token": getCookie("stytch_session_jwt"),
-        "x-sib-gho-token": getCookie("gho_token"),
       },
       body: JSON.stringify(data),
     });
@@ -26,8 +25,7 @@ export const updateChange = async (changeId, data) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'x-sib-token': getCookie('stytch_session_jwt'),
-        'x-sib-gho-token': getCookie('gho_token')
+        'x-sib-token': getCookie('stytch_session_jwt')
       },
       body: JSON.stringify({
         fileData: base64Data
@@ -83,7 +81,6 @@ export const mergeChange = async (cid) => {
       headers: {
         "Content-Type": "application/json",
         "x-sib-token": getCookie("stytch_session_jwt"),
-        "x-sib-gho-token": getCookie("gho_token"),
       },
     });
     const json = await response.json();

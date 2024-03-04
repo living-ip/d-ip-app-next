@@ -3,16 +3,17 @@ import NavBar from '@/components/NavBar'
 import { RegisterCard } from '@/components/RegisterCard'
 import { authStytchRequest } from '@/lib/stytch'
 import { getUserProfile } from '@/lib/server/user'
+import {Layout} from "@/components/ui/layout";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Onboard({ user }) {
 	return (
-		<NavBar>
-			<div className="flex items-center justify-center min-h-screen bg-gray-100">
+		<Layout>
+			<div className="flex items-center justify-center min-h-screen">
 				<RegisterCard />
 			</div>
-		</NavBar>
+		</Layout>
 	)
 }
 
@@ -33,7 +34,7 @@ export const getServerSideProps = async ({ req, query }) => {
 		if (userProfile) {
 			return {
 				redirect: {
-					destination: '/publications',
+					destination: '/collections',
 					permanent: false,
 				},
 			}
