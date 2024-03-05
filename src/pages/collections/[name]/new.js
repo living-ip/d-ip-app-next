@@ -14,6 +14,7 @@ import {
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import {useState} from "react";
+import prisma from "@/lib/server/prisma";
 
 export default function CreateNewDocument({collection}) {
   const router = useRouter();
