@@ -8,6 +8,7 @@ import {useState} from 'react'
 import {useRouter} from 'next/router'
 import {submitChange, updateChange} from '@/lib/app/change'
 import {Layout} from '@/components/ui/layout'
+import prisma from '@/lib/server/prisma'
 
 export default function Index({collection, document, change, contents}) {
   const originalDoc = Buffer.from(contents.content, 'base64').toString(
@@ -29,7 +30,7 @@ export default function Index({collection, document, change, contents}) {
 
   const publishHandler = async () => {
     const updateResponse = await updateChange(change.cid, pageData)
-    if (updateResponse !== {}) {
+    if (Object.keys(updateResponse).length !== 0) {
       const response = await submitChange(change.cid)
       console.log(response)
       await router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}`)
