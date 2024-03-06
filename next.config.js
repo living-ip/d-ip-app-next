@@ -10,7 +10,10 @@ const nextConfig = {
     return config;
   },
   env: {
-    REDIRECT_URL: process.env.REDIRECT_URL
+    REDIRECT_URL: process.env.REDIRECT_URL,
+    GCP_PROJECT_ID: process.env.GCP_PROJECT_ID,
+    GCP_SERVICE_ACCOUNT_EMAIL: process.env.GCP_SERVICE_ACCOUNT_EMAIL,
+    GCP_PRIVATE_KEY: process.env.GCP_PRIVATE_KEY,
   },
   images: {
     domains: [
