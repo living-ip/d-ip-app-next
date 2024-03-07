@@ -1,5 +1,7 @@
 import {authStytchToken} from "@/lib/stytch";
+import prisma from "@/lib/server/prisma";
 import {uploadBase64ToGCS} from "@/lib/server/blob";
+import { v4 as uuidv4 } from 'uuid';
 
 const handler = async (req, res) => {
   if (req.method === 'POST') {
@@ -11,7 +13,7 @@ const handler = async (req, res) => {
 
     const {title, description, image} = req.body;
     const {collectionId} = req.query;
-    const imageURI = await uploadBase64ToGCS(image.content, image.filename);
+    const imageURI = await uploadBase64ToGCS(image.content, `${uuidv4()}-${image.filename}`);
 
     const newDocument = await prisma.Document.create({
       data: {
