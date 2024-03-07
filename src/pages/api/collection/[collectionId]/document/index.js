@@ -17,7 +17,7 @@ const handler = async (req, res) => {
       data: {
         name: title,
         description: description,
-        owner: "LivingIP",
+        owner: "living-ip",
         repo: title.split(' ').join('-').toLowerCase(),
         chaptersFile: "chapters.json", //TODO: make this dynamic
         collectionId: collectionId,
