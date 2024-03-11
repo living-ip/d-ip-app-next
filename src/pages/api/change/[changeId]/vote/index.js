@@ -4,18 +4,18 @@ import { authStytchToken } from "@/lib/stytch";
 const handler = async (req, res) => {
   if (req.method === "POST") {
     const token = req.headers["x-sib-token"];
-    const session = await authStytchToken(token);
+    const { session } = await authStytchToken(token);
     if (!session) {
-      return res.status(401).json({error: "Unauthorized"});
+      return res.status(401).json({ error: "Unauthorized" });
     }
-    const {changeId} = req.query;
-    const {vote} = req.body;
+    const { changeId } = req.query;
+    const { vote } = req.body;
     const voteExists = await prisma.Vote.findFirst({
       where: {
         changeId,
         voterId: session.user_id,
-      }
-    })
+      },
+    });
     if (voteExists) {
       await prisma.Vote.update({
         where: {
@@ -23,37 +23,39 @@ const handler = async (req, res) => {
         },
         data: {
           vote,
-        }
-      })
+        },
+      });
       const voteSum = await prisma.Vote.aggregate({
         where: {
-            changeId: changeId
+          changeId: changeId,
         },
         _sum: {
-            vote: true
-        }
+          vote: true,
+        },
       });
       console.log(voteSum);
-      return res.status(200).json({voteId: voteExists.vid, totalVotes: voteSum._sum.vote || 0});
+      return res
+        .status(200)
+        .json({ voteId: voteExists.vid, totalVotes: voteSum._sum.vote || 0 });
     }
-    const {vid: voteId} = await prisma.Vote.create({
+    const { vid: voteId } = await prisma.Vote.create({
       data: {
         vote,
         changeId,
         voterId: session.user_id,
-      }
-    })
+      },
+    });
     console.log(voteId);
     const voteSum = await prisma.Vote.aggregate({
-        where: {
-            changeId: changeId
-        },
-        _sum: {
-            vote: true
-        }
+      where: {
+        changeId: changeId,
+      },
+      _sum: {
+        vote: true,
+      },
     });
-    return res.status(201).json({voteId, totalVotes: voteSum._sum.vote || 0});
+    return res.status(201).json({ voteId, totalVotes: voteSum._sum.vote || 0 });
   }
-}
+};
 
-export default handler
+export default handler;

@@ -7,13 +7,18 @@ const handler = async (req, res) => {
   console.log(req.body);
   if (req.method === "POST") {
     const token = req.headers["x-sib-token"];
-    const session = await authStytchToken(token);
+    const { session } = await authStytchToken(token);
     if (!session) {
-      return res.status(401).json({error: "Unauthorized"});
+      return res.status(401).json({ error: "Unauthorized" });
     }
     const { documentId, chapter, owner, repo, title } = req.body;
     const branchName = `${owner}/${title}`;
-    const prNumber = await createDraftPullRequest(owner, repo, title, branchName);
+    const prNumber = await createDraftPullRequest(
+      owner,
+      repo,
+      title,
+      branchName
+    );
     const changeId = sha256(`${owner}/${repo}/${prNumber}`);
     await prisma.Change.create({
       data: {
@@ -26,10 +31,10 @@ const handler = async (req, res) => {
         lastEditFilePath: chapter.path,
         lastEditFileSha: chapter.sha,
         branchName,
-      }
-    })
-    return res.status(201).json({changeId});
+      },
+    });
+    return res.status(201).json({ changeId });
   }
-}
+};
 
-export default handler
+export default handler;

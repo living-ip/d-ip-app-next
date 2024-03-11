@@ -23,7 +23,7 @@ export const authStytchRequest = async (req) => {
     const sessionJWT = req.cookies["stytch_session_jwt"];
     // console.log('Got token', sessionJWT)
     if (!sessionJWT) {
-        return undefined;
+        return {};
     }
     // loadStytch() is a helper function for initalizing the Stytch Backend SDK. See the function definition for more details.
     return await authStytchToken(sessionJWT);
@@ -34,11 +34,12 @@ export const authStytchToken = async (token) => {
     const stytchClient = loadStytch();
     try {
         // Authenticate the session JWT. If an error is thrown the session authentication has failed.
-        const {session} = await stytchClient.sessions.authenticateJwt(token);
+        const {session, user} = await stytchClient.sessions.authenticate({session_jwt: token});
         console.log('Got stytch session', session)
-        return session
+        console.log('Got stytch user', user)
+        return {session, user}
     } catch (e) {
-        return undefined;
+        return {};
     }
 }
 
