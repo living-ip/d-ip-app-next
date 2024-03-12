@@ -13,6 +13,8 @@ const handler = async (req, res) => {
       }
     },
   });
+  // TODO: check size of change as to if we should close it or not
+
   for (const change of changes) {
     const voteAggregate = await prisma.Vote.aggregate({
       where: {
