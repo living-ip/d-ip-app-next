@@ -1,32 +1,42 @@
-import {Button} from '@/components/ui/button'
-import {useRouter} from 'next/router'
-import ReadingPane from '@/components/doc/ReadingPane'
-import UserCarousel from '@/components/ui/UserCarousel'
-import prisma from '@/lib/server/prisma'
-import {useState} from 'react'
-import ChapterCard from '@/components/doc/ChapterCard'
-import {authStytchRequest} from '@/lib/stytch'
-import {getRepoTreeRecursive} from '@/lib/server/github'
-import {getCookie} from 'cookies-next'
-import {Layout} from '@/components/ui/layout'
-import Image from 'next/image'
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/router";
+import ReadingPane from "@/components/doc/ReadingPane";
+import UserCarousel from "@/components/ui/UserCarousel";
+import prisma from "@/lib/server/prisma";
+import { useState } from "react";
+import ChapterCard from "@/components/doc/ChapterCard";
+import { authStytchRequest } from "@/lib/stytch";
+import { getRepoTreeRecursive } from "@/lib/server/github";
+import { getCookie } from "cookies-next";
+import { Layout } from "@/components/ui/layout";
+import Image from "next/image";
 
-export default function Index({collection, document, contributors, chapters, firstPage}) {
-  const router = useRouter()
-  const [showChapters, setShowChapters] = useState(false)
-  const [pageContent, setPageContent] = useState(firstPage)
+export default function Index({
+  collection,
+  document,
+  contributors,
+  chapters,
+  firstPage,
+}) {
+  const router = useRouter();
+  const [showChapters, setShowChapters] = useState(false);
+  const [pageContent, setPageContent] = useState(firstPage);
 
   const goToVotes = () => {
-    router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}/vote`)
-  }
+    router.push(
+      `/collections/${encodeURI(collection.name)}/document/${document.did}/vote`
+    );
+  };
 
   const toggleChapters = () => {
-    setShowChapters(!showChapters)
-  }
+    setShowChapters(!showChapters);
+  };
 
   const goToEdits = () => {
-    router.push(`/collections/${encodeURI(collection.name)}/document/${document.did}/edit`)
-  }
+    router.push(
+      `/collections/${encodeURI(collection.name)}/document/${document.did}/edit`
+    );
+  };
 
   return (
     <Layout>
@@ -35,7 +45,7 @@ export default function Index({collection, document, contributors, chapters, fir
           <div className="flex items-center">
             <Image
               src={document.image_uri}
-              alt={'livingIP'}
+              alt={"livingIP"}
               width={100}
               height={100}
               objectFit="cover"
@@ -44,16 +54,26 @@ export default function Index({collection, document, contributors, chapters, fir
             />
             <div className="text-4xl font-extrabold ">{document.name}</div>
           </div>
-          <div className="p-1 mt-2 text-sm italic text-gray-600">{document.description}</div>
+          <div className="p-1 mt-2 text-sm italic text-gray-600">
+            {document.description}
+          </div>
           <div className="mt-6 flex justify-between items-center">
             <div className="flex">
-              <Button variant="outline" className="mr-4" onClick={goToVotes}>Votes</Button>
-              <Button variant="outline" onClick={goToEdits}>Edit</Button>
+              <Button variant="outline" className="mr-4" onClick={goToVotes}>
+                Votes
+              </Button>
+              <Button variant="outline" onClick={goToEdits}>
+                Edit
+              </Button>
             </div>
-            <Button className="mr-4" onClick={toggleChapters}>Chapters</Button>
+            <Button className="mr-4" onClick={toggleChapters}>
+              Chapters
+            </Button>
           </div>
           <div className="text-2xl font-bold pt-4">Contributors</div>
-          <div className="mx-2 mb-4"><UserCarousel users={contributors}/></div>
+          <div className="mx-2 mb-4">
+            <UserCarousel users={contributors} />
+          </div>
         </div>
         <div className="flex-1 max-h-screen p-4 ml-2 border-l">
           {showChapters ? (
@@ -66,64 +86,64 @@ export default function Index({collection, document, contributors, chapters, fir
                     setContent={setPageContent}
                     showChapters={setShowChapters}
                   />
-                )
+                );
               })}
             </div>
           ) : (
             <div className="h-full p-4 overflow-y-scroll rounded-lg bg-gray-50">
-              <ReadingPane content={pageContent}/>
+              <ReadingPane content={pageContent} />
             </div>
           )}
         </div>
       </div>
     </Layout>
-  )
+  );
 }
 
-export const getServerSideProps = async ({req, query}) => {
-  const session = await authStytchRequest(req)
+export const getServerSideProps = async ({ req, query }) => {
+  const { session } = await authStytchRequest(req);
   if (!session) {
     return {
       redirect: {
-        destination: '/login',
+        destination: "/login",
         permanent: false,
       },
-    }
+    };
   }
 
-  const {name, documentId} = query
+  const { name, documentId } = query;
 
   const collection = await prisma.Collection.findFirst({
     where: {
       name: name,
     },
-  })
-  console.log("Collection: ", collection)
+  });
+  console.log("Collection: ", collection);
 
   const document = await prisma.Document.findFirst({
     where: {
       did: documentId,
     },
-  })
-  console.log("Document: ", document)
+  });
+  console.log("Document: ", document);
 
-  const {chapters, firstPage} = await getRepoTreeRecursive(
+  const { chapters, firstPage } = await getRepoTreeRecursive(
     document.owner,
     document.repo
-  )
+  );
 
   const changes = await prisma.Change.findMany({
     include: {
       suggestor: true,
     },
   });
-  const proposers = changes.map(change => change.suggestor.name);
+  const proposers = changes.map((change) => change.suggestor.name);
   const votes = await prisma.Vote.findMany({
     include: {
       voter: true,
     },
   });
-  const voters = votes.map(vote => vote.voter.name);
+  const voters = votes.map((vote) => vote.voter.name);
   const allNames = [...proposers, ...voters];
   const contributors = [...new Set(allNames)];
 
@@ -135,5 +155,5 @@ export const getServerSideProps = async ({req, query}) => {
       chapters,
       firstPage,
     },
-  }
-}
+  };
+};

@@ -19,7 +19,7 @@ const Authenticate = () => {
 			if (token && stytch_token_type === OAUTH_TOKEN) {
 				stytch.oauth
 					.authenticate(token, {
-						session_duration_minutes: 60,
+						session_duration_minutes: 10080, // one week in minutes
 					})
 					.then((r) => {
 						console.log('OAUTH TOKEN AUTHENTICATED')
@@ -27,7 +27,7 @@ const Authenticate = () => {
 					})
 			} else if (token && stytch_token_type === MAGIC_LINKS_TOKEN) {
 				stytch.magicLinks.authenticate(token, {
-					session_duration_minutes: 60,
+					session_duration_minutes: 10080, // one week in minutes
 				})
 			}
 		}
