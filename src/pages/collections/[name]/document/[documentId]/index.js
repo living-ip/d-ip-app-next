@@ -113,6 +113,11 @@ export const getServerSideProps = async ({req, query}) => {
   )
 
   const changes = await prisma.Change.findMany({
+    where : {
+      document: {
+        did: document.did,
+      }
+    },
     include: {
       suggestor: true,
     },
@@ -123,8 +128,9 @@ export const getServerSideProps = async ({req, query}) => {
       voter: true,
     },
   });
-  const voters = votes.map(vote => vote.voter.name);
-  const allNames = [...proposers, ...voters];
+  // const voters = votes.map(vote => vote.voter.name);
+  // const allNames = [...proposers, ...voters];
+  const allNames = [...proposers];
   const contributors = [...new Set(allNames)];
 
   return {
