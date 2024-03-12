@@ -65,12 +65,6 @@ export default function Index({
     setUserVote(-1);
   };
 
-  const merge = async () => {
-    const result = await mergeChange(cid);
-    console.log(result);
-    router.push(`/doc/${encodeURIComponent(doc.name)}`);
-  };
-
   return (
     <Layout>
       <div className="flex max-h-screen">
@@ -104,13 +98,6 @@ export default function Index({
             </Button>
             Votes: {totalVotes}
           </div>
-          {totalVotes > 3 && (
-            <div className="mt-4">
-              <Button variant="outline" className="mx-2" onClick={merge}>
-                Merge
-              </Button>
-            </div>
-          )}
         </div>
         <div className="flex-1 max-w-full max-h-screen p-4 ml-2 border-l mt-14 lg:prose-md">
           <div className="h-full px-5 -mt-6 overflow-x-scroll overflow-y-scroll">
