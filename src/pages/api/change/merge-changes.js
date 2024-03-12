@@ -1,4 +1,4 @@
-import { mergePullRequest } from "@/lib/server/github";
+import { closePullRequest, mergePullRequest } from "@/lib/server/github";
 import prisma from "@/lib/server/prisma";
 
 const handler = async (req, res) => {
@@ -22,15 +22,20 @@ const handler = async (req, res) => {
         vote: true,
       },
     })
-    if (voteAggregate._sum.vote < 0) { // if the change has more downvotes than upvotes, don't merge it
-      // TODO: close the pull request
-      continue;
-    }
     const document = await prisma.Document.findFirst({
       where: {
         did: change.documentId,
       },
     });
+    if (voteAggregate._sum.vote < 0) { // if the change has more downvotes than upvotes, don't merge it
+      const ghResponse = await closePullRequest(
+        document.owner,
+        document.repo,
+        change.prNumber
+      );
+      console.log(ghResponse);
+      continue;
+    }
     const ghResponse = await mergePullRequest(
       document.owner,
       document.repo,
