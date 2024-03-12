@@ -45,6 +45,7 @@ model Change {
   votes            Vote[]
   title            String
   published        Boolean
+  publishedAt      DateTime?
 
   lastEditFilePath String?
   lastEditFileSha  String?
