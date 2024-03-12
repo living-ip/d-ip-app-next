@@ -283,3 +283,13 @@ export const mergePullRequest = async (owner, repo, prNumber) => {
     });
     return data;
 }
+
+export const closePullRequest = async (owner, repo, prNumber) => {
+    const { data } = await octokit.pulls.update({
+        owner,
+        repo,
+        pull_number: prNumber,
+        state: "closed",
+    });
+    return data;
+}

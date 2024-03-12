@@ -23,6 +23,7 @@ const handler = async (req, res) => {
       },
       data: {
         published: true,
+        publishedAt: new Date(),
       },
     });
     console.log(updatedChange);

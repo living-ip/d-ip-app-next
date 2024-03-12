@@ -228,12 +228,19 @@ export const getServerSideProps = async ({ req, query }) => {
     },
   });
 
-  console.log(changes);
+  const seralizedChanges = changes.map((change) => {
+    return {
+      ...change,
+      publishedAt: change.publishedAt ? change.publishedAt.toISOString() : null,
+    };
+  });
+
+  console.log(seralizedChanges);
   return {
     props: {
       collection,
       document,
-      changes,
+      changes: seralizedChanges,
       chapters,
     },
   };
