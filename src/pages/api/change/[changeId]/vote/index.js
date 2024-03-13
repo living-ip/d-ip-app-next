@@ -25,15 +25,15 @@ const handler = async (req, res) => {
           vote,
         },
       });
-      const totalDistinctVoters = await prisma.Vote.count({
+      const totalVotes = await prisma.Vote.count({
         where: {
           changeId: changeId,
         }
       });
-      console.log(totalDistinctVoters);
+      console.log(totalVotes);
       return res
         .status(200)
-        .json({voteId: voteExists.vid, totalVotes: totalDistinctVoters || 0});
+        .json({voteId: voteExists.vid, totalVotes: totalVotes || 0});
     }
     const {vid: voteId} = await prisma.Vote.create({
       data: {
@@ -43,13 +43,13 @@ const handler = async (req, res) => {
       },
     });
     console.log(voteId);
-    const totalDistinctVoters = await prisma.Vote.count({
+    const totalVotes = await prisma.Vote.count({
       where: {
         changeId: changeId,
       }
     });
-    console.log(totalDistinctVoters);
-    return res.status(201).json({voteId, totalVotes: totalDistinctVoters || 0});
+    console.log(totalVotes);
+    return res.status(201).json({voteId, totalVotes: totalVotes || 0});
   }
 };
 

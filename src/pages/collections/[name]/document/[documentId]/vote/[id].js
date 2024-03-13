@@ -20,7 +20,6 @@ export default function Index({
   userVoteProp,
 }) {
   const router = useRouter();
-  const [showChapters, setShowChapters] = useState(false);
   const [totalVotes, setTotalVotes] = useState(votes || 0);
   const [userVote, setUserVote] = useState(userVoteProp);
 
@@ -176,7 +175,7 @@ export const getServerSideProps = async ({ req, query }) => {
   });
   const contributors = votes.map((vote) => vote.voter.name);
 
-  const totalDistinctVoters = await prisma.Vote.count({
+  const totalVoters = await prisma.Vote.count({
     where: {
       changeId: id,
     }
@@ -189,7 +188,7 @@ export const getServerSideProps = async ({ req, query }) => {
       doc: data,
       cid: id,
       ghData,
-      votes: totalDistinctVoters || 0,
+      votes: totalVoters || 0,
       userVoteProp: userVote ? userVote.vote : 0,
     },
   };

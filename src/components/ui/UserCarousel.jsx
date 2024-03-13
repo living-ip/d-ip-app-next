@@ -14,18 +14,17 @@ export default function UserCarousel({users, anonymize = false}) {
   )
 }
 
-const generateRandomColor = () => {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
-
 const Avatar = ({ name }) => {
   const generateConsistentColour = str => {
     let hash = 0;
+    if (str === undefined || str.length === 0) {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
     for (let i = 0; i < str.length; i += 1) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -36,16 +35,14 @@ const Avatar = ({ name }) => {
     }
     return colour;
   };
-
+  
   return (
     <div>
       <div className="relative">
         <div
           className={"h-16 w-16 text-center text-white text-4xl rounded-full grid place-items-center overflow-hidden text-display-xs"}
           style={{
-            backgroundColor: name
-              ? generateConsistentColour(name)
-              : generateRandomColor(),
+            backgroundColor: generateConsistentColour(name)
           }}
         >
           {name && name.length > 0 ? (
