@@ -1,23 +1,22 @@
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
+import {Button} from "@/components/ui/button";
+import {useRouter} from "next/router";
 import ReadingPane from "@/components/doc/ReadingPane";
 import UserCarousel from "@/components/ui/UserCarousel";
 import prisma from "@/lib/server/prisma";
-import { useState } from "react";
+import {useState} from "react";
 import ChapterCard from "@/components/doc/ChapterCard";
-import { authStytchRequest } from "@/lib/stytch";
-import { getRepoTreeRecursive } from "@/lib/server/github";
-import { getCookie } from "cookies-next";
-import { Layout } from "@/components/ui/layout";
+import {authStytchRequest} from "@/lib/stytch";
+import {getRepoTreeRecursive} from "@/lib/server/github";
+import {Layout} from "@/components/ui/layout";
 import Image from "next/image";
 
 export default function Index({
-  collection,
-  document,
-  contributors,
-  chapters,
-  firstPage,
-}) {
+                                collection,
+                                document,
+                                contributors,
+                                chapters,
+                                firstPage,
+                              }) {
   const router = useRouter();
   const [showChapters, setShowChapters] = useState(false);
   const [pageContent, setPageContent] = useState(firstPage);
@@ -72,7 +71,7 @@ export default function Index({
           </div>
           <div className="text-2xl font-bold pt-4">Contributors</div>
           <div className="mx-2 mb-4">
-            <UserCarousel users={contributors} />
+            <UserCarousel users={contributors}/>
           </div>
         </div>
         <div className="flex-1 max-h-screen p-4 ml-2 border-l">
@@ -91,7 +90,7 @@ export default function Index({
             </div>
           ) : (
             <div className="h-full p-4 overflow-y-scroll rounded-lg bg-gray-50">
-              <ReadingPane content={pageContent} />
+              <ReadingPane content={pageContent}/>
             </div>
           )}
         </div>
@@ -100,8 +99,8 @@ export default function Index({
   );
 }
 
-export const getServerSideProps = async ({ req, query }) => {
-  const { session } = await authStytchRequest(req);
+export const getServerSideProps = async ({req, query}) => {
+  const {session} = await authStytchRequest(req);
   if (!session) {
     return {
       redirect: {
@@ -111,7 +110,7 @@ export const getServerSideProps = async ({ req, query }) => {
     };
   }
 
-  const { name, documentId } = query;
+  const {name, documentId} = query;
 
   const collection = await prisma.Collection.findFirst({
     where: {
@@ -127,31 +126,28 @@ export const getServerSideProps = async ({ req, query }) => {
   });
   console.log("Document: ", document);
 
-  const { chapters, firstPage } = await getRepoTreeRecursive(
+  const {chapters, firstPage} = await getRepoTreeRecursive(
     document.owner,
     document.repo
   );
 
   const changes = await prisma.Change.findMany({
-    where : {
+    where: {
       document: {
         did: document.did,
-      }
+      },
+      published: true,
+      merged: true,
     },
     include: {
       suggestor: true,
     },
   });
-  const proposers = changes.map((change) => change.suggestor.name);
-  const votes = await prisma.Vote.findMany({
-    include: {
-      voter: true,
-    },
-  });
-  // const voters = votes.map(vote => vote.voter.name);
-  // const allNames = [...proposers, ...voters];
-  const allNames = [...proposers];
-  const contributors = [...new Set(allNames)];
+  console.log("Changes: ", changes)
+  const proposers = (changes || []).map((change) => change.suggestor?.name);
+  console.log("Proposers: ", proposers)
+  const contributors = [...new Set([document.owner, ...proposers])];
+  console.log("Contributors: ", contributors);
 
   return {
     props: {

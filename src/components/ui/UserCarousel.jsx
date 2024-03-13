@@ -2,18 +2,26 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React from "react";
 
-export default function UserCarousel({users}) {
+export default function UserCarousel({users, anonymize = false}) {
   return (
     <div className="flex mt-6 space-x-4 overflow-x-scroll">
       {users.map((user, index) => (
         <div key={index} className="flex items-center justify-center w-16 h-16 bg-gray-200 rounded-full relative">
-          <Avatar name={user}/>
+          <Avatar name={anonymize ? "" : user}/>  {/* "" is used to anonymize the user */}
         </div>
       ))}
     </div>
   )
 }
 
+const generateRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
 
 const Avatar = ({ name }) => {
   const generateConsistentColour = str => {
@@ -37,13 +45,13 @@ const Avatar = ({ name }) => {
           style={{
             backgroundColor: name
               ? generateConsistentColour(name)
-              : generateConsistentColour("default"),
+              : generateRandomColor(),
           }}
         >
           {name && name.length > 0 ? (
             name[0].toUpperCase()
           ) : (
-            <FontAwesomeIcon icon={faUser} size={"xs"}/>
+            <FontAwesomeIcon icon={faUser} size={"lg"} color={"black"}/>
           )}
         </div>
       </div>

@@ -1,18 +1,14 @@
-import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import UserCarousel from "@/components/ui/UserCarousel";
-import ArticleCard from "@/components/ui/ArticleCard";
 import prisma from "@/lib/server/prisma";
 import { useState } from "react";
 import { authStytchRequest } from "@/lib/stytch";
 import { getPullRequestData } from "@/lib/server/github";
 import { Diff, Hunk, parseDiff } from "react-diff-view";
-
 import "react-diff-view/style/index.css";
 import { mergeChange, voteOnChange } from "@/lib/app/change";
 import { Layout } from "@/components/ui/layout";
-import { Footer } from "@/components/ui/footer";
 
 export default function Index({
   collection,
@@ -79,8 +75,8 @@ export default function Index({
             </Button>
           </div>
           <div className="mt-4 ml-2">
-            <div className="text-2xl font-bold pt-4">Contributors</div>
-            <UserCarousel users={contributors} />
+            <div className="text-2xl font-bold pt-4">Voters</div>
+            <UserCarousel users={contributors} anonymize={true} />
           </div>
           <div className="my-10">
             <Button
@@ -170,15 +166,21 @@ export const getServerSideProps = async ({ req, query }) => {
   );
   console.log(ghData);
 
-  const proposerName = changeData.suggestor.name;
   const votes = await prisma.Vote.findMany({
+    where: {
+      changeId: id,
+    },
     include: {
       voter: true,
     },
   });
-  const voters = votes.map((vote) => vote.voter.name);
-  const allNames = [proposerName, ...voters];
-  const contributors = [...new Set(allNames)];
+  const contributors = votes.map((vote) => vote.voter.name);
+
+  const totalDistinctVoters = await prisma.Vote.count({
+    where: {
+      changeId: id,
+    }
+  });
 
   return {
     props: {
@@ -187,7 +189,7 @@ export const getServerSideProps = async ({ req, query }) => {
       doc: data,
       cid: id,
       ghData,
-      votes: voteAggregate._sum.vote || 0,
+      votes: totalDistinctVoters || 0,
       userVoteProp: userVote ? userVote.vote : 0,
     },
   };
