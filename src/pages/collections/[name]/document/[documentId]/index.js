@@ -123,6 +123,9 @@ export const getServerSideProps = async ({req, query}) => {
     where: {
       did: documentId,
     },
+    include: {
+      creator: true,
+    }
   });
   console.log("Document: ", document);
 
@@ -146,7 +149,7 @@ export const getServerSideProps = async ({req, query}) => {
   console.log("Changes: ", changes)
   const proposers = (changes || []).map((change) => change.suggestor?.name);
   console.log("Proposers: ", proposers)
-  const contributors = [...new Set([document.owner, ...proposers])];
+  const contributors = [...new Set([document.creator.name, ...proposers])];
   console.log("Contributors: ", contributors);
 
   return {
