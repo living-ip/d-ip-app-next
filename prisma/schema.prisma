@@ -14,6 +14,7 @@ model User {
   walletAddress  String?
   email          String
   githubUsername String?
+  documents      Document[]
   changes        Change[]
   votes          Vote[]
   collections    Collection[] @relation("UserOwnsCollection")
@@ -25,6 +26,8 @@ model Document {
   description  String
   owner        String
   repo         String
+  creator      User?     @relation(fields: [creatorId], references: [uid])
+  creatorId    String?
   chaptersFile String
   changes      Change[]
   collectionId String

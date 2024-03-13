@@ -1,15 +1,15 @@
-import { default as prisma } from "@/lib/server/prisma";
-import { authStytchToken } from "@/lib/stytch";
+import {default as prisma} from "@/lib/server/prisma";
+import {authStytchToken} from "@/lib/stytch";
 
 const handler = async (req, res) => {
   if (req.method === "POST") {
     const token = req.headers["x-sib-token"];
-    const { session } = await authStytchToken(token);
+    const {session} = await authStytchToken(token);
     if (!session) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({error: "Unauthorized"});
     }
-    const { changeId } = req.query;
-    const { vote } = req.body;
+    const {changeId} = req.query;
+    const {vote} = req.body;
     const voteExists = await prisma.Vote.findFirst({
       where: {
         changeId,
@@ -25,20 +25,17 @@ const handler = async (req, res) => {
           vote,
         },
       });
-      const voteSum = await prisma.Vote.aggregate({
+      const totalVotes = await prisma.Vote.count({
         where: {
           changeId: changeId,
-        },
-        _sum: {
-          vote: true,
-        },
+        }
       });
-      console.log(voteSum);
+      console.log(totalVotes);
       return res
         .status(200)
-        .json({ voteId: voteExists.vid, totalVotes: voteSum._sum.vote || 0 });
+        .json({voteId: voteExists.vid, totalVotes: totalVotes || 0});
     }
-    const { vid: voteId } = await prisma.Vote.create({
+    const {vid: voteId} = await prisma.Vote.create({
       data: {
         vote,
         changeId,
@@ -46,15 +43,13 @@ const handler = async (req, res) => {
       },
     });
     console.log(voteId);
-    const voteSum = await prisma.Vote.aggregate({
+    const totalVotes = await prisma.Vote.count({
       where: {
         changeId: changeId,
-      },
-      _sum: {
-        vote: true,
-      },
+      }
     });
-    return res.status(201).json({ voteId, totalVotes: voteSum._sum.vote || 0 });
+    console.log(totalVotes);
+    return res.status(201).json({voteId, totalVotes: totalVotes || 0});
   }
 };
 
