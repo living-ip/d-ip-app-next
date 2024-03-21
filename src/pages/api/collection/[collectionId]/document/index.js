@@ -27,7 +27,7 @@ const handler = async (req, res) => {
         chaptersFile: "chapters.json", //TODO: make this dynamic
         collectionId: collectionId,
         image_uri: imageURI,
-        creator: session.user_id,
+        creatorId: session.user_id,
       },
     });
 
