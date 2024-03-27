@@ -165,7 +165,7 @@ export const getBookChapters = async (owner, repo, chaptersFile) => {
 }
 
 export const getGithubContents = async (owner, repo, path, ref) => {
-    const response = await octokit.request(`GET /repos/${owner}/${repo}/contents/${path}?ref=${ref}`, {
+    const response = await octokit.request(`GET /repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${ref}`, {
         owner: 'OWNER',
         repo: 'REPO',
         path: 'PATH',
