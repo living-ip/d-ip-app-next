@@ -52,7 +52,7 @@ export default function Index({ collection, document, changes, chapters }) {
   const existingEditHandler = async (changeId) => {
     await router.push(
       `/collections/${encodeURI(collection.name)}/document/${encodeURIComponent(
-        document.name
+        document.did
       )}/edit/${changeId}`
     );
   };
