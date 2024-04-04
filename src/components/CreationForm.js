@@ -6,7 +6,9 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {useRouter} from "next/router";
-import {createCollection} from "@/lib/app/collection";
+import {useState} from "react";
+import {Avatar, AvatarImage} from "@/components/ui/avatar";
+import {AiOutlineCamera} from "react-icons/ai";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -20,8 +22,9 @@ const formSchema = z.object({
   }),
 });
 
-export default function CreationForm({titlePlaceholder, descriptionPlaceholder, onSubmitFunction}) {
+export default function CreationForm({titlePlaceholder, descriptionPlaceholder, onSubmitFunction, optionalImage}) {
   const router = useRouter();
+  const [imageFileName, setImageFileName] = useState(optionalImage || "");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -48,6 +51,19 @@ export default function CreationForm({titlePlaceholder, descriptionPlaceholder, 
             <FormMessage/>
           </FormItem>
         )}/>
+        <Avatar className="relative inline-block w-64 h-32 rounded-none">
+          {imageFileName ? (
+            <AvatarImage
+              src={imageFileName}
+              alt="Profile picture"
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-64 h-32 rounded-none bg-gray-100 flex justify-center items-center">
+              <AiOutlineCamera size={32} className="text-gray-600"/>
+            </div>
+          )}
+        </Avatar>
         <FormField control={form.control} name="image" render={({field: {onChange, onBlur, name, ref}}) => (
           <FormItem>
             <FormLabel htmlFor="image">Cover Image</FormLabel>
@@ -60,6 +76,7 @@ export default function CreationForm({titlePlaceholder, descriptionPlaceholder, 
                 onChange={(e) => {
                   // react-hook-form expects a FileList, so provide it from the event
                   onChange(e.target.files);
+                  setImageFileName(URL.createObjectURL(e.target.files[0]));
                 }}
                 onBlur={onBlur}
                 ref={ref}

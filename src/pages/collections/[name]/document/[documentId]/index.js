@@ -39,7 +39,7 @@ export default function Index({
 
   return (
     <Layout>
-      <div className="flex">
+      <div className="flex mt-4">
         <div className="mt-4 w-1/3">
           <div className="flex items-center">
             <Image

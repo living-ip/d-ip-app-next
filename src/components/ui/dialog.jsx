@@ -10,6 +10,8 @@ const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
 
+export const DialogClose = DialogPrimitive.Close
+
 const DialogPortal = ({ className, ...props }) => (
 	<DialogPrimitive.Portal className={cn(className)} {...props} />
 )

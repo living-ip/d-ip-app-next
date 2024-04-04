@@ -4,13 +4,16 @@ import CreationForm from "@/components/CreationForm";
 import {createCollection} from "@/lib/app/collection";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
+import {authStytchRequest} from "@/lib/stytch";
+import {getUserProfile} from "@/lib/server/user";
 
 // TODO: Rename mentions of Collection to Project in this function
-export default function EditProject() {
+export default function CreateNewCollection( {collection} ) {
   const router = useRouter();
 
   const onFormSubmit = async (data) => {
     console.log(data);
+
     data.image = {
       filename: data.image[0].name,
       content: await fileToBase64(data.image[0]),
@@ -31,14 +34,49 @@ export default function EditProject() {
     <Layout childClassName={"bg-gray-100"}>
       <div className="flex flex-col w-full overflow-auto items-left min-h-screen">
         <Card className="w-full bg-white mt-10">
-          <CardContent className="mt-10 mb-4 text-4xl font-bold">Edit a New Project</CardContent>
+          <CardContent className="mt-10 mb-4 text-4xl font-bold">Edit a Project</CardContent>
           <CreationForm
-            titlePlaceholder="Enter the name of your project"
-            descriptionPlaceholder="Write a description about your project"
+            titlePlaceholder={collection.name}
+            descriptionPlaceholder={collection.description}
             onSubmitFunction={onFormSubmit}
+            optionalImage={collection.image_uri}
           />
         </Card>
       </div>
     </Layout>
   )
+}
+
+
+export const getServerSideProps = async ({ req, query }) => {
+  const { session } = await authStytchRequest(req);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  const { userProfile } = await getUserProfile(session.user_id);
+  if (!userProfile) {
+    return {
+      redirect: {
+        destination: "/onboard",
+        permanent: false,
+      },
+    };
+  }
+
+  const collection = await prisma.collection.findUnique({
+    where: {
+      name: query.name,
+    },
+  });
+
+  return {
+    props: {
+      collection: collection,
+    },
+  };
 }
