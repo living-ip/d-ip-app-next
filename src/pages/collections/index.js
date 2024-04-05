@@ -1,5 +1,5 @@
 import { authStytchRequest } from "@/lib/stytch";
-import { getUserProfile } from "@/lib/server/user";
+import { getUserProfile } from "@/lib/user";
 import {
   Card,
   CardContent,
@@ -68,7 +68,8 @@ export const getServerSideProps = async ({ req }) => {
       },
     };
   }
-  const { userProfile } = await getUserProfile(session.user_id);
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const { userProfile } = await getUserProfile(session.user_id, sessionJWT);
   if (!userProfile) {
     return {
       redirect: {

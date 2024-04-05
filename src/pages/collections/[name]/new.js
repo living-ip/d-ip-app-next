@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import CreationForm from "@/components/CreationForm";
 import { useRouter } from "next/router";
 import { authStytchRequest } from "@/lib/stytch";
-import { getUserProfile } from "@/lib/server/user";
+import { getUserProfile } from "@/lib/user";
 import { createDocument } from "@/lib/app/document";
 import { fileToBase64 } from "@/lib/utils";
 import {
@@ -93,7 +93,8 @@ export const getServerSideProps = async ({ req, query }) => {
       },
     };
   }
-  const { userProfile } = await getUserProfile(session.user_id);
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const { userProfile } = await getUserProfile(session.user_id, sessionJWT);
   if (!userProfile) {
     return {
       redirect: {

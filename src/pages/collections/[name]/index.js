@@ -8,7 +8,7 @@ import {
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { authStytchRequest } from "@/lib/stytch";
-import { getUserProfile } from "@/lib/server/user";
+import { getUserProfile } from "@/lib/user";
 import { Layout } from "@/components/ui/layout";
 import prisma from "@/lib/server/prisma";
 import { approveDocument } from "@/lib/app/document";
@@ -134,7 +134,8 @@ export const getServerSideProps = async ({ req, query }) => {
       },
     };
   }
-  const { userProfile } = await getUserProfile(session.user_id);
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const { userProfile } = await getUserProfile(session.user_id, sessionJWT);
   if (!userProfile) {
     return {
       redirect: {

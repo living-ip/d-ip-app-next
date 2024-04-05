@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import { useRouter } from 'next/router'
 import { getCookie } from 'cookies-next'
-import { createUserProfile } from '@/lib/app/user'
+import { createUserProfile } from '@/lib/user'
 
 export function RegisterCard() {
 	const [name, setName] = useState('')
@@ -28,7 +28,9 @@ export function RegisterCard() {
 	const router = useRouter()
 
 	const handleSubmit = async () => {
-		const response = await createUserProfile({ name })
+		const response = await createUserProfile({
+      name
+    }, getCookie("stytch_session_jwt"));
 		console.log('success', response)
 		await router.push('/onboard')
 	}
