@@ -40,7 +40,7 @@ const Avatar = ({image, name, anonymize}) => {
 	return (
 		<div>
 			<div className="relative">
-				{image ? (
+				{image && !anonymize ? (
 					<Image
 						src={image}
 						alt={name}
