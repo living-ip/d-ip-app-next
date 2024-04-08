@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/change/close-changes",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

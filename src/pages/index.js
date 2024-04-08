@@ -1,27 +1,25 @@
-import {Inter} from 'next/font/google'
-import {authStytchRequest} from '@/lib/stytch'
+import { Inter } from "next/font/google";
+import { authStytchRequest } from "@/lib/stytch";
 
-const inter = Inter({subsets: ['latin']})
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  return (
-    <></>
-  )
+  return <></>;
 }
 
-export const getServerSideProps = async ({req}) => {
-  const session = await authStytchRequest(req)
+export const getServerSideProps = async ({ req }) => {
+  const { session } = await authStytchRequest(req);
   if (!session) {
     return {
       redirect: {
-        destination: '/login',
+        destination: "/login",
         permanent: false,
       },
-    }
+    };
   }
   return {
     redirect: {
-      destination: '/collections',
+      destination: "/collections",
     },
-  }
-}
+  };
+};

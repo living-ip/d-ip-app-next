@@ -2,7 +2,7 @@ import {Octokit} from '@octokit/rest';
 import prisma from "@/lib/server/prisma";
 
 
-const githubToken = "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";
+const githubToken = process.env.GITHUB_TOKEN;
 const octokit = new Octokit({
         auth: githubToken
 })
@@ -165,7 +165,7 @@ export const getBookChapters = async (owner, repo, chaptersFile) => {
 }
 
 export const getGithubContents = async (owner, repo, path, ref) => {
-    const response = await octokit.request(`GET /repos/${owner}/${repo}/contents/${path}?ref=${ref}`, {
+    const response = await octokit.request(`GET /repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${ref}`, {
         owner: 'OWNER',
         repo: 'REPO',
         path: 'PATH',
@@ -280,6 +280,16 @@ export const mergePullRequest = async (owner, repo, prNumber) => {
         owner,
         repo,
         pull_number: prNumber,
+    });
+    return data;
+}
+
+export const closePullRequest = async (owner, repo, prNumber) => {
+    const { data } = await octokit.pulls.update({
+        owner,
+        repo,
+        pull_number: prNumber,
+        state: "closed",
     });
     return data;
 }

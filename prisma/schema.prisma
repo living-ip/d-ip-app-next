@@ -14,9 +14,11 @@ model User {
   walletAddress  String?
   email          String
   githubUsername String?
+  documents      Document[]
   changes        Change[]
   votes          Vote[]
   collections    Collection[] @relation("UserOwnsCollection")
+  image_uri      String?
 }
 
 model Document {
@@ -25,6 +27,8 @@ model Document {
   description  String
   owner        String
   repo         String
+  creator      User?     @relation(fields: [creatorId], references: [uid])
+  creatorId    String?
   chaptersFile String
   changes      Change[]
   collectionId String
@@ -45,6 +49,7 @@ model Change {
   votes            Vote[]
   title            String
   published        Boolean
+  publishedAt      DateTime?
 
   lastEditFilePath String?
   lastEditFileSha  String?
