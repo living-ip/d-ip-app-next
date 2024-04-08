@@ -2,7 +2,7 @@ import {Octokit} from '@octokit/rest';
 import prisma from "@/lib/server/prisma";
 
 
-const githubToken = process.env.STYTCH_PROJECT_ID;
+const githubToken = process.env.GITHUB_TOKEN;
 const octokit = new Octokit({
         auth: githubToken
 })
