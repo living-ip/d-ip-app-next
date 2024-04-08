@@ -147,9 +147,12 @@ export const getServerSideProps = async ({req, query}) => {
     },
   });
   console.log("Changes: ", changes)
-  const proposers = (changes || []).map((change) => change.suggestor?.name);
+  const proposers = (changes || []).map((change) => change.suggestor);
   console.log("Proposers: ", proposers)
-  const contributors = [...new Set([document.creator.name, ...proposers])];
+  const contributors = [
+    document.creator,
+    ...proposers.filter((proposer) => proposer.uid !== document.creator.uid)
+  ];
   console.log("Contributors: ", contributors);
 
   return {

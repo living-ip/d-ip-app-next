@@ -173,7 +173,7 @@ export const getServerSideProps = async ({ req, query }) => {
       voter: true,
     },
   });
-  const contributors = votes.map((vote) => vote.voter.name);
+  const contributors = votes.map((vote) => vote.voter);
 
   const totalVoters = await prisma.Vote.count({
     where: {
