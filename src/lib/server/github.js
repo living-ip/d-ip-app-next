@@ -265,13 +265,19 @@ const createPR = async (owner, repo, title, head, base) => {
 
 export const createDraftPullRequest = async (owner, repo, title, newBranch) => {
     const defaultBranch = await getDefaultBranch(owner, repo);
+    console.log(`Default branch: ${defaultBranch}`)
     const latestCommit = await getLatestCommit(owner, repo, defaultBranch);
+    console.log(`Latest commit: ${latestCommit}`)
     await createBranch(owner, repo, newBranch, latestCommit);
     const blobSha = await createBlob(owner, repo, "");
+    console.log(`Blob SHA: ${blobSha}`)
     const treeSha = await createTree(owner, repo, latestCommit, `.${owner}`, blobSha);
+    console.log(`Tree SHA: ${treeSha}`)
     const commitSha = await createCommit(owner, repo, "init", treeSha, latestCommit);
+    console.log(`Commit SHA: ${commitSha}`)
     await updateBranch(owner, repo, newBranch, commitSha);
     const prNumber = await createPR(owner, repo, title, newBranch, defaultBranch);
+    console.log(`PR Number: ${prNumber}`)
     return prNumber;
 }
 
