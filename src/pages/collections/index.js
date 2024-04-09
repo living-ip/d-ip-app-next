@@ -1,13 +1,20 @@
-import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile} from "@/lib/server/user";
-import {Card, CardContent, CardDescription, CardHeader, CardImage, CardTitle,} from "@/components/ui/card";
-import {Button} from "@/components/ui/button";
-import {Layout} from "@/components/ui/layout";
-import {useRouter} from "next/router";
-import prisma from "@/lib/server/prisma";
+import { authStytchRequest } from "@/lib/stytch";
+import { getUserProfile } from "@/lib/user";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardImage,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Layout } from "@/components/ui/layout";
+import { useRouter } from "next/router";
+import {getProjects} from "@/lib/project";
 
-export default function Collections({collections}) {
-	const router = useRouter();
+export default function Projects({ projects }) {
+  const router = useRouter();
 
 	const desiredOrder = [
 		"Claynosaurz",
@@ -17,7 +24,7 @@ export default function Collections({collections}) {
 		"LivingIP Product"
 	];
 
-	const sortedCollections = [...collections].sort((a, b) => {
+	const sortedProjects = [...projects].sort((a, b) => {
 		const indexA = desiredOrder.indexOf(a.name);
 		const indexB = desiredOrder.indexOf(b.name);
 
@@ -32,46 +39,46 @@ export default function Collections({collections}) {
 		}
 	});
 
-	return (
-		<Layout>
-			<div className="my-10 flex justify-between items-center w-full">
-				<div className={"text-4xl font-extrabold"}>Collections</div>
-				<Button onClick={() => router.push(`/collections/new`)}>
-					Create a New Collection
-				</Button>
-			</div>
-			<div className="flex flex-col w-full overflow-auto mb-8">
-				{sortedCollections.map((collection, index) => (
-					<div key={index} className={"w-full my-8"}>
-						<Card className={"flex-grow w-full"}>
-							<CardHeader className={"p-0 w-full"}>
-								<CardImage
-									className={"w-full h-auto max-h-[480px] rounded-t-lg"}
-									src={collection.image_uri}
-								/>
-							</CardHeader>
-							<CardContent className={"mt-4"}>
-								<CardTitle className={"mb-2"}>{collection.name}</CardTitle>
-								<CardDescription className={"py-2"}>
-									{collection.description}
-								</CardDescription>
-								<Button
-									className={"my-2"}
-									onClick={() =>
-										router.push(
-											`/collections/${encodeURIComponent(collection.name)}`
-										)
-									}
-								>
-									Learn More
-								</Button>
-							</CardContent>
-						</Card>
-					</div>
-				))}
-			</div>
-		</Layout>
-	);
+  return (
+    <Layout>
+      <div className="my-10 flex justify-between items-center w-full">
+        <div className={"text-4xl font-extrabold"}>Projects</div>
+        <Button onClick={() => router.push(`/collections/new`)}>
+          Create a New Project
+        </Button>
+      </div>
+      <div className="flex flex-col w-full overflow-auto mb-8">
+        {sortedProjects.map((project, index) => (
+          <div key={index} className={"w-full my-8"}>
+            <Card className={"flex-grow w-full"}>
+              <CardHeader className={"p-0 w-full"}>
+                <CardImage
+                  className={"w-full h-auto max-h-[480px] rounded-t-lg"}
+                  src={project.image_uri}
+                />
+              </CardHeader>
+              <CardContent className={"mt-4"}>
+                <CardTitle className={"mb-2"}>{project.name}</CardTitle>
+                <CardDescription className={"py-2"}>
+                  {project.description}
+                </CardDescription>
+                <Button
+                  className={"my-2"}
+                  onClick={() =>
+                    router.push(
+                      `/collections/${encodeURIComponent(project.pid)}`
+                    )
+                  }
+                >
+                  Learn More
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </Layout>
+  );
 }
 
 export const getServerSideProps = async ({ req }) => {
@@ -95,12 +102,12 @@ export const getServerSideProps = async ({ req }) => {
     };
   }
 
-	const collections = await prisma.Collection.findMany();
-	console.log("Collections: ", collections);
+  const projects = await getProjects(sessionJWT);
+  console.log("Projects: ", projects);
 
-	return {
-		props: {
-			collections,
-		},
-	};
+  return {
+    props: {
+      projects: projects,
+    },
+  };
 };

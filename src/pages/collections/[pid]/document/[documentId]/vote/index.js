@@ -5,6 +5,8 @@ import { getRepoPulls } from "@/lib/server/github";
 import { authStytchRequest } from "@/lib/stytch";
 import sha256 from "sha256";
 import { Layout } from "@/components/ui/layout";
+import {getProject} from "@/lib/project";
+import {getDocument, getDocumentChanges} from "@/lib/document";
 
 export default function Index({ collection, document, changes }) {
   const router = useRouter();
@@ -57,21 +59,17 @@ export const getServerSideProps = async ({ req, query }) => {
     };
   }
 
-  const { name, documentId } = query;
+  const {pid, documentId} = query;
+  console.log("Pid: ", pid);
+  console.log("Document ID: ", documentId);
 
-  const collection = await prisma.Collection.findFirst({
-    where: {
-      name: name,
-    },
-  });
-  console.log("Collection: ", collection);
+  const sessionJWT = req.cookies["stytch_session_jwt"];
 
-  const document = await prisma.Document.findFirst({
-    where: {
-      did: documentId,
-    },
-  });
+  const project = await getProject(pid, sessionJWT);
+  console.log("Project: ", project);
+  const document = await getDocument(documentId, sessionJWT);
   console.log("Document: ", document);
+  //TODO: Continue from here after alignment on how much the back end will do here
 
   const pulls = await getRepoPulls(document.owner, document.repo);
 
