@@ -10,13 +10,9 @@ export function Layout({children, childClassName, ...props}) {
   useEffect(() => {
     const navbar = document.getElementById('navbar');
     const footer = document.getElementById('footer');
-    console.log('Navbar:', navbar);
-    console.log('Footer:', footer);
     if (navbar && footer) {
       setNavbarHeight(navbar.offsetHeight);
       setFooterHeight(footer.offsetHeight);
-      console.log('Navbar height:', navbar.offsetHeight);
-      console.log('Footer height:', footer.offsetHeight);
     }
   }, []);
 

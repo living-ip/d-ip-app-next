@@ -11,7 +11,7 @@ import {useRouter} from "next/router";
 import Link from "next/link"
 
 
-export default function NavBar({id}) {
+export default function NavBar() {
   const router = useRouter();
 
   return (

@@ -10,7 +10,7 @@ import {authStytchRequest} from "@/lib/stytch";
 import {useRouter} from "next/router";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 
-export default function DeleteProject() {
+export default function AdminPanel( {projects} ) {
   const router = useRouter();
   const [projectId, setProjectId] = useState("");
   const [showDialog, setShowDialog] = useState(false);
@@ -20,26 +20,7 @@ export default function DeleteProject() {
   const [editProjectId, setEditProjectId] = useState("");
   const [editProject, setEditProject] = useState(false);
   const [projectData, setProjectData] = useState(null);
-  const [projects, setProjects] = useState([]);
   const [selectedProjectName, setSelectedProjectName] = useState("");
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = async () => {
-    // TODO: Replace with API endpoint when built
-    // const data = await fetch('/api/projects');
-    // setProjects(data);
-    setProjects([
-      {
-        pid: '1',
-        name: 'Kuvera',
-      }, {
-        pid: '2',
-        name: 'dummy project',
-      }])
-  };
 
   useEffect(() => {
     if (editProject) {
@@ -197,7 +178,28 @@ export const getServerSideProps = async ({req}) => {
   //   };
   // }
 
+  // Fetch projects
+  const fetchProjects = async () => {
+    // TODO: Replace with API endpoint when built
+    // const data = await fetch('/api/projects');
+    // return data;
+    return [
+      {
+        pid: '1',
+        name: 'Kuvera',
+      }, {
+        pid: '2',
+        name: 'dummy project',
+      }
+    ];
+  };
+
+  const projects = await fetchProjects();
+
   return {
-    props: {},
+    props: {
+      // user: userProfile,
+      projects,
+    },
   };
 }

@@ -8,18 +8,23 @@ import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/server/user";
 
 // TODO: Rename mentions of Collection to Project in this function
-export default function CreateNewCollection( {collection} ) {
+export default function EditCollection( {collection} ) {
   const router = useRouter();
 
   const onFormSubmit = async (data) => {
     console.log(data);
 
-    data.image = {
-      filename: data.image[0].name,
-      content: await fileToBase64(data.image[0]),
-    };
-    console.log(data.image);
+    if (data.image !== collection.image_uri) {
+      data.image = {
+        filename: data.image[0].name,
+        content: await fileToBase64(data.image[0]),
+      };
+      console.log(data.image);
+    } else {
+      delete data.image;
+    }
     try {
+      //TODO: Update method to updateCollection
       const response = await createCollection(data);
       console.log(response);
       const collectionName = response.collection.name;

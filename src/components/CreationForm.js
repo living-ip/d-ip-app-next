@@ -6,47 +6,59 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {useRouter} from "next/router";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {AiOutlineCamera} from "react-icons/ai";
-
-const formSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title must not be blank.",
-  }),
-  description: z.string().min(1, {
-    message: "Description must not be blank.",
-  }),
-  image: z.any().refine((files) => files?.length > 0, {
-    message: "A cover image is required for submission.",
-  }),
-});
 
 export default function CreationForm({titlePlaceholder, descriptionPlaceholder, onSubmitFunction, optionalImage}) {
   const router = useRouter();
   const [imageFileName, setImageFileName] = useState(optionalImage || "");
+  const [title, setTitle] = useState(titlePlaceholder);
+  const [description, setDescription] = useState(descriptionPlaceholder);
+
+  const formSchema = z.object({
+    title: z.string().min(1, {
+      message: "Title must not be blank.",
+    }),
+    description: z.string().min(1, {
+      message: "Description must not be blank.",
+    }),
+    image: z.any().refine((files) => (files?.length > 0 || optionalImage), {
+      message: "A cover image is required for submission.",
+    }),
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: title || "",
+      description: description || "",
+      image: optionalImage || null,
+    },
   });
+
+  useEffect(() => {
+    console.log("optionalImage", optionalImage);
+  }, [optionalImage]);
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmitFunction)} className="w-full space-y-4 px-8 mb-8">
-        <FormField control={form.control} name="title" render={({field}) => (
+        <FormField control={form.control} name="title" render={() => (
           <FormItem>
             <FormLabel>Title</FormLabel>
             <FormControl>
-              <Input placeholder={titlePlaceholder} {...field} />
+              <Input placeholder={titlePlaceholder} value={title} onChange={e => setTitle(e.target.value)}/>
             </FormControl>
             <FormMessage/>
           </FormItem>
         )}/>
-        <FormField control={form.control} name="description" render={({field}) => (
+        <FormField control={form.control} name="description" render={() => (
           <FormItem>
             <FormLabel>Description</FormLabel>
             <FormControl>
-              <Textarea placeholder={descriptionPlaceholder} {...field} />
+              <Textarea placeholder={descriptionPlaceholder} value={description}
+                        onChange={e => setDescription(e.target.value)}/>
             </FormControl>
             <FormMessage/>
           </FormItem>
