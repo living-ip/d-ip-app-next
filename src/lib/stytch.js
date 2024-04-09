@@ -11,12 +11,8 @@ In this example, we use the Backend SDK in getServerSideProps for the protected 
 const loadStytch = () => {
   if (!client) {
     client = new stytch.Client({
-      project_id:
-        process.env.STYTCH_PROJECT_ID ||
-        "project-test-e2aad237-63bb-4d48-86e6-3754cfe0659b",
-      secret:
-        process.env.STYTCH_SECRET ||
-        "secret-test-iGRYt-CliBn0eP2rd3FlChnh7IfNbk1swPU=",
+      project_id: process.env.STYTCH_PROJECT_ID,
+      secret: process.env.STYTCH_SECRET,
       env: stytch.envs.test,
     });
   }
