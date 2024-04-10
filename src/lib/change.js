@@ -51,8 +51,8 @@ export async function deleteChange(changeId, jwt) {
   return response;
 }
 
-export async function voteOnChange(changeId, jwt) {
-  const url = new URL(`${LIP_API_BASE}/change/${changeId}/vote`);
+export async function publishChange(changeId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/change/${changeId}/publish`);
   const func = () => fetch(url, {
     method: "POST",
     headers: {
@@ -67,8 +67,10 @@ export async function voteOnChange(changeId, jwt) {
   return response;
 }
 
-export async function getChangeVotes(changeId, jwt) {
+export async function getChangeVotes(changeId, queryParams = {}, jwt) {
+  const params = new URLSearchParams(queryParams).toString();
   const url = new URL(`${LIP_API_BASE}/change/${changeId}/vote`);
+  url.search = params;
   const func = () => fetch(url, {
     method: "GET",
     headers: {
@@ -77,6 +79,23 @@ export async function getChangeVotes(changeId, jwt) {
     },
   });
   const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+export async function voteOnChange(changeId, vote, jwt) {
+  const url = new URL(`${LIP_API_BASE}/change/${changeId}/vote`);
+  const func = () => fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-jwt": jwt,
+    },
+    body: JSON.stringify(vote),
+  });
+  const response = await doApiCall(func, {});
   if (response instanceof Response) {
     return await response.json();
   }

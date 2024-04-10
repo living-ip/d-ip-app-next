@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
-import prisma from "@/lib/server/prisma";
 import { authStytchRequest } from "@/lib/stytch";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -11,10 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { createChange } from "@/lib/app/change";
-import { getRepoTreeRecursive } from "@/lib/server/github";
-import { getCookie } from "cookies-next";
-import { Footer } from "@/components/ui/footer";
+import { createDocumentChange } from "@/lib/document";
 import { Layout } from "@/components/ui/layout";
 import {
   Select,
@@ -24,37 +20,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { convertNameToGithubRepo } from "@/lib/utils";
+import {getProject} from "@/lib/project";
+import {getDocument, getDocumentChanges} from "@/lib/document";
+import {getCookie} from "cookies-next";
 
-export default function Index({ collection, document, changes, chapters }) {
+export default function Index({ project, document, changes }) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
-  const [selectedChapter, setSelectedChapter] = useState(
-    chapters[0]?.sections[0] || null
-  );
+  const [name, setName] = useState("");
   const [filteredStatus, setFilteredStatus] = useState("not-published");
 
-  const newEditHandler = async () => {
-    const { changeId } = await createChange({
-      documentId: document.did,
-      chapter: selectedChapter,
-      owner: document.owner,
-      repo: document.repo,
-      title: editTitle,
-    });
-    await router.push(
-      `/collections/${encodeURI(collection.name)}/document/${
-        document.did
-      }/edit/${changeId}`
+  const newEditHandler = async (document) => {
+    const change = await createDocumentChange(
+      document.did,
+      {
+        name: name,
+        description: "",  // TODO: Update dialog box to ask for description and adjust here
+      },
+      getCookie("stytch_session_jwt")
     );
+    await router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/edit/${change.cid}`);
   };
 
   const existingEditHandler = async (changeId) => {
-    await router.push(
-      `/collections/${encodeURI(collection.name)}/document/${encodeURIComponent(
-        document.did
-      )}/edit/${changeId}`
-    );
+    await router.push(`/collections/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${changeId}`);
   };
 
   function handleChange(event) {
@@ -79,7 +68,33 @@ export default function Index({ collection, document, changes, chapters }) {
             <DialogTrigger asChild>
               <Button className="mx-8">New Change</Button>
             </DialogTrigger>
-            <Select
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create a New Change</DialogTitle>
+              </DialogHeader>
+              <div className="mb-4">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) =>
+                    setName(convertNameToGithubRepo(e.target.value))
+                  }
+                  className="block w-full p-2 mt-1 border border-gray-300 rounded-lg"
+                />
+              </div>
+              <Button type="submit" className="ml-2" onClick={() => newEditHandler(document)}>
+                Create Change
+              </Button>
+            </DialogContent>
+          </Dialog>
+          <Select
               className="ml-2"
               onValueChange={(value) => setFilteredStatus(value)}
               value={filteredStatus}
@@ -96,58 +111,6 @@ export default function Index({ collection, document, changes, chapters }) {
                 <SelectItem value="not-published">Not Published</SelectItem>
               </SelectContent>
             </Select>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create a New Edit</DialogTitle>
-              </DialogHeader>
-              <div className="mb-4">
-                <label
-                  htmlFor="editTitle"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Edit Title
-                </label>
-                <input
-                  type="text"
-                  id="editTitle"
-                  value={editTitle}
-                  onChange={(e) =>
-                    setEditTitle(convertNameToGithubRepo(e.target.value))
-                  }
-                  className="block w-full p-2 mt-1 border border-gray-300 rounded-lg"
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="chapterSelect"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Select Chapter
-                </label>
-                <select
-                  id="chapterSelect"
-                  value={selectedChapter?.sha}
-                  onChange={handleChange}
-                  className="block w-full p-2 mt-1 border border-gray-300 rounded-lg"
-                >
-                  {chapters.flatMap((chapter) =>
-                    chapter.sections.map((section) => (
-                      <option key={section.sha} value={section.sha}>
-                        {section.title}
-                      </option>
-                    ))
-                  )}
-                </select>
-              </div>
-              <Button
-                type="submit"
-                className="ml-2"
-                onClick={() => newEditHandler()}
-              >
-                Create Edit
-              </Button>
-            </DialogContent>
-          </Dialog>
         </div>
         <div className="flex flex-col h-full mb-96">
           <div className="w-full">
@@ -172,8 +135,10 @@ export default function Index({ collection, document, changes, chapters }) {
                     <div className="text-xl font-bold">{change.title}</div>
                   </div>
                   <div className="flex justify-between mt-2">
-                    <div className="text-sm text-gray-600">
-                      Last Edited: {change.updatedAt}
+                    <div className="text-sm text-gray-600 space-y-2">
+                      <div>Name: {change.name}</div>
+                      <div>Description: {change.description}</div>
+                      <div>Creation Time: {change.created_at}</div>
                     </div>
                     {change.published ? (
                       <div className="text-sm text-gray-600">Published</div>
@@ -200,48 +165,34 @@ export const getServerSideProps = async ({ req, query }) => {
       },
     };
   }
-  const { name, documentId } = query;
 
-  const collection = await prisma.Collection.findFirst({
-    where: {
-      name: name,
-    },
-  });
-  console.log("Collection: ", collection);
+  const {pid, documentId} = query;
+  console.log("Pid: ", pid);
+  console.log("Document ID: ", documentId);
 
-  const document = await prisma.Document.findFirst({
-    where: {
-      did: documentId,
-    },
-  });
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+
+  const project = await getProject(pid, sessionJWT);
+  console.log("Project: ", project);
+  const document = await getDocument(documentId, sessionJWT);
   console.log("Document: ", document);
+  const unpublishedChanges = await getDocumentChanges(documentId, {
+    "published": false,
+    "user_id": session.user_id,
+  }, sessionJWT);
+  console.log("Unpublished Changes: ", unpublishedChanges);
 
-  const { chapters } = await getRepoTreeRecursive(
-    document.owner,
-    document.repo
-  );
-
-  const changes = await prisma.Change.findMany({
-    where: {
-      suggestorId: session.user_id,
-      documentId: document.did,
-    },
+  const orderedChanges = unpublishedChanges.sort((a, b) => {
+    return new Date(b.updatedAt) - new Date(a.updatedAt);
   });
+  console.log("Ordered Changes: ", orderedChanges);
 
-  const seralizedChanges = changes.map((change) => {
-    return {
-      ...change,
-      publishedAt: change.publishedAt ? change.publishedAt.toISOString() : null,
-    };
-  });
 
-  console.log(seralizedChanges);
   return {
     props: {
-      collection,
-      document,
-      changes: seralizedChanges,
-      chapters,
+      project: project,
+      document: document,
+      changes: orderedChanges,
     },
   };
 };

@@ -29,12 +29,12 @@ export default function Index({project, document, contributors, decodedContent})
             {document.description}
           </div>
           <div className="mt-6 flex justify-between items-center">
-            <div className="flex">
-              <Button variant="outline" className="mr-4" onClick={goToVotes}>
-                Votes
+            <div className="col-1 space-y-2">
+              <Button variant="outline" onClick={goToVotes}>
+                Published Changes
               </Button>
               <Button variant="outline" onClick={goToEdits}>
-                Edit
+                Your Changes
               </Button>
             </div>
           </div>

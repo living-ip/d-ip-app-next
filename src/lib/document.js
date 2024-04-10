@@ -67,8 +67,10 @@ export async function createDocumentChange(documentId, changeDetails, jwt) {
   return response;
 }
 
-export async function getDocumentChanges(documentId, jwt) {
+export async function getDocumentChanges(documentId, queryParams = {}, jwt) {
+  const params = new URLSearchParams(queryParams).toString();
   const url = new URL(`${LIP_API_BASE}/document/${documentId}/change`);
+  url.search = params;
   const func = () => fetch(url, {
     method: "GET",
     headers: {

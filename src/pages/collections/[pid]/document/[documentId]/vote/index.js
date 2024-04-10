@@ -1,14 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
-import prisma from "@/lib/server/prisma";
-import { getRepoPulls } from "@/lib/server/github";
-import { authStytchRequest } from "@/lib/stytch";
-import sha256 from "sha256";
-import { Layout } from "@/components/ui/layout";
+import {useRouter} from "next/router";
+import {authStytchRequest} from "@/lib/stytch";
+import {Layout} from "@/components/ui/layout";
 import {getProject} from "@/lib/project";
 import {getDocument, getDocumentChanges} from "@/lib/document";
+import {getChangeVotes} from "@/lib/change";
 
-export default function Index({ collection, document, changes }) {
+export default function Index({ project, document, changesWithVotes}) {
   const router = useRouter();
 
   return (
@@ -18,25 +15,21 @@ export default function Index({ collection, document, changes }) {
       </div>
       <div className="flex flex-col h-full mb-8">
         <div className="w-full">
-          {changes.map((change, index) => (
+          {changesWithVotes.map((change, index) => (
             <div
               key={index}
               className="py-8 border-b-2 cursor-pointer"
               onClick={() =>
-                router.push(
-                  `/collections/${encodeURI(collection.name)}/document/${
-                    document.did
-                  }/vote/${change.changeId}`
-                )
-              }
+                router.push(`/collections/${encodeURI(project.pid)}/document/${
+                    document.did}/vote/${change.cid}`)}
             >
               <div className="flex items-center justify-between">
-                <div className="text-xl font-bold">{change.title}</div>
-                <div className="text-gray-500">{change.votes || 0} votes</div>
+                <div className="text-xl font-bold">{change.name}</div>
+                <div className="text-gray-500">{change.votes.count || 0} votes</div>
               </div>
               <div className="flex justify-between mt-2">
                 <div className="text-sm text-gray-600">
-                  Submitted by {change.user.login}
+                  Submitted by {change.creator_name}
                 </div>
                 <div className="text-sm text-gray-600">{change.body}</div>
               </div>
@@ -48,8 +41,8 @@ export default function Index({ collection, document, changes }) {
   );
 }
 
-export const getServerSideProps = async ({ req, query }) => {
-  const { session } = await authStytchRequest(req);
+export const getServerSideProps = async ({req, query}) => {
+  const {session} = await authStytchRequest(req);
   if (!session) {
     return {
       redirect: {
@@ -69,65 +62,42 @@ export const getServerSideProps = async ({ req, query }) => {
   console.log("Project: ", project);
   const document = await getDocument(documentId, sessionJWT);
   console.log("Document: ", document);
-  //TODO: Continue from here after alignment on how much the back end will do here
-
-  const pulls = await getRepoPulls(document.owner, document.repo);
-
-  const changeIds = pulls.map((pull) => {
-    return sha256(`${pull.head.repo.full_name}/${pull.number}`);
-  });
-
-  const publishedChanges = await prisma.Change.findMany({
-    where: {
-      cid: {
-        in: changeIds,
-      },
-      published: true,
-    },
-  });
-  console.log(publishedChanges);
-
+  const publishedChanges = await getDocumentChanges(documentId, {"published": true}, sessionJWT);
+  console.log("Document Changes: ", publishedChanges);
   const changesWithVotes = await Promise.all(
     publishedChanges.map(async (change) => {
-      const voteSum = await prisma.Vote.aggregate({
-        where: {
-          changeId: change.cid,
-        },
-        _sum: {
-          vote: true,
-        },
-      });
-
+      const votes = await getChangeVotes(change.cid, {}, sessionJWT);
       return {
         ...change,
-        votes: voteSum._sum.vote || 0,
+        votes,
       };
     })
   );
+  console.log("Changes with Votes: ", changesWithVotes);
 
-  const pullsWithVoteData = pulls
-    .map((pull) => {
-      const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
-      const changeData = changesWithVotes.find(
-        (change) => change.cid === changeId
-      );
-      if (changeData) {
-        return {
-          ...pull,
-          votes: changeData ? changeData.votes : 0,
-          changeId,
-        };
-      }
-      return null;
-    })
-    .filter((pull) => pull !== null);
-  console.log("pulls with vote data: ", pullsWithVoteData);
+  // const pullsWithVoteData = pulls
+  //   .map((pull) => {
+  //     const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
+  //     const changeData = changesWithVotes.find(
+  //       (change) => change.cid === changeId
+  //     );
+  //     if (changeData) {
+  //       return {
+  //         ...pull,
+  //         votes: changeData ? changeData.votes : 0,
+  //         changeId,
+  //       };
+  //     }
+  //     return null;
+  //   })
+  //   .filter((pull) => pull !== null);
+  // console.log("pulls with vote data: ", pullsWithVoteData);
 
   return {
     props: {
-      collection,
-      document,
-      changes: pullsWithVoteData,
+      project: project,
+      document: document,
+      changesWithVotes: changesWithVotes,
     },
   };
 };
