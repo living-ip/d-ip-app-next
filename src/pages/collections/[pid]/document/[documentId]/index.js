@@ -2,26 +2,20 @@ import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
 import ReadingPane from "@/components/doc/ReadingPane";
 import UserCarousel from "@/components/ui/UserCarousel";
-import {useState} from "react";
 import {authStytchRequest} from "@/lib/stytch";
 import {Layout} from "@/components/ui/layout";
 import {getProject} from "@/lib/project";
 import {getDocument} from "@/lib/document";
 
-export default function Index({project, document, contributors, firstPage}) {
+export default function Index({project, document, contributors, decodedContent}) {
   const router = useRouter();
-  const [showChapters, setShowChapters] = useState(false);
 
   const goToVotes = () => {
-    router.push(
-      `/collections/${encodeURI(project.pid)}/document/${document.did}/vote`
-    );
+    router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/vote`)
   };
 
   const goToEdits = () => {
-    router.push(
-      `/collections/${encodeURI(project.pid)}/document/${document.did}/edit`
-    );
+    router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/edit`)
   };
 
   return (
@@ -51,7 +45,7 @@ export default function Index({project, document, contributors, firstPage}) {
         </div>
         <div className="flex-1 max-h-screen p-4 ml-2 border-l">
           <div className="h-full p-4 overflow-y-scroll rounded-lg bg-gray-50">
-            <ReadingPane content={firstPage}/>
+            <ReadingPane content={decodedContent}/>
           </div>
         </div>
       </div>
@@ -80,6 +74,8 @@ export const getServerSideProps = async ({req, query}) => {
   console.log("Project: ", project);
   const document = await getDocument(documentId, sessionJWT);
   console.log("Document: ", document);
+  const contributors = document.contributors;
+  console.log("Contributors: ", contributors);
   const content = document.content;
   console.log("Content: ", content);
   const decodedContent = atob(content);
@@ -89,8 +85,8 @@ export const getServerSideProps = async ({req, query}) => {
     props: {
       project: project,
       document: document,
-      contributors: document.contributors,
-      firstPage: decodedContent,
+      contributors: contributors,
+      decodedContent: decodedContent,
     },
   };
 };
