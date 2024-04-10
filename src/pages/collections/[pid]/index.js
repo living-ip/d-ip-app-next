@@ -4,7 +4,6 @@ import {Button} from "@/components/ui/button";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/user";
 import {Layout} from "@/components/ui/layout";
-import {approveDocument} from "@/lib/app/document";
 import {convertNameToGithubRepo} from "@/lib/utils";
 import {getProject, getProjectDocuments} from "@/lib/project";
 
@@ -53,10 +52,9 @@ const DocumentCards = ({project, documents, adminUser}) => {
                       <div className="flex justify-between mt-auto">
                         {document.draft ? (
                           adminUser ? (
-                            <Button onClick={() => {
-                              approveDocument(project.coid, document.did).then(
-                                (r) => router.push(`/collections/${encodeURI(project.pid)}`))
-                            }}>
+                            <Button
+                              // onClick={() => { approveDocument(project.coid, document.did).then((r) => router.push(`/collections/${encodeURI(project.pid)}`))}}
+                            >
                               Approve Draft
                             </Button>
                           ) : null
