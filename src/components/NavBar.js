@@ -10,6 +10,8 @@ import Image from 'next/image'
 import {useRouter} from "next/router";
 import Link from "next/link"
 
+import {Button} from "@/components/ui/button";
+import {DynamicWidget} from "@dynamic-labs/sdk-react-core";
 
 export default function NavBar() {
   const router = useRouter();
@@ -47,8 +49,14 @@ export default function NavBar() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        <Button variant="outline"
+                onClick={() => router.push('/collections/LivingIP%20Product/document/cb26aba8-8188-4eb3-867c-2661c260b29c')}>
+          User Guide
+        </Button>
+        <DynamicWidget
+          innerButtonComponent={<Button>Connect Wallet</Button>}
+        />
       </div>
     </div>
   );
 }
-

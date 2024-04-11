@@ -1,9 +1,10 @@
 import {Layout} from "@/components/ui/layout";
 import {Card, CardContent} from "@/components/ui/card";
 import CreationForm from "@/components/CreationForm";
-import {createCollection} from "@/lib/app/collection";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
+import {getCookie} from "cookies-next";
+import {createProject} from "@/lib/project";
 
 // TODO: Rename mentions of Collection to Project in this function
 export default function EditProject() {
@@ -17,11 +18,11 @@ export default function EditProject() {
     };
     console.log(data.image);
     try {
-      const response = await createCollection(data);
+      const response = await createProject(data, getCookie("stytch_session_jwt"));
       console.log(response);
-      const collectionName = response.collection.name;
-      console.log(collectionName)
-      await router.push(`/collections/${encodeURI(collectionName)}`)
+      const projectId = response.pid;
+      console.log(projectId)
+      await router.push(`/collections/${encodeURI(projectId)}`)
     } catch (e) {
       console.log(e);
     }
