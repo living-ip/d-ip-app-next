@@ -1,20 +1,21 @@
 import {Layout} from "@/components/ui/layout";
 import {Card, CardContent} from "@/components/ui/card";
-import CreationForm from "@/components/CreationForm";
-import {createCollection} from "@/lib/app/collection";
+import CreateEditForm from "@/components/CreateEditForm";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile} from "@/lib/server/user";
+import {getUserProfile} from "@/lib/user";
+import {getProject, updateProject} from "@/lib/project";
+import {getCookie} from "cookies-next";
 
-// TODO: Rename mentions of Collection to Project in this function
-export default function EditCollection( {collection} ) {
+
+export default function EditProject( {project} ) {
   const router = useRouter();
 
   const onFormSubmit = async (data) => {
     console.log(data);
 
-    if (data.image !== collection.image_uri) {
+    if (data.image !== project.image_uri) {
       data.image = {
         filename: data.image[0].name,
         content: await fileToBase64(data.image[0]),
@@ -24,12 +25,9 @@ export default function EditCollection( {collection} ) {
       delete data.image;
     }
     try {
-      //TODO: Update method to updateCollection
-      const response = await createCollection(data);
+      const response = await updateProject(project.pid, data, getCookie("stytch_session_jwt"));
       console.log(response);
-      const collectionName = response.collection.name;
-      console.log(collectionName)
-      await router.push(`/collections/${encodeURI(collectionName)}`)
+      await router.push(`/collections/${encodeURI(project.pid)}`)
     } catch (e) {
       console.log(e);
     }
@@ -40,11 +38,16 @@ export default function EditCollection( {collection} ) {
       <div className="flex flex-col w-full overflow-auto items-left min-h-screen">
         <Card className="w-full bg-white mt-10">
           <CardContent className="mt-10 mb-4 text-4xl font-bold">Edit a Project</CardContent>
-          <CreationForm
-            titlePlaceholder={collection.name}
-            descriptionPlaceholder={collection.description}
+          <CreateEditForm
+            formType={"project"}
+            formDetails={
+              {
+                name: project.name,
+                description: project.description,
+                image_uri: project.image_uri,
+              }
+            }
             onSubmitFunction={onFormSubmit}
-            optionalImage={collection.image_uri}
           />
         </Card>
       </div>
@@ -63,7 +66,8 @@ export const getServerSideProps = async ({ req, query }) => {
       },
     };
   }
-  const { userProfile } = await getUserProfile(session.user_id);
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const { userProfile } = await getUserProfile(session.user_id, sessionJWT);
   if (!userProfile) {
     return {
       redirect: {
@@ -73,15 +77,12 @@ export const getServerSideProps = async ({ req, query }) => {
     };
   }
 
-  const collection = await prisma.collection.findUnique({
-    where: {
-      name: query.name,
-    },
-  });
+  const { pid } = query;
+  const project = await getProject(pid, sessionJWT);
 
   return {
     props: {
-      collection: collection,
+      project: project,
     },
   };
 }
