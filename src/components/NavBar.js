@@ -49,13 +49,20 @@ export default function NavBar() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        <Button variant="outline"
-                onClick={() => router.push('/collections/LivingIP%20Product/document/cb26aba8-8188-4eb3-867c-2661c260b29c')}>
-          User Guide
-        </Button>
-        <DynamicWidget
-          innerButtonComponent={<Button>Connect Wallet</Button>}
-        />
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <Button variant="outline"
+                    onClick={() => router.push('/collections/LivingIP%20Product/document/cb26aba8-8188-4eb3-867c-2661c260b29c')}>
+              User Guide
+            </Button>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <DynamicWidget innerButtonComponent={<Button>Connect Wallet</Button>}/>
+          </NavigationMenuItem>
+        </NavigationMenuList>
       </div>
     </div>
   );
