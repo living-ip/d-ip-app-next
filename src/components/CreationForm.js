@@ -6,44 +6,86 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {AiOutlineCamera} from "react-icons/ai";
 
-export default function CreationForm({titlePlaceholder, descriptionPlaceholder, onSubmitFunction, optionalImage}) {
+const formSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title must not be blank.",
+  }),
+  description: z.string().min(1, {
+    message: "Description must not be blank.",
+  }),
+});
+
+const createProjectSchema = formSchema.extend({
+  image: z.any().refine((files) => (files?.length > 0), {
+    message: "A cover image is required for submission.",
+  }),
+});
+
+export default function CreationForm({reportDetails}) {
   const router = useRouter();
-  const [imageFileName, setImageFileName] = useState(optionalImage || "");
-  const [title, setTitle] = useState(titlePlaceholder);
-  const [description, setDescription] = useState(descriptionPlaceholder);
 
-  const formSchema = z.object({
-    title: z.string().min(1, {
-      message: "Title must not be blank.",
-    }),
-    description: z.string().min(1, {
-      message: "Description must not be blank.",
-    }),
-    image: z.any().refine((files) => (files?.length > 0 || optionalImage), {
-      message: "A cover image is required for submission.",
-    }),
-  });
+  const isUpdateMode = reportDetails !== undefined;
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
+  const form = useForm(isUpdateMode ? {
+    resolver: zodResolver(createProjectSchema),
     defaultValues: {
-      title: title || "",
-      description: description || "",
-      image: optionalImage || null,
+      title: reportDetails?.title || "",
+      description: reportDetails?.description || "",
     },
+  } : {
+    resolver: zodResolver(createProjectSchema),
   });
 
-  useEffect(() => {
-    console.log("optionalImage", optionalImage);
-  }, [optionalImage]);
+  const [title, setTitle] = React.useState(reportDetails?.title || "");
+  const [description, setDescription] = React.useState(reportDetails?.description || "");
+  const [imageFileName, setImageFileName] = React.useState(reportDetails?.image_uri || "");
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setImageFileName(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFileName("");
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // Exclude "data:{mime};base64,"
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
+  const onSubmit = async (data) => {
+    if (data.image) {
+      data.image = {
+        filename: data.image[0].name,
+        content: await fileToBase64(data.image[0]),
+      };
+    }
+
+    const payload = {
+      title: data.title,
+      description: data.description,
+      image: data.image,
+    };
+    console.log("Payload :", payload);
+
+    if (isUpdateMode) {
+      await updateProject(reportDetails.id, payload);
+    }
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmitFunction)} className="w-full space-y-4 px-8 mb-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 px-8 mb-8">
         <FormField control={form.control} name="title" render={() => (
           <FormItem>
             <FormLabel>Title</FormLabel>
