@@ -18,6 +18,7 @@ model User {
   changes        Change[]
   votes          Vote[]
   collections    Collection[] @relation("UserOwnsCollection")
+  image_uri      String?
 }
 
 model Document {

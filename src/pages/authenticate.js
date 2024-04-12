@@ -39,7 +39,7 @@ const Authenticate = () => {
 			return
 		}
 		if (user) {
-			router.replace('/collections')
+			router.replace('/projects')
 		}
 	}, [router, user, isInitialized])
 

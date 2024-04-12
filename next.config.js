@@ -10,10 +10,14 @@ const nextConfig = {
     return config;
   },
   env: {
+    LIP_API_BASE: process.env.LIP_API_BASE,
     REDIRECT_URL: process.env.REDIRECT_URL,
     GCP_PROJECT_ID: process.env.GCP_PROJECT_ID,
     GCP_SERVICE_ACCOUNT_EMAIL: process.env.GCP_SERVICE_ACCOUNT_EMAIL,
     GCP_PRIVATE_KEY: process.env.GCP_PRIVATE_KEY,
+    STYTCH_PROJECT_ID: process.env.STYTCH_PROJECT_ID,
+    STYTCH_SECRET: process.env.STYTCH_SECRET,
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN,
   },
   images: {
     domains: [
