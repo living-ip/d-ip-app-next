@@ -4,9 +4,20 @@ import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import ConfirmationDialog from "@/components/simple/ConfirmationDialog";
+import {useRouter} from "next/router";
+import {
+	addUserToProject,
+	getChangesRules,
+	getProjectUsers,
+	getVotingRules,
+	updateChangesRules,
+	updateProjectUserRole
+} from "@/lib/admin";
+import {authStytchRequest} from "@/lib/stytch";
+import {getCookie} from "cookies-next";
 
-export default function ManagementPanel({userList}) {
+export default function ManagementPanel({pid, changesRules, votingRules, initialUserList}) {
+	const router = useRouter();
 	const timeframes = [
 		{
 			"label": "1 hour",
@@ -37,21 +48,20 @@ export default function ManagementPanel({userList}) {
 			"value": 168 * 60 * 60 * 1000  // 7 days in milliseconds
 		}
 	]
-	const rule1Start = 1;
-	const [rule1End, setRule1End] = useState(3);
-	const [rule1Timeframe, setRule1Timeframe] = useState("24 hours");
-	const [rule2Start, setRule2Start] = useState(4);
-	const [rule2End, setRule2End] = useState(15);
-	const [rule2Timeframe, setRule2Timeframe] = useState("24 hours");
-	const [rule3Start, setRule3Start] = useState(16);
-	const [rule3End, setRule3End] = useState(0);
-	const [rule3Timeframe, setRule3Timeframe] = useState("24 hours");
+	const [userList, setUserList] = useState(initialUserList);
+	const rule1Start = changesRules[0].start;
+	const [rule1End, setRule1End] = useState(changesRules[0].end);
+	const [rule1Timeframe, setRule1Timeframe] = useState(changesRules[0].time);
+	const [rule2Start, setRule2Start] = useState(changesRules[1].start);
+	const [rule2End, setRule2End] = useState(changesRules[1].end);
+	const [rule2Timeframe, setRule2Timeframe] = useState(changesRules[1].time);
+	const [rule3Start, setRule3Start] = useState(changesRules[2].start);
+	const rule3End = changesRules[2].end;
+	const [rule3Timeframe, setRule3Timeframe] = useState(changesRules[2].time);
 	const [minimumVotes, setMinimumVotes] = useState(1);
-	const [positiveVotesPercentage, setPositiveVotesPercentage] = useState(50);
+	const [positiveVotesPercentage, setPositiveVotesPercentage] = useState(0.51);
 	const [email, setEmail] = useState('');
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const roles = ["Project Manager", "Moderator", "Editor", "Voter", "Viewer"];
+	const roles = ["project_manager", "moderator", "editor", "voter", "viewer"];
 
 	const handleRule1EndChange = (e) => {
 		setRule1End(e.target.value);
@@ -89,18 +99,29 @@ export default function ManagementPanel({userList}) {
 		setPositiveVotesPercentage(e.target.value);
 	}
 
-	const handleRoleChange = (email, newRole) => {
-		console.log(`Role for user ${email} changed to ${newRole}`);
-		updateUserRole(email, newRole);
+	const handleRoleChange = async (uid, newRole) => {
+		const user = userList.find(user => user.uid === uid);
+		if (user.role === "admin") {
+			console.log("Cannot change role of admin user");
+			return;
+		}
+
+		await updateProjectUserRole(pid, uid, newRole, getCookie("stytch_session_jwt"));
+
+		const updatedUserList = userList.map(user => {
+			if (user.uid === uid) {
+				return {...user, role: newRole};
+			}
+			return user;
+		});
+		setUserList(updatedUserList);
 	};
 
-	function goToEditPage() {
-		console.log("Navigating to Edit Project page");
-		//TODO: Uncomment the following line after merge with edit page branch
-		//router.push("/collections/[name]/edit");
+	async function goToEditPage() {
+		await router.push(`/projects/${pid}/edit`);
 	}
 
-	function saveChangeRuleChanges() {
+	async function saveChangeRuleChanges() {
 		console.log("Rule 1 start: ", rule1Start);
 		console.log("Rule 1 end: ", rule1End);
 		console.log("Rule 1 timeframe: ", rule1Timeframe);
@@ -110,24 +131,25 @@ export default function ManagementPanel({userList}) {
 		console.log("Rule 3 start: ", rule3Start);
 		console.log("Rule 3 timeframe: ", rule3Timeframe);
 
-		const changeRulesData = {
-			rule1: {
-				rule1Start,
-				rule1End,
-				rule1Timeframe,
+		const changeRulesData = [
+			{
+				start: rule1Start,
+				end: rule1End,
+				time: rule1Timeframe,
 			},
-			rule2: {
-				rule2Start,
-				rule2End,
-				rule2Timeframe
+			{
+				start: rule2Start,
+				end: rule2End,
+				time: rule2Timeframe
 			},
-			rule3: {
-				rule3Start,
-				rule3Timeframe
+			{
+				start: rule3Start,
+				end: rule3End,
+				time: rule3Timeframe
 			}
-		};
+		];
 
-		//TODO: Call API to save change rules
+		await updateChangesRules(pid, changeRulesData, getCookie("stytch_session_jwt"));
 	}
 
 	function saveVotingRuleChanges() {
@@ -135,35 +157,21 @@ export default function ManagementPanel({userList}) {
 		console.log("Saving positive votes percentage: ", positiveVotesPercentage);
 
 		const votingRulesData = {
-			minimumVotes,
-			positiveVotesPercentage
+			min_votes_required: minimumVotes,
+			min_votes_percentage: positiveVotesPercentage
 		};
 
 		//TODO: Call API to save voting rules
 	}
 
 
-	function checkEmailAddress() {
-		console.log("Checking email address: ", email);
-		//TODO: Implement email address check
-		//TODO: If email is valid, set title and description with success message
-		//TODO: If email is invalid, set title and description with error message
-	}
-
-	function updateUserRole(email, newRole) {
-		console.log("Updating user role");
-		//TODO: Replace with API call to update user role
-		const user = userList.find(user => user.email === email);
-
-		// If the user was found, update their role
-		if (user) {
-			user.role = newRole;
-		}
+	async function inviteUserToProject() {
+		await addUserToProject(pid, email, getCookie("stytch_session_jwt"));
+		setEmail("");
 	}
 
 	return (
 		<Layout>
-			(
 			<div className="max-w-4xl mx-auto p-8">
 
 				<h1 className="text-3xl font-bold mb-6">Project Management Admin Panel</h1>
@@ -255,9 +263,7 @@ export default function ManagementPanel({userList}) {
 					<h2 className="text-xl font-semibold mb-4">Invite User</h2>
 					<div className="flex items-center space-x-2">
 						<Input placeholder="Email address" type="email" value={email} onChange={e => setEmail(e.target.value)}/>
-						<ConfirmationDialog title={title} description={description}>
-							<Button onClick={checkEmailAddress}>Send Invite</Button>
-						</ConfirmationDialog>
+						<Button onClick={inviteUserToProject}>Add User</Button>
 					</div>
 				</section>
 
@@ -272,13 +278,12 @@ export default function ManagementPanel({userList}) {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{/*TODO: FIX ERROR - Roles do not update when changed*/}
 							{userList.map(user => (
 								<TableRow key={user.email}>
 									<TableCell className="font-medium">{user.email}</TableCell>
 									<TableCell>{user.name}</TableCell>
 									<TableCell>
-										<Select onValueChange={(newRole) => handleRoleChange(user.email, newRole)}>
+										<Select onValueChange={(newRole) => handleRoleChange(user.uid, newRole)}>
 											<SelectTrigger id="role">
 												<SelectValue>{user.role}</SelectValue>
 											</SelectTrigger>
@@ -295,49 +300,32 @@ export default function ManagementPanel({userList}) {
 					</Table>
 				</section>
 			</div>
-			)
 		</Layout>
 	);
 }
 
-export async function getServerSideProps() {
-	//TODO: Update with correct API endpoint
-	//const res = await fetch('/api/users');
-	//const userList = await res.json();
-	const userList = [
-		{
-			id: 1,
-			name: 'John Doe',
-			email: 'johndoe@example.com',
-			role: 'Project Manager'
-		},
-		{
-			id: 2,
-			name: 'Jane Doe',
-			email: 'janedoe@example.com',
-			role: 'Moderator'
-		},
-		{
-			id: 3,
-			name: 'Alice Smith',
-			email: 'alicesmith@example.com',
-			role: 'Editor'
-		},
-		{
-			id: 4,
-			name: 'Bob Johnson',
-			email: 'bobjohnson@example.com',
-			role: 'Voter'
-		},
-		{
-			id: 5,
-			name: 'Charlie Brown',
-			email: 'charliebrown@example.com',
-			role: 'Viewer'
-		},
-	];
+export async function getServerSideProps({req, query}) {
+	const {session} = await authStytchRequest(req);
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/login",
+				permanent: false,
+			},
+		};
+	}
+	const sessionJWT = req.cookies["stytch_session_jwt"];
+	const {pid} = query;
+	const changesRules = await getChangesRules(pid, sessionJWT);
+	const votingRules = await getVotingRules(pid, sessionJWT);
+	const initialUserList = await getProjectUsers(pid, sessionJWT);
 
 	return {
-		props: {userList}
+		props: {
+			pid,
+			changesRules,
+			votingRules,
+			initialUserList
+		}
 	};
 }
