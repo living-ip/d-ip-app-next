@@ -43,9 +43,6 @@ export default function Projects({ projects }) {
     <Layout>
       <div className="my-10 flex justify-between items-center w-full">
         <div className={"text-4xl font-extrabold"}>Projects</div>
-        <Button onClick={() => router.push(`/projects/new`)}>
-          Create a New Project
-        </Button>
       </div>
       <div className="flex flex-col w-full overflow-auto mb-8">
         {sortedProjects.map((project, index) => (

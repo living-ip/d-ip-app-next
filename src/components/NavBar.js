@@ -41,15 +41,6 @@ export default function NavBar() {
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/admin" legacyBehavior passHref>
-                <NavigationMenuLink className="border border-gray-200 items-center justify-center rounded-xl p-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                  Admin
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-          <NavigationMenuList>
-            <NavigationMenuItem>
               <Button variant="outline" className="p-6 rounded-xl mx-4"
                       onClick={() => router.push('/projects/LivingIP%20Product/document/cb26aba8-8188-4eb3-867c-2661c260b29c')}>
                 User Guide
