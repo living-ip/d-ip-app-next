@@ -11,7 +11,7 @@ import {
 	getProjectUsers,
 	getVotingRules,
 	updateChangesRules,
-	updateProjectUserRole
+	updateProjectUserRole, updateVotingRules
 } from "@/lib/admin";
 import {authStytchRequest} from "@/lib/stytch";
 import {getCookie} from "cookies-next";
@@ -67,8 +67,8 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 		setRule1End(e.target.value);
 	}
 
-	const handleRule1TimeframeChange = (e) => {
-		setRule1Timeframe(e.target.value);
+	const handleRule1TimeframeChange = (value) => {
+		setRule1Timeframe(value);
 	}
 
 	const handleRule2StartChange = (e) => {
@@ -79,16 +79,16 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 		setRule2End(e.target.value);
 	}
 
-	const handleRule2TimeframeChange = (e) => {
-		setRule2Timeframe(e.target.value);
+	const handleRule2TimeframeChange = (value) => {
+		setRule2Timeframe(value);
 	}
 
 	const handleRule3StartChange = (e) => {
 		setRule3Start(e.target.value);
 	}
 
-	const handleRule3TimeframeChange = (e) => {
-		setRule3Timeframe(e.target.value);
+	const handleRule3TimeframeChange = (value) => {
+		setRule3Timeframe(value);
 	}
 
 	const handleMinimumVotesChange = (e) => {
@@ -152,16 +152,17 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 		await updateChangesRules(pid, changeRulesData, getCookie("stytch_session_jwt"));
 	}
 
-	function saveVotingRuleChanges() {
+	async function saveVotingRuleChanges() {
 		console.log("Saving minimum votes: ", minimumVotes);
 		console.log("Saving positive votes percentage: ", positiveVotesPercentage);
 
 		const votingRulesData = {
 			min_votes_required: minimumVotes,
-			min_votes_percentage: positiveVotesPercentage
+			min_votes_percentage: positiveVotesPercentage / 100
 		};
 
-		//TODO: Call API to save voting rules
+		console.log(votingRulesData);
+		await updateVotingRules(pid, votingRulesData, getCookie("stytch_session_jwt"));
 	}
 
 

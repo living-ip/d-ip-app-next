@@ -121,9 +121,7 @@ export async function updateVotingRules(project_id, updateVotingRules, jwt) {
       "Content-Type": "application/json",
       "x-lip-jwt": jwt,
     },
-    body: JSON.stringify(changeKeys.snakeCase({
-      voting_rules: updateVotingRules,
-    })),
+    body: JSON.stringify(changeKeys.snakeCase(updateVotingRules)),
   });
   const response = await doApiCall(func, {});
   if (response instanceof Response) {
