@@ -114,7 +114,7 @@ export const getServerSideProps = async ({req, query}) => {
 
   return {
     props: {
-      project: project,
+      project,
     },
   };
 };
