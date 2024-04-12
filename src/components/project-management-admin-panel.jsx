@@ -10,7 +10,36 @@ import ConfirmationDialog from "@/components/simple/ConfirmationDialog";
 import {useState} from "react";
 
 export function ProjectManagementAdminPanel({userList}) {
-  const timeframes = ["4 hours", "8 hours", "12 hours", "1 day", "2 days", "3 days", "5 days", "7 days"];
+  const timeframes = [
+    {
+      "label": "1 hour",
+      "value": 1 * 60 * 60 * 1000  // 1 hour in milliseconds
+    },
+    {
+      "label": "4 hours",
+      "value": 4 * 60 * 60 * 1000  // 4 hours in milliseconds
+    },
+    {
+      "label": "8 hours",
+      "value": 8 * 60 * 60 * 1000  // 8 hours in milliseconds
+    },
+    {
+      "label": "12 hours",
+      "value": 12 * 60 * 60 * 1000  // 12 hours in milliseconds
+    },
+    {
+      "label": "1 day",
+      "value": 24 * 60 * 60 * 1000  // 1 day in milliseconds
+    },
+    {
+      "label": "3 days",
+      "value": 72 * 60 * 60 * 1000  // 3 days in milliseconds
+    },
+    {
+      "label": "7 days",
+      "value": 168 * 60 * 60 * 1000  // 7 days in milliseconds
+    }
+  ]
   const rule1Start = 1;
   const [rule1End, setRule1End] = useState(3);
   const [rule1Timeframe, setRule1Timeframe] = useState("24 hours");
@@ -18,6 +47,7 @@ export function ProjectManagementAdminPanel({userList}) {
   const [rule2End, setRule2End] = useState(15);
   const [rule2Timeframe, setRule2Timeframe] = useState("24 hours");
   const [rule3Start, setRule3Start] = useState(16);
+  const [rule3End, setRule3End] = useState(0);
   const [rule3Timeframe, setRule3Timeframe] = useState("24 hours");
   const [minimumVotes, setMinimumVotes] = useState(1);
   const [positiveVotesPercentage, setPositiveVotesPercentage] = useState(50);
@@ -30,7 +60,7 @@ export function ProjectManagementAdminPanel({userList}) {
     setRule1End(e.target.value);
   }
 
-  const handlerule1TimeframeChange = (e) => {
+  const handleRule1TimeframeChange = (e) => {
     setRule1Timeframe(e.target.value);
   }
 
@@ -153,13 +183,13 @@ export function ProjectManagementAdminPanel({userList}) {
             <Input placeholder="3" type="number" className="w-[64px]" onChange={handleRule1EndChange}/>
             <span>line changes will be available to vote on for</span>
             <div className="w-[180px]">
-              <Select onValueChange={handlerule1TimeframeChange}>
+              <Select onValueChange={handleRule1TimeframeChange}>
                 <SelectTrigger id="timeframe1">
                   <SelectValue placeholder="Select"/>
                 </SelectTrigger>
                 <SelectContent position="popper">
                   {timeframes.map(timeframe => (
-                    <SelectItem key={timeframe} value={timeframe}>{timeframe}</SelectItem>
+                    <SelectItem key={timeframe.value} value={timeframe.value}>{timeframe.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -177,7 +207,7 @@ export function ProjectManagementAdminPanel({userList}) {
                 </SelectTrigger>
                 <SelectContent position="popper">
                   {timeframes.map(timeframe => (
-                    <SelectItem key={timeframe} value={timeframe}>{timeframe}</SelectItem>
+                    <SelectItem key={timeframe.value} value={timeframe.value}>{timeframe.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -193,7 +223,7 @@ export function ProjectManagementAdminPanel({userList}) {
                 </SelectTrigger>
                 <SelectContent position="popper">
                   {timeframes.map(timeframe => (
-                    <SelectItem key={timeframe} value={timeframe}>{timeframe}</SelectItem>
+                    <SelectItem key={timeframe.value} value={timeframe.value}>{timeframe.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
