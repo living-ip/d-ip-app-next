@@ -75,24 +75,6 @@ export const getServerSideProps = async ({req, query}) => {
   );
   console.log("Changes with Votes: ", changesWithVotes);
 
-  // const pullsWithVoteData = pulls
-  //   .map((pull) => {
-  //     const changeId = sha256(`${pull.head.repo.full_name}/${pull.number}`);
-  //     const changeData = changesWithVotes.find(
-  //       (change) => change.cid === changeId
-  //     );
-  //     if (changeData) {
-  //       return {
-  //         ...pull,
-  //         votes: changeData ? changeData.votes : 0,
-  //         changeId,
-  //       };
-  //     }
-  //     return null;
-  //   })
-  //   .filter((pull) => pull !== null);
-  // console.log("pulls with vote data: ", pullsWithVoteData);
-
   return {
     props: {
       project: project,

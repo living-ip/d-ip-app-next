@@ -26,9 +26,9 @@ const DocumentCards = ({project, documents, adminUser}) => {
       <div className="flex flex-col w-full overflow-auto mb-16">
         <div className="flex flex-wrap -mx-2">
           {documents.map((document, index) => {
-            const cardStyle = document.draft ? "bg-gray-200 no-shadow" : ""; // replace "bg-gray-200" with your draft style, "no-shadow" is a placeholder for the style without shadow
-            const titleStyle = document.draft ? "text-gray-500 italic" : ""; // replace "text-gray-500" with your gray color style
-            const imageStyle = document.draft ? "blur-sm" : ""; // replace "filter grayscale" with your grayscale style
+            const cardStyle = document.draft ? "bg-gray-200 no-shadow" : "";
+            const titleStyle = document.draft ? "text-gray-500 italic" : "";
+            const imageStyle = document.draft ? "blur-sm" : "";
             const documentName = document.draft ? "Document Under Review" : document.name;
             const documentDescription = document.draft
               ? "This document is currently under review by the community. Please check back later."

@@ -1,6 +1,6 @@
 import {Layout} from "@/components/ui/layout";
 import {Card, CardContent} from "@/components/ui/card";
-import CreateEditForm from "@/components/CreateEditForm";
+import CreationForm from "@/components/CreationForm";
 import {useRouter} from "next/router";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/user";
@@ -57,9 +57,11 @@ export default function CreateNewDocument({project}) {
           <CardContent className="mt-10 mb-4 text-4xl font-bold">
             Create New Document
           </CardContent>
-          <CreateEditForm
-            formType={"document"}
+          <CreationForm
+            titlePlaceholder="Enter the name of your document"
+            descriptionPlaceholder="Write a description about your document"
             onSubmitFunction={onFormSubmit}
+            isDocument={isDocument}
           />
         </Card>
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -112,7 +114,7 @@ export const getServerSideProps = async ({req, query}) => {
 
   return {
     props: {
-      project: project,
+      project,
     },
   };
 };
