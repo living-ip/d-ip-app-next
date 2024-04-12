@@ -97,7 +97,7 @@ export async function updateChangesRules(project_id, updateChangesRules, jwt) {
 
 
 export async function getVotingRules(project_id, jwt) {
-  const url = new URL(`${LIP_API_BASE}/project/${project_id}/admin/changes-rules`);
+  const url = new URL(`${LIP_API_BASE}/project/${project_id}/admin/voting-rules`);
   const func = () => fetch(url, {
     method: "GET",
     headers: {

@@ -58,8 +58,8 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 	const [rule3Start, setRule3Start] = useState(changesRules[2].start);
 	const rule3End = changesRules[2].end;
 	const [rule3Timeframe, setRule3Timeframe] = useState(changesRules[2].time);
-	const [minimumVotes, setMinimumVotes] = useState(1);
-	const [positiveVotesPercentage, setPositiveVotesPercentage] = useState(0.51);
+	const [minimumVotes, setMinimumVotes] = useState(votingRules.min_votes_required);
+	const [positiveVotesPercentage, setPositiveVotesPercentage] = useState(votingRules.min_votes_percentage * 100);
 	const [email, setEmail] = useState('');
 	const roles = ["project_manager", "moderator", "editor", "voter", "viewer"];
 
@@ -247,14 +247,14 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 						<label className="block mb-2" htmlFor="total-votes">
 							Minimum number of total votes required for a change to be able to pass:
 						</label>
-						<Input id="total-votes" type="number" placeholder="1" min="1"
+						<Input id="total-votes" type="number" placeholder={votingRules.min_votes_required} min="1"
 						       className="w-[64px]" onChange={handleMinimumVotesChange}/>
 					</div>
 					<div>
 						<label className="block mb-2" htmlFor="positive-votes">
 							What percentage of votes need to be positive for a change to be able to pass:
 						</label>
-						<Input id="positive-votes" type="number" placeholder="50" min="1"
+						<Input id="positive-votes" type="number" placeholder={votingRules.min_votes_percentage * 100} min="1"
 						       className="w-[64px]" onChange={handlePositiveVotesPercentageChange}/>
 					</div>
 					<Button className="mt-4" onClick={saveVotingRuleChanges}>Save Changes</Button>
