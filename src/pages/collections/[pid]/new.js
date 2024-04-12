@@ -1,11 +1,10 @@
-import { Layout } from "@/components/ui/layout";
-import { Card, CardContent } from "@/components/ui/card";
-import CreationForm from "@/components/CreationForm";
-import { useRouter } from "next/router";
-import { authStytchRequest } from "@/lib/stytch";
-import { getUserProfile } from "@/lib/server/user";
-import { createDocument } from "@/lib/app/document";
-import { fileToBase64 } from "@/lib/utils";
+import {Layout} from "@/components/ui/layout";
+import {Card, CardContent} from "@/components/ui/card";
+import CreateEditForm from "@/components/CreateEditForm";
+import {useRouter} from "next/router";
+import {authStytchRequest} from "@/lib/stytch";
+import {getUserProfile} from "@/lib/user";
+import {fileToBase64} from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,26 +14,30 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import prisma from "@/lib/server/prisma";
+import {useState} from "react";
+import {createProjectDocument, getProject} from "@/lib/project";
+import {getCookie} from "cookies-next";
 
-export default function CreateNewDocument({ collection }) {
+export default function CreateNewDocument({project}) {
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isDocument = true;
 
   const onFormSubmit = async (data) => {
     console.log(data);
 
-    data.image = {
-      filename: data.image[0].name,
-      content: await fileToBase64(data.image[0]),
-    };
-    console.log(data.image);
+    if (!isDocument) {
+      data.image = {
+        filename: data.image[0].name,
+        content: await fileToBase64(data.image[0]),
+      };
+      console.log(data.image);
+    }
 
     try {
-      const response = await createDocument(collection.coid, data);
+      const response = await createProjectDocument(project.pid, data, getCookie("stytch_session_jwt"));
       console.log("Response: ", response);
-      const documentId = response.document.did;
+      const documentId = response.did;
       console.log(documentId);
       setIsDialogOpen(true);
     } catch (e) {
@@ -44,7 +47,7 @@ export default function CreateNewDocument({ collection }) {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    router.push(`/collections/${encodeURI(collection.name)}`);
+    router.push(`/collections/${encodeURI(project.pid)}`);
   };
 
   return (
@@ -52,11 +55,10 @@ export default function CreateNewDocument({ collection }) {
       <div className="flex flex-col w-full overflow-auto items-left min-h-screen">
         <Card className="w-full bg-white mt-10">
           <CardContent className="mt-10 mb-4 text-4xl font-bold">
-            Request New Document Creation
+            Create New Document
           </CardContent>
-          <CreationForm
-            titlePlaceholder="Enter the name of your document"
-            descriptionPlaceholder="Write a description about your document"
+          <CreateEditForm
+            formType={"document"}
             onSubmitFunction={onFormSubmit}
           />
         </Card>
@@ -64,11 +66,10 @@ export default function CreateNewDocument({ collection }) {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>
-                Document Creation Request Successful
+                Document Creation Successful
               </AlertDialogTitle>
               <AlertDialogDescription>
-                Your request to create a document has been logged. It is now
-                pending approval.
+                You have successfully created a new document.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -83,8 +84,8 @@ export default function CreateNewDocument({ collection }) {
   );
 }
 
-export const getServerSideProps = async ({ req, query }) => {
-  const { session } = await authStytchRequest(req);
+export const getServerSideProps = async ({req, query}) => {
+  const {session} = await authStytchRequest(req);
   if (!session) {
     return {
       redirect: {
@@ -93,7 +94,8 @@ export const getServerSideProps = async ({ req, query }) => {
       },
     };
   }
-  const { userProfile } = await getUserProfile(session.user_id);
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
   if (!userProfile) {
     return {
       redirect: {
@@ -103,19 +105,14 @@ export const getServerSideProps = async ({ req, query }) => {
     };
   }
 
-  const { name } = query;
-  console.log("Collection Name: ", name);
-
-  const collection = await prisma.collection.findFirst({
-    where: {
-      name: name,
-    },
-  });
-  console.log("Collection: ", collection);
+  const {pid} = query;
+  console.log("pid: ", pid)
+  const project = await getProject(pid, sessionJWT);
+  console.log("Project: ", project)
 
   return {
     props: {
-      collection,
+      project: project,
     },
   };
 };
