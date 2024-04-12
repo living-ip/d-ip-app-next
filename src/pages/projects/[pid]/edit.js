@@ -27,7 +27,7 @@ export default function EditProject( {project} ) {
     try {
       const response = await updateProject(project.pid, data, getCookie("stytch_session_jwt"));
       console.log(response);
-      await router.push(`/collections/${encodeURI(project.pid)}`)
+      await router.push(`/projects/${encodeURI(project.pid)}`)
     } catch (e) {
       console.log(e);
     }

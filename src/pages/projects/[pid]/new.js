@@ -47,7 +47,7 @@ export default function CreateNewDocument({project}) {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    router.push(`/collections/${encodeURI(project.pid)}`);
+    router.push(`/projects/${encodeURI(project.pid)}`);
   };
 
   return (

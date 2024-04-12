@@ -17,11 +17,11 @@ export default function Index({ project, document, change, changeVotes, userVote
   const [userVote, setUserVote] = useState(userVoteProp);
 
   const goToVotes = () => {
-    router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/vote`);
+    router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`);
   };
 
   const goToDocument = () => {
-    router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}`);
+    router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
   }
 
   const files = parseDiff(change.diff_data);

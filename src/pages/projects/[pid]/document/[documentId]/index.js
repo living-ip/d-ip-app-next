@@ -11,11 +11,11 @@ export default function Index({project, document}) {
   const router = useRouter();
 
   const goToVotes = () => {
-    router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/vote`)
+    router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`)
   };
 
   const goToEdits = () => {
-    router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/edit`)
+    router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit`)
   };
 
   return (

@@ -35,7 +35,7 @@ export const getServerSideProps = async ({ req, query }) => {
     if (userProfile) {
       return {
         redirect: {
-          destination: "/collections",
+          destination: "/projects",
           permanent: false,
         },
       };

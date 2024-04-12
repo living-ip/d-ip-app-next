@@ -16,7 +16,7 @@ const DocumentCards = ({project, documents, adminUser}) => {
         <div className="flex flex-col mr-4 w-full">
           <div className={"flex mb-4 justify-between items-center w-full"}>
             <div className={"text-4xl font-extrabold"}>{project.name}</div>
-            <Button onClick={() => router.push(`/collections/${encodeURI(project.pid)}/new`)}>
+            <Button onClick={() => router.push(`/projects/${encodeURI(project.pid)}/new`)}>
               Create New Document
             </Button>
           </div>
@@ -53,7 +53,7 @@ const DocumentCards = ({project, documents, adminUser}) => {
                         {document.draft ? (
                           adminUser ? (
                             <Button
-                              // onClick={() => { approveDocument(project.coid, document.did).then((r) => router.push(`/collections/${encodeURI(project.pid)}`))}}
+                              // onClick={() => { approveDocument(project.coid, document.did).then((r) => router.push(`/projects/${encodeURI(project.pid)}`))}}
                             >
                               Approve Draft
                             </Button>
@@ -61,11 +61,11 @@ const DocumentCards = ({project, documents, adminUser}) => {
                         ) : (
                           <>
                             <Button onClick={() =>
-                              router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}`)}>
+                              router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}>
                               Read it
                             </Button>
                             <Button variant="outline"
-                                    onClick={() => router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/vote`)}>
+                                    onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`)}>
                               See votes
                             </Button>
                           </>

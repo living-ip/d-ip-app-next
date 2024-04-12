@@ -20,7 +20,7 @@ export default function Index({ project, document, changesWithVotes}) {
               key={index}
               className="py-8 border-b-2 cursor-pointer"
               onClick={() =>
-                router.push(`/collections/${encodeURI(project.pid)}/document/${
+                router.push(`/projects/${encodeURI(project.pid)}/document/${
                     document.did}/vote/${change.cid}`)}
             >
               <div className="flex items-center justify-between">

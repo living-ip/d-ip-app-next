@@ -29,7 +29,7 @@ export default function Index({ project, document, change }) {
     }, getCookie("stytch_session_jwt"));
     console.log(response);
     //TODO: Update with modal saying successfully saved
-    await router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}`);
+    await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
   };
 
   const publishHandler = async () => {
@@ -42,7 +42,7 @@ export default function Index({ project, document, change }) {
     console.log(updateResponse);
     console.log("Publishing Change", pageData);
     await publishChange(change.cid, getCookie("stytch_session_jwt"));
-    await router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/vote`);
+    await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`);
   };
 
   return (

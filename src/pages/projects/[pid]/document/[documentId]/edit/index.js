@@ -39,11 +39,11 @@ export default function Index({ project, document, changes }) {
       },
       getCookie("stytch_session_jwt")
     );
-    await router.push(`/collections/${encodeURI(project.pid)}/document/${document.did}/edit/${change.cid}`);
+    await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit/${change.cid}`);
   };
 
   const existingEditHandler = async (changeId) => {
-    await router.push(`/collections/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${changeId}`);
+    await router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${changeId}`);
   };
 
   function handleChange(event) {

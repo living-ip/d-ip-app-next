@@ -23,7 +23,7 @@ export default function CreateNewProject() {
       console.log(response);
       const projectId = response.pid;
       console.log(projectId)
-      await router.push(`/collections/${encodeURI(projectId)}`)
+      await router.push(`/projects/${encodeURI(projectId)}`)
     } catch (e) {
       console.log(e);
     }

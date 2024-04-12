@@ -69,7 +69,7 @@ export default function AdminPanel( {projects} ) {
         <div className="space-y-4">
           <div className={"text-xl font-bold"}>Create Project</div>
           <div className="px-4">
-            <Button onClick={() => router.push(`/collections/new`)}>
+            <Button onClick={() => router.push(`/projects/new`)}>
               Click here to create a new project
             </Button>
           </div>
@@ -97,7 +97,7 @@ export default function AdminPanel( {projects} ) {
               </SelectContent>
             </Select>
             <Button className="inline-flex"
-                    onClick={() => router.push(`/collections/${encodeURIComponent(selectedProjectName)}/edit`)}>
+                    onClick={() => router.push(`/projects/${encodeURIComponent(selectedProjectName)}/edit`)}>
               Edit Project
             </Button>
           </div>
