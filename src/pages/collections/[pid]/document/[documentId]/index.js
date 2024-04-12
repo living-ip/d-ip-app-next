@@ -7,7 +7,7 @@ import {Layout} from "@/components/ui/layout";
 import {getProject} from "@/lib/project";
 import {getDocument} from "@/lib/document";
 
-export default function Index({project, document, contributors, decodedContent}) {
+export default function Index({project, document}) {
   const router = useRouter();
 
   const goToVotes = () => {
@@ -40,12 +40,12 @@ export default function Index({project, document, contributors, decodedContent})
           </div>
           <div className="text-2xl font-bold pt-4">Contributors</div>
           <div className="mx-2 mb-4">
-            <UserCarousel users={contributors}/>
+            <UserCarousel users={document.contributors}/>
           </div>
         </div>
         <div className="flex-1 max-h-screen p-4 ml-2 border-l">
           <div className="h-full p-4 overflow-y-scroll rounded-lg bg-gray-50">
-            <ReadingPane content={decodedContent}/>
+            <ReadingPane content={atob(document.content)}/>
           </div>
         </div>
       </div>
@@ -74,19 +74,11 @@ export const getServerSideProps = async ({req, query}) => {
   console.log("Project: ", project);
   const document = await getDocument(documentId, sessionJWT);
   console.log("Document: ", document);
-  const contributors = document.contributors;
-  console.log("Contributors: ", contributors);
-  const content = document.content;
-  console.log("Content: ", content);
-  const decodedContent = atob(content);
-  console.log("Decoded Content: ", decodedContent);
 
   return {
     props: {
-      project: project,
-      document: document,
-      contributors: contributors,
-      decodedContent: decodedContent,
+      project,
+      document,
     },
   };
 };
