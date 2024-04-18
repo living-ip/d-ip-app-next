@@ -66,7 +66,7 @@ const DocumentCards = ({project, documents, adminUser}) => {
                             </Button>
                             <Button variant="outline"
                                     onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`)}>
-                              See votes
+                              See Changes
                             </Button>
                           </>
                         )}
