@@ -29,7 +29,7 @@ export default function Index({project, document}) {
             {document.description}
           </div>
           <div className="mt-6 flex justify-between items-center">
-            <div className="col-1 space-y-2">
+            <div className="col-1 space-y-2 space-x-2">
               <Button variant="outline" onClick={goToVotes}>
                 Published Changes
               </Button>

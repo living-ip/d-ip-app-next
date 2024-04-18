@@ -58,7 +58,7 @@ export default function Index({ project, document, change, changeVotes, userVote
       <div className="flex max-h-screen">
         <div className="w-1/4 pr-6 mt-10">
           <h1 className="text-4xl font-extrabold">{change.name}</h1>
-          <div className="col-1 space-y-4 mt-8">
+          <div className="col-1 space-y-4 space-x-2 mt-8">
             <Button variant="outline" onClick={goToVotes}>
               Back to Changes
             </Button>
