@@ -176,13 +176,12 @@ export const getServerSideProps = async ({ req, query }) => {
   console.log("Project: ", project);
   const document = await getDocument(documentId, sessionJWT);
   console.log("Document: ", document);
-  const unpublishedChanges = await getDocumentChanges(documentId, {
-    "published": false,
+  const userChanges = await getDocumentChanges(documentId, {
     "user_id": session.user_id,
   }, sessionJWT);
-  console.log("Unpublished Changes: ", unpublishedChanges);
+  console.log("User Changes: ", userChanges);
 
-  const orderedChanges = unpublishedChanges.sort((a, b) => {
+  const orderedChanges = userChanges.sort((a, b) => {
     return new Date(b.updatedAt) - new Date(a.updatedAt);
   });
   console.log("Ordered Changes: ", orderedChanges);
