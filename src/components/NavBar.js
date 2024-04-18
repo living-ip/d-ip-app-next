@@ -1,14 +1,7 @@
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu'
+import {NavigationMenu, NavigationMenuItem, NavigationMenuList,} from '@/components/ui/navigation-menu'
 import React from 'react'
 import Image from 'next/image'
 import {useRouter} from "next/router";
-import Link from "next/link"
 
 import {Button} from "@/components/ui/button";
 import {DynamicWidget} from "@dynamic-labs/sdk-react-core";
@@ -37,23 +30,25 @@ export default function NavBar() {
         </NavigationMenu>
       </div>
       {/*Right Menu Side*/}
-      <div className="space-x-4">
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <Button variant="outline" className="p-6 rounded-xl mx-4"
-                      onClick={() => router.push('/projects/LivingIP%20Product/document/cb26aba8-8188-4eb3-867c-2661c260b29c')}>
-                User Guide
-              </Button>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <DynamicWidget innerButtonComponent={<Button>Connect Wallet</Button>}/>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-      </div>
+      {router.pathname !== '/onboard' && (
+        <div className="space-x-4">
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Button variant="outline" className="p-6 rounded-xl mx-4"
+                        onClick={() => router.push('/projects/LivingIP%20Product/document/cb26aba8-8188-4eb3-867c-2661c260b29c')}>
+                  User Guide
+                </Button>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <DynamicWidget innerButtonComponent={<Button>Connect Wallet</Button>}/>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+      )}
     </div>
   );
 }
