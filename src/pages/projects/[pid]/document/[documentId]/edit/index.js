@@ -129,7 +129,7 @@ export default function Index({ project, document, changes }) {
                 <div
                   key={index}
                   className="py-8 border-b-2 cursor-pointer"
-                  onClick={() => existingEditHandler(change.cid)}
+                  onClick={() => existingEditHandler(change.cid)} //TODO: Fix handler to redirect based on if published or not
                 >
                   <div className="flex items-center justify-between">
                     <div className="text-xl font-bold">{change.title}</div>
