@@ -138,7 +138,7 @@ export default function Index({ project, document, changes }) {
                     <div className="text-sm text-gray-600 space-y-2">
                       <div>Name: {change.name}</div>
                       <div>Description: {change.description}</div>
-                      <div>Creation Time: {change.created_at}</div>
+                      <div>Creation Time: {new Date(change.created_at).toLocaleString()}</div>
                     </div>
                     {change.published ? (
                       <div className="text-sm text-gray-600">Published</div>
