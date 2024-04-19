@@ -110,6 +110,14 @@ export const getServerSideProps = async ({req, query}) => {
   console.log("pid: ", pid)
   const project = await getProject(pid, sessionJWT);
   console.log("Project: ", project)
+  if (!project) {
+    return {
+      redirect: {
+        destination: "/projects",
+        permanent: false,
+      },
+    };
+  }
 
   const documents = await getProjectDocuments(project.pid, sessionJWT)
   console.log("Documents: ", documents);
