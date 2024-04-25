@@ -36,3 +36,19 @@ export async function createUserProfile(userDetails, jwt) {
   }
   return response;
 }
+
+export async function getUserProjects(userId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/user/${userId}/projects`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
