@@ -52,3 +52,20 @@ export async function getUserProjects(userId, jwt) {
   }
   return response;
 }
+
+
+export async function getUserRoles(userId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/user/${userId}/roles`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
