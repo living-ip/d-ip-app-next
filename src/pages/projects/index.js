@@ -1,13 +1,17 @@
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile, getUserProjects} from "@/lib/user";
+import {getUserProfile, getUserRoles} from "@/lib/user";
 import {Card, CardContent, CardDescription, CardHeader, CardImage, CardTitle,} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {Layout} from "@/components/ui/layout";
 import {useRouter} from "next/router";
 import {getProjects} from "@/lib/project";
+import {initializeStore, useStore} from "@/lib/store";
 
-export default function Projects({projects, userProjects}) {
+export default function Projects({projects}) {
 	const router = useRouter();
+	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
+		[state.userRoles, state.setInvalidPermissionsDialogOpen]
+	);
 
 	const desiredOrder = [
 		"Claynosaurz",
@@ -52,18 +56,20 @@ export default function Projects({projects, userProjects}) {
 								<CardDescription className={"py-2"}>
 									{project.description}
 								</CardDescription>
-								{userProjects.find((userProject) => userProject === project.pid) && (
-									<Button
-										className={"my-2"}
-										onClick={() =>
-											router.push(
-												`/projects/${encodeURIComponent(project.pid)}`
-											)
+								<Button
+									className={"my-2"}
+									onClick={() => {
+										if (!userRoles.find((role) => role.project === project.pid)) {
+											setInvalidPermissionsDialogOpen(true);
+											return;
 										}
-									>
-										Open Project
-									</Button>
-								)}
+										router.push(
+											`/projects/${encodeURIComponent(project.pid)}`
+										)
+									}}
+								>
+									Open Project
+								</Button>
 							</CardContent>
 						</Card>
 					</div>
@@ -97,13 +103,20 @@ export const getServerSideProps = async ({req}) => {
 	const projects = await getProjects(sessionJWT);
 	console.log("Projects: ", projects);
 
-	const userProjects = await getUserProjects(session.user_id, sessionJWT);
-	console.log("User Projects: ", userProjects);
+	const userRoles = await getUserRoles(session.user_id, sessionJWT);
+	console.log("User Roles: ", userRoles);
+
+	const zustandServerStore = initializeStore({
+		userProfile,
+		userRoles,
+	});
 
 	return {
 		props: {
 			projects,
-			userProjects,
+			initialZustandState: JSON.parse(
+				JSON.stringify(zustandServerStore.getState())
+			),
 		},
 	};
 };
