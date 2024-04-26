@@ -109,6 +109,7 @@ export const getServerSideProps = async ({req}) => {
 	const zustandServerStore = initializeStore({
 		userProfile,
 		userRoles,
+		currentProject: undefined,
 	});
 
 	return {
