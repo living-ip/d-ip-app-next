@@ -23,10 +23,14 @@ import { convertNameToGithubRepo } from "@/lib/utils";
 import {getProject} from "@/lib/project";
 import {getDocument, getDocumentChanges} from "@/lib/document";
 import {getCookie} from "cookies-next";
+import {getUserRoles} from "@/lib/user";
+import {initializeStore, useStore} from "@/lib/store";
 
 export default function Index({ project, document, changes }) {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
+		[state.userRoles, state.setInvalidPermissionsDialogOpen]
+	);
   const [name, setName] = useState("");
   const [filteredStatus, setFilteredStatus] = useState("not-published");
 
@@ -46,16 +50,6 @@ export default function Index({ project, document, changes }) {
     await router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${changeId}`);
   };
 
-  function handleChange(event) {
-    const selectedSha = event.target.value;
-    // Find the section with the selected sha
-    const selectedSection = chapters
-      .flatMap((chapter) => chapter.sections)
-      .find((section) => section.sha === selectedSha);
-
-    setSelectedChapter(selectedSection);
-  }
-
   return (
     <Layout>
       <div className="flex-1">
@@ -65,9 +59,15 @@ export default function Index({ project, document, changes }) {
         </Label>
         <div className="mt-8 mb-4">
           <Dialog>
-            <DialogTrigger asChild>
-              <Button className="mx-8">New Change</Button>
-            </DialogTrigger>
+            {userRoles.find((role) => role.project === project.pid && role.role.create_change) ? (
+              <DialogTrigger asChild>
+                <Button className="mx-8">New Change</Button>
+              </DialogTrigger>
+            ) : (
+              <Button className="mx-8" onClick={() => setInvalidPermissionsDialogOpen(true)}>
+                New Change
+              </Button>
+            )}
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Create a New Change</DialogTitle>
@@ -186,12 +186,22 @@ export const getServerSideProps = async ({ req, query }) => {
   });
   console.log("Ordered Changes: ", orderedChanges);
 
+  const userRoles = await getUserRoles(session.user_id, sessionJWT);
+	console.log("User Roles: ", userRoles);
+
+	const zustandServerStore = initializeStore({
+		userRoles,
+		currentProject: pid,
+	});
 
   return {
     props: {
       project: project,
       document: document,
       changes: orderedChanges,
+      initialZustandState: JSON.parse(
+				JSON.stringify(zustandServerStore.getState())
+			),
     },
   };
 };

@@ -78,7 +78,7 @@ export async function getDocumentChanges(documentId, queryParams = {}, jwt) {
       "x-lip-jwt": jwt,
     },
   });
-  const response = await doApiCall(func, {});
+  const response = await doApiCall(func, []);
   if (response instanceof Response) {
     return await response.json();
   }
