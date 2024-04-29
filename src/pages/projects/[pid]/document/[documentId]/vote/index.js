@@ -62,6 +62,14 @@ export const getServerSideProps = async ({req, query}) => {
   console.log("Project: ", project);
   const document = await getDocument(documentId, sessionJWT);
   console.log("Document: ", document);
+  if (!project || !document) {
+    return {
+			redirect: {
+				destination: `/projects`,
+				permanent: false,
+			},
+		};
+  }
   const publishedChanges = await getDocumentChanges(documentId, {"published": true}, sessionJWT);
   console.log("Document Changes: ", publishedChanges);
   const changesWithVotes = await Promise.all(

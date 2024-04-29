@@ -4,9 +4,10 @@ import CreateEditForm from "@/components/CreateEditForm";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile} from "@/lib/user";
+import {getUserProfile, getUserRoles} from "@/lib/user";
 import {getProject, updateProject} from "@/lib/project";
 import {getCookie} from "cookies-next";
+import {initializeStore} from "@/lib/store";
 
 
 export default function EditProject( {project} ) {
@@ -78,6 +79,16 @@ export const getServerSideProps = async ({ req, query }) => {
   }
 
   const { pid } = query;
+  const userRoles = await getUserRoles(session.user_id, sessionJWT);
+	console.log("User Roles: ", userRoles);
+  if (!userRoles.find((role) => role.project === pid && role.role.edit_project)) {
+    return {
+      redirect: {
+        destination: `/projects/${pid}`,
+        permanent: false,
+      },
+    };
+  }
   const project = await getProject(pid, sessionJWT);
 
   return {

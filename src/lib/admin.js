@@ -12,7 +12,7 @@ export async function getProjectUsers(project_id, jwt) {
       "x-lip-jwt": jwt,
     },
   });
-  const response = await doApiCall(func, {});
+  const response = await doApiCall(func, undefined);
   if (response instanceof Response) {
     return await response.json();
   }
@@ -32,7 +32,7 @@ export async function addUserToProject(project_id, email, jwt) {
       email: email,
     })),
   });
-  const response = await doApiCall(func, {});
+  const response = await doApiCall(func, undefined);
   if (response instanceof Response) {
     return await response.json();
   }
@@ -51,7 +51,7 @@ export async function updateProjectUserRole(project_id, user_id, role, jwt) {
       role: role,
     })),
   });
-  const response = await doApiCall(func, {});
+  const response = await doApiCall(func, undefined);
   if (response instanceof Response) {
     return await response.json();
   }
@@ -68,7 +68,7 @@ export async function getChangesRules(project_id, jwt) {
       "x-lip-jwt": jwt,
     }
   });
-  const response = await doApiCall(func, {});
+  const response = await doApiCall(func, undefined);
   if (response instanceof Response) {
     return await response.json();
   }
@@ -105,7 +105,7 @@ export async function getVotingRules(project_id, jwt) {
       "x-lip-jwt": jwt,
     }
   });
-  const response = await doApiCall(func, {});
+  const response = await doApiCall(func, undefined);
   if (response instanceof Response) {
     return await response.json();
   }

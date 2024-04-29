@@ -10,7 +10,7 @@ export async function getDocument(documentId, jwt) {
       "x-lip-jwt": jwt,
     },
   });
-  const response = await doApiCall(func, {});
+  const response = await doApiCall(func, undefined);
   if (response instanceof Response) {
     return await response.json();
   }

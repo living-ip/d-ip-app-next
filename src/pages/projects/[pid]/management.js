@@ -11,7 +11,8 @@ import {
 	getProjectUsers,
 	getVotingRules,
 	updateChangesRules,
-	updateProjectUserRole, updateVotingRules
+	updateProjectUserRole,
+	updateVotingRules
 } from "@/lib/admin";
 import {authStytchRequest} from "@/lib/stytch";
 import {getCookie} from "cookies-next";
@@ -106,7 +107,10 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			return;
 		}
 
-		await updateProjectUserRole(pid, uid, newRole, getCookie("stytch_session_jwt"));
+		const result = await updateProjectUserRole(pid, uid, newRole, getCookie("stytch_session_jwt"));
+		if (!result) {
+			return;
+		}
 
 		const updatedUserList = userList.map(user => {
 			if (user.uid === uid) {
@@ -167,8 +171,12 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 
 
 	async function inviteUserToProject() {
-		await addUserToProject(pid, email, getCookie("stytch_session_jwt"));
+		const result = await addUserToProject(pid, email, getCookie("stytch_session_jwt"));
+		if (!result) {
+			return;
+		}
 		setEmail("");
+		setUserList(userList.append(result));
 	}
 
 	return (
@@ -186,14 +194,15 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 					<h2 className="text-xl font-semibold mb-4">Change Rules</h2>
 					<div className="space-y-2">
 						<div className="flex items-center space-x-2">
-							<Input placeholder="1" type="number" className="w-[64px]" value="1" readOnly/>
+							<Input placeholder={rule1Start} type="number" className="w-[64px]" value={rule1Start} readOnly/>
 							<span>to</span>
-							<Input placeholder="3" type="number" className="w-[64px]" onChange={handleRule1EndChange}/>
+							<Input placeholder={rule1End} type="number" className="w-[64px]" value={rule1End}
+							       onChange={handleRule1EndChange}/>
 							<span>line changes will be available to vote on for</span>
 							<div className="w-[180px]">
-								<Select onValueChange={handleRule1TimeframeChange}>
+								<Select onValueChange={handleRule1TimeframeChange} defaultValue={rule1Timeframe}>
 									<SelectTrigger id="timeframe1">
-										<SelectValue placeholder="Select"/>
+										<SelectValue/>
 									</SelectTrigger>
 									<SelectContent position="popper">
 										{timeframes.map(timeframe => (
@@ -204,14 +213,16 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 							</div>
 						</div>
 						<div className="flex items-center space-x-2">
-							<Input placeholder="4" type="number" className="w-[64px]" onChange={handleRule2StartChange}/>
+							<Input placeholder={rule2Start} type="number" className="w-[64px]" value={rule2Start}
+							       onChange={handleRule2StartChange}/>
 							<span>to</span>
-							<Input placeholder="15" type="number" className="w-[64px]" onChange={handleRule2EndChange}/>
+							<Input placeholder={rule2End} type="number" className="w-[64px]" value={rule2End}
+							       onChange={handleRule2EndChange}/>
 							<span>line changes will be available to vote on for</span>
 							<div className="w-[180px]">
-								<Select onValueChange={handleRule2TimeframeChange}>
-									<SelectTrigger id="timeframe1">
-										<SelectValue placeholder="Select"/>
+								<Select onValueChange={handleRule2TimeframeChange} defaultValue={rule2Timeframe}>
+									<SelectTrigger id="timeframe2">
+										<SelectValue/>
 									</SelectTrigger>
 									<SelectContent position="popper">
 										{timeframes.map(timeframe => (
@@ -223,11 +234,12 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 						</div>
 						<div className="flex items-center space-x-2">
 							<span>More than</span>
-							<Input placeholder="16" type="number" className="w-[64px]" onChange={handleRule3StartChange}/>
+							<Input placeholder={rule3Start} type="number" className="w-[64px]" value={rule3Start}
+							       onChange={handleRule3StartChange}/>
 							<div className="w-[180px]">
-								<Select onValueChange={handleRule3TimeframeChange}>
+								<Select onValueChange={handleRule3TimeframeChange} defaultValue={rule3Timeframe}>
 									<SelectTrigger id="timeframe3">
-										<SelectValue placeholder="Select"/>
+										<SelectValue/>
 									</SelectTrigger>
 									<SelectContent position="popper">
 										{timeframes.map(timeframe => (
@@ -320,6 +332,14 @@ export async function getServerSideProps({req, query}) {
 	const changesRules = await getChangesRules(pid, sessionJWT);
 	const votingRules = await getVotingRules(pid, sessionJWT);
 	const initialUserList = await getProjectUsers(pid, sessionJWT);
+	if (!changesRules || !votingRules || !initialUserList) {
+		return {
+			redirect: {
+				destination: `/projects/${pid}`,
+				permanent: false,
+			},
+		};
+	}
 
 	return {
 		props: {
