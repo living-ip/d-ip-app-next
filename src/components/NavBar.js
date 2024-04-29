@@ -51,7 +51,7 @@ export default function NavBar() {
 						<NavigationMenuList>
 							<NavigationMenuItem>
 								<Button variant="outline" className="p-6 rounded-xl mx-4"
-								        onClick={() => router.push('/projects/LivingIP%20Product/document/cb26aba8-8188-4eb3-867c-2661c260b29c')}>
+								        onClick={() => router.push('/projects/pid-76047bbe1fc241959bb636eaa4d6e27f/document/did-1569a552a4894b90af40f7a3d511abf4')}>
 									User Guide
 								</Button>
 							</NavigationMenuItem>
