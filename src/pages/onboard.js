@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import NavBar from "@/components/NavBar";
 import { RegisterCard } from "@/components/RegisterCard";
 import { authStytchRequest } from "@/lib/stytch";
-import { getUserProfile } from "@/lib/server/user";
+import { getUserProfile } from "@/lib/user";
 import { Layout } from "@/components/ui/layout";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -30,11 +30,12 @@ export const getServerSideProps = async ({ req, query }) => {
     if (!session) {
       return noAuthResponse;
     }
-    const { userProfile } = await getUserProfile(session.user_id);
+    const sessionJWT = req.cookies["stytch_session_jwt"];
+    const { userProfile } = await getUserProfile(session.user_id, sessionJWT);
     if (userProfile) {
       return {
         redirect: {
-          destination: "/collections",
+          destination: "/projects",
           permanent: false,
         },
       };

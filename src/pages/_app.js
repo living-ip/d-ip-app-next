@@ -4,6 +4,7 @@ import {StytchProvider} from '@stytch/nextjs'
 import {DynamicContextProvider} from "@dynamic-labs/sdk-react-core";
 import {SolanaWalletConnectors} from "@dynamic-labs/solana";
 import Head from "next/head";
+import StoreProvider from "@/lib/storeProvider";
 
 const stytch = createStytchUIClient(
 	process.env.STYTCH_PUBLIC_TOKEN ||
@@ -23,9 +24,11 @@ export default function App({Component, pageProps}) {
 					environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
 					walletConnectors: [SolanaWalletConnectors],
 				}}>
-					<StytchProvider stytch={stytch}>
+				<StytchProvider stytch={stytch}>
+					<StoreProvider {...pageProps.initialZustandState}>
 						<Component {...pageProps} />
-					</StytchProvider>
+					</StoreProvider>
+				</StytchProvider>
 			</DynamicContextProvider>
 		</>
 	)

@@ -19,7 +19,7 @@ export const getServerSideProps = async ({ req }) => {
   }
   return {
     redirect: {
-      destination: "/collections",
+      destination: "/projects",
     },
   };
 };
