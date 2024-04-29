@@ -20,7 +20,7 @@ const DocumentCards = ({project, documents}) => {
 					<div className={"flex mb-4 justify-between items-center w-full"}>
 						<div className={"text-4xl font-extrabold"}>{project.name}</div>
 						<Button onClick={() => {
-							if (!userRoles.find((role) => role.pid === project.pid && role.role.create_document)) {
+							if (!userRoles.find((role) => role.project === project.pid && role.role.create_document)) {
 								setInvalidPermissionsDialogOpen(true);
 								return;
 							}
