@@ -45,7 +45,7 @@ export default function Index({project, document}) {
         </div>
         <div className="flex-1 max-h-screen p-4 ml-2 border-l">
           <div className="h-full p-4 overflow-y-scroll rounded-lg bg-gray-50">
-            <ReadingPane content={atob(document.content)}/>
+            <ReadingPane content={Buffer.from(document.content, 'base64').toString("utf-8")}/>
           </div>
         </div>
       </div>
