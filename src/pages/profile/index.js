@@ -38,8 +38,7 @@ function ProfileCard() {
         className="flex gap-5 justify-between items-start self-end max-w-full text-sm font-medium leading-5 whitespace-nowrap text-neutral-500 w-[211px]">
         <Image loading="lazy" src="/profile/Profile_Picture.svg" alt="Profile Picture"
                className="shrink-0 mt-2 w-20 rounded-full aspect-square" width={80} height={80}/>
-        {/*TODO: Update the redirect*/}
-        <Button variant="ghost" onClick={() => router.push('/profile')}>Edit</Button>
+        <Button variant="ghost" onClick={() => router.push('/profile/edit')}>Edit</Button>
       </div>
       <div
         className="flex flex-col items-center px-14 mt-6 text-base leading-6 text-neutral-950 max-md:px-5 max-md:mr-2">
@@ -61,19 +60,16 @@ function ProfileCard() {
           <div>Wallet</div>
           <div className="flex gap-1 justify-between pr-1.5">
             <div>0xc0f...9586</div>
-            {/*TODO: Fix toast*/}
-            <div onClick={() => {
-              copyToClipboard("0xc0f...9586")
-              toast({
-                description: "Wallet address copied to clipboard",
-              })
-            }}
-            >
-              <Image
-                className="shrink-0 my-auto w-3 aspect-square hover:cursor-pointer" width={12} height={12}
-                loading="lazy" src="/profile/copy-01.svg" alt="Copy Icon"
-              />
-            </div>
+            <Image
+              className="shrink-0 my-auto w-3 aspect-square hover:cursor-pointer" width={12} height={12}
+              loading="lazy" src="/profile/copy-01.svg" alt="Copy Icon"
+              onClick={() => {
+                copyToClipboard("0xc0f...9586")
+                toast({
+                  description: "Wallet address copied to clipboard",
+                })
+              }}
+            />
           </div>
         </div>
         <div className="flex gap-2.5 justify-between mt-3 text-base leading-6 text-center">
@@ -135,7 +131,7 @@ function VoteItem({status, title, date}) {
   );
 }
 
-function MyComponent() {
+function profilePage() {
 
   const contributions = [
     {
@@ -207,4 +203,4 @@ function MyComponent() {
   );
 }
 
-export default MyComponent;
+export default profilePage;
