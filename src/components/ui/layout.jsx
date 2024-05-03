@@ -12,6 +12,7 @@ import {
 	AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import {useStore} from "@/lib/store";
+import {Toaster} from "@/components/ui/toaster";
 
 export function Layout({children, childClassName, ...props}) {
 	const [navbarHeight, setNavbarHeight] = useState(0);
@@ -62,6 +63,7 @@ export function Layout({children, childClassName, ...props}) {
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
+			<Toaster/>
 		</div>
 	)
 }
