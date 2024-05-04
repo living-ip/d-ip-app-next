@@ -3,6 +3,7 @@ import Image from "next/image";
 import * as React from "react";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
+import {LogInDialog} from "@/components/custom/LogInDialog";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -72,12 +73,11 @@ export default function Home() {
             />
           </div>
           <div>
-            <Button
-              onClick={() => router.push('/login')}
-              className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit"
-            >
-              Log in
-            </Button>
+            <LogInDialog>
+              <Button className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
+                Log in
+              </Button>
+            </LogInDialog>
           </div>
         </header>
         <h1
