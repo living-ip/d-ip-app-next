@@ -1,123 +1,125 @@
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile, getUserRoles} from "@/lib/user";
-import {Card, CardContent, CardDescription, CardHeader, CardImage, CardTitle,} from "@/components/ui/card";
-import {Button} from "@/components/ui/button";
 import {Layout} from "@/components/ui/layout";
 import {useRouter} from "next/router";
 import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
+import {YourProjectCard} from "@/components/custom/YourProjectCard";
+import {OtherProjectCard} from "@/components/custom/OtherProjectCard";
 
 export default function Projects({projects}) {
-	const router = useRouter();
-	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
-		[state.userRoles, state.setInvalidPermissionsDialogOpen]
-	);
+  const router = useRouter();
+  const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
+    [state.userRoles, state.setInvalidPermissionsDialogOpen]
+  );
 
-	const desiredOrder = [
-		"Claynosaurz",
-		"Renaissance Hackathon Demo",
-		"Build Republic",
-		"LivingIP",
-		"LivingIP Product"
-	];
+  const desiredOrder = [
+    "Claynosaurz",
+    "Renaissance Hackathon Demo",
+    "Build Republic",
+    "LivingIP",
+    "LivingIP Product"
+  ];
 
-	const sortedProjects = [...projects].sort((a, b) => {
-		const indexA = desiredOrder.indexOf(a.name);
-		const indexB = desiredOrder.indexOf(b.name);
+  const sortedProjects = [...projects].sort((a, b) => {
+    const indexA = desiredOrder.indexOf(a.name);
+    const indexB = desiredOrder.indexOf(b.name);
 
-		if (indexA === -1 && indexB === -1) {
-			return 0;
-		} else if (indexA === -1) {
-			return 1;
-		} else if (indexB === -1) {
-			return -1;
-		} else {
-			return indexA - indexB;
-		}
-	});
+    if (indexA === -1 && indexB === -1) {
+      return 0;
+    } else if (indexA === -1) {
+      return 1;
+    } else if (indexB === -1) {
+      return -1;
+    } else {
+      return indexA - indexB;
+    }
+  });
 
-	return (
-		<Layout>
-			<div className="my-10 flex justify-between items-center w-full">
-				<div className={"text-4xl font-extrabold"}>Projects</div>
-			</div>
-			<div className="flex flex-col w-full overflow-auto mb-8">
-				{sortedProjects.map((project, index) => (
-					<div key={index} className={"w-full my-8"}>
-						<Card className={"flex-grow w-full"}>
-							<CardHeader className={"p-0 w-full"}>
-								<CardImage
-									className={"w-full h-auto max-h-[480px] rounded-t-lg"}
-									src={project.image_uri}
-								/>
-							</CardHeader>
-							<CardContent className={"mt-4"}>
-								<CardTitle className={"mb-2"}>{project.name}</CardTitle>
-								<CardDescription className={"py-2"}>
-									{project.description}
-								</CardDescription>
-								<Button
-									className={"my-2"}
-									onClick={() => {
-										if (!userRoles.find((role) => role.project === project.pid)) {
-											setInvalidPermissionsDialogOpen(true);
-											return;
-										}
-										router.push(
-											`/projects/${encodeURIComponent(project.pid)}`
-										)
-									}}
-								>
-									Open Project
-								</Button>
-							</CardContent>
-						</Card>
-					</div>
-				))}
-			</div>
-		</Layout>
-	);
+  //TODO: YourProjects and OtherProjects should be fetched from the backend
+  const yourProjects = sortedProjects;
+  const otherProjects = [
+    {
+      name: "Build Republic",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      members: 32,
+      articles: 14,
+      lastEdit: "14 April 2024",
+      image_uri: "/collection-covers/living-ip-cover-1.jpeg",
+    },
+    {
+      name: "Kuvera",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      members: 32,
+      articles: 14,
+      lastEdit: "14 April 2024",
+      image_uri: "/collection-covers/living-ip-cover-3.jpeg",
+    },
+  ];
+
+  return (
+    <Layout>
+      <main
+        className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-w-[1392px] max-md:px-5 max-md:max-w-full">
+        <h1 className="text-3xl leading-9 text-neutral-950 max-md:max-w-full">Projects</h1>
+        <h2 className="mt-6 text-xl leading-7 text-neutral-950 max-md:max-w-full">Your projects</h2>
+        <div className="mt-4 max-md:max-w-full">
+          <div className="flex gap-5 max-md:flex-col max-md:gap-0">
+            {yourProjects.map((project, index) => (
+              <YourProjectCard key={index} project={project}/>
+            ))}
+          </div>
+        </div>
+        <h2 className="mt-6 text-xl leading-7 text-neutral-950 max-md:max-w-full">Other projects</h2>
+        {otherProjects.map((project, index) => (
+          <OtherProjectCard key={index} project={project}/>
+        ))}
+      </main>
+    </Layout>
+  );
 }
 
 export const getServerSideProps = async ({req}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
-	if (!userProfile) {
-		return {
-			redirect: {
-				destination: "/onboard",
-				permanent: false,
-			},
-		};
-	}
+  const {session} = await authStytchRequest(req);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+  if (!userProfile) {
+    return {
+      redirect: {
+        destination: "/onboard",
+        permanent: false,
+      },
+    };
+  }
 
-	const projects = await getProjects(sessionJWT);
-	console.log("Projects: ", projects);
+  const projects = await getProjects(sessionJWT);
+  console.log("Projects: ", projects);
 
-	const userRoles = await getUserRoles(session.user_id, sessionJWT);
-	console.log("User Roles: ", userRoles);
+  const userRoles = await getUserRoles(session.user_id, sessionJWT);
+  console.log("User Roles: ", userRoles);
 
-	const zustandServerStore = initializeStore({
-		userProfile,
-		userRoles,
-		currentProject: undefined,
-	});
+  const zustandServerStore = initializeStore({
+    userProfile,
+    userRoles,
+    currentProject: undefined,
+  });
 
-	return {
-		props: {
-			projects,
-			initialZustandState: JSON.parse(
-				JSON.stringify(zustandServerStore.getState())
-			),
-		},
-	};
+  return {
+    props: {
+      projects,
+      initialZustandState: JSON.parse(
+        JSON.stringify(zustandServerStore.getState())
+      ),
+    },
+  };
 };
