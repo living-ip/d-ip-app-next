@@ -13,7 +13,7 @@ const ProfileImage = ({ src, alt }) => (
   <Image src={src} alt={alt} width={80} height={80} className="mt-4 w-20 aspect-square" />
 );
 
-function editProfile() {
+function EditProfile() {
   const router = useRouter();
   const fileInputRef = useRef(null);
   const [userData] = useStore((state) => [state.user]);
@@ -120,4 +120,4 @@ function editProfile() {
   );
 }
 
-export default editProfile;
+export default EditProfile;

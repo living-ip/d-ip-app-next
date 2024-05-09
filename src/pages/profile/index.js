@@ -6,7 +6,7 @@ import {Votes} from "@/components/custom/Votes";
 import {NewLayout} from "@/components/NewLayout";
 
 
-function profilePage() {
+function ProfilePage() {
 
   const profile = {
     name: "Sophie Taylor",
@@ -77,4 +77,4 @@ function profilePage() {
   );
 }
 
-export default profilePage;
+export default ProfilePage;
