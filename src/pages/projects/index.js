@@ -62,9 +62,9 @@ export default function Projects({projects}) {
   return (
     <Layout>
       <main
-        className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-w-[1392px] max-md:px-5 max-md:max-w-full">
-        <h1 className="text-3xl leading-9 text-neutral-950 max-md:max-w-full">Projects</h1>
-        <h2 className="mt-6 text-xl leading-7 text-neutral-950 max-md:max-w-full">Your projects</h2>
+        className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
+        <h1 className="text-3xl text-neutral-950 max-md:max-w-full">Projects</h1>
+        <h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Your projects</h2>
         <div className="mt-4 max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col max-md:gap-0">
             {yourProjects.map((project, index) => (
@@ -72,7 +72,7 @@ export default function Projects({projects}) {
             ))}
           </div>
         </div>
-        <h2 className="mt-6 text-xl leading-7 text-neutral-950 max-md:max-w-full">Other projects</h2>
+        <h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Other projects</h2>
         {otherProjects.map((project, index) => (
           <OtherProjectCard key={index} project={project}/>
         ))}
