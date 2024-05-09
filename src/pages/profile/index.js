@@ -3,6 +3,7 @@ import {ProfileHeader} from "@/components/custom/ProfileHeader";
 import {ProfileCard} from "@/components/custom/ProfileCard";
 import {Contributions} from "@/components/custom/Contributions";
 import {Votes} from "@/components/custom/Votes";
+import {NewLayout} from "@/components/NewLayout";
 
 
 function profilePage() {
@@ -55,10 +56,9 @@ function profilePage() {
   ];
 
   return (
-    <div className="flex flex-col pb-6 bg-neutral-100 h-screen">
-      <ProfileHeader/>
+    <NewLayout>
       <main
-        className="flex justify-center items-center self-center px-16 py-8 w-full bg-white rounded-3xl shadow max-w-[1392px] max-md:px-5 max-md:max-w-full">
+        className="flex justify-center items-center self-center px-16 py-8 mx-16 w-full bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
         <div className="w-full max-w-[1232px] max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col max-md:gap-0">
             <aside className="flex flex-col w-[32%] max-md:ml-0 max-md:w-full">
@@ -73,7 +73,7 @@ function profilePage() {
           </div>
         </div>
       </main>
-    </div>
+    </NewLayout>
   );
 }
 

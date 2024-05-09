@@ -7,6 +7,7 @@ import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {AiOutlineCamera} from "react-icons/ai";
 import {useRef, useState} from "react";
 import {useStore} from "@/lib/store";
+import {NewLayout} from "@/components/NewLayout";
 
 const ProfileImage = ({ src, alt }) => (
   <Image src={src} alt={alt} width={80} height={80} className="mt-4 w-20 aspect-square" />
@@ -51,20 +52,10 @@ function editProfile() {
   };
 
   return (
-    <div className="flex flex-col pb-20 bg-neutral-100 h-screen">
-      <header className="flex gap-5 justify-between px-8 py-3 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
-        <Image src="/profile/Logo-Design-Full-Color-Black.svg" alt="" width={110} height={24} className="shrink-0 my-auto max-w-full aspect-[4.55] w-[110px]" />
-        <div className="flex gap-1.5 px-2 py-1 rounded">
-          <Image src="/profile/Profile_Picture.svg" alt="Profile avatar" width={32} height={32} className="shrink-0 my-auto w-8 rounded-full aspect-square" />
-          <div className="flex flex-col">
-            <div className="text-sm leading-5 text-neutral-950">Martin Park</div>
-            <div className="text-xs leading-4 text-zinc-500">0xj7...k68</div>
-          </div>
-        </div>
-      </header>
-      <main className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-w-[1392px] max-md:px-5 max-md:max-w-full">
+    <NewLayout>
+      <main className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
         <h1 className="text-3xl leading-9 text-neutral-950 max-md:max-w-full">Settings</h1>
-        <div className="gap-5 pr-20 mt-8 w-2/3 max-md:w-full max-md:pr-5 max-md:max-w-full">
+        <div className="gap-5 pr-20 mt-8 w-1/3 max-md:w-full max-md:pr-5 max-md:max-w-full">
           <div className="flex flex-col text-sm max-md:max-w-full">
             <h2 className="text-lg font-medium leading-7 text-neutral-950 max-md:max-w-full">Personal info</h2>
             <p className="mt-2 leading-[143%] text-neutral-600 max-md:max-w-full">Update your personal details.</p>
@@ -125,7 +116,7 @@ function editProfile() {
           </div>
         </div>
       </main>
-    </div>
+    </NewLayout>
   );
 }
 
