@@ -65,7 +65,7 @@ export default function Index({project, document}) {
 									project={project}
 									content={{
 										title: "Want more content?",
-										description: "If you notice something missing, get involved and make a new document!",
+										description: "If you notice something missing, get involved and make a change to the document!",
 										buttonText: "Create Document Edit",
 										buttonLink: `/projects/${encodeURI(project.pid)}/document/${document.did}/edit`,
 									}}
