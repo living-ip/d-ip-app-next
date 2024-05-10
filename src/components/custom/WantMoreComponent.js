@@ -16,14 +16,9 @@ export function WantMoreComponent({project, content}) {
 			<p className="self-stretch mt-2 text-sm leading-5 text-center text-neutral-600">
 				{content.description}
 			</p>
-			{/*TODO: Ben fix permissions and modal on button click*/}
 			<Button
 				className="justify-center px-3 py-2 mt-4 font-medium leading-6 rounded text-neutral-950 bg-[#E1E5DE]"
 				onClick={() => {
-					if (!userRoles.find((role) => role.project === project.pid && role.role.create_document)) {
-						setInvalidPermissionsDialogOpen(true);
-						return;
-					}
 					router.push(content.buttonLink);
 				}}
 			>
