@@ -1,7 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import NavBar from "@/components/NavBar";
-import {Footer} from "@/components/ui/footer";
-import {cn} from "@/lib/utils";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -17,7 +14,7 @@ import {ProfileHeader} from "@/components/custom/ProfileHeader";
 export function NewLayout({children, childClassName, ...props}) {
 	const [navbarHeight, setNavbarHeight] = useState(0);
 	const [invalidPermissionsDialogOpen, setInvalidPermissionsDialogOpen] = useStore((state) =>
-			[state.invalidPermissionsDialogOpen, state.setInvalidPermissionsDialogOpen]
+		[state.invalidPermissionsDialogOpen, state.setInvalidPermissionsDialogOpen]
 	);
 
 	const handleDialogClose = () => {

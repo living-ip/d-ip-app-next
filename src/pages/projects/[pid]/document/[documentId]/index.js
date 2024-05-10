@@ -6,6 +6,8 @@ import {getProject} from "@/lib/project";
 import {getDocument} from "@/lib/document";
 import Image from "next/image";
 import {IoArrowBackOutline} from "react-icons/io5";
+import {NewLayout} from "@/components/NewLayout";
+import {WantMoreComponent} from "@/components/custom/WantMoreComponent";
 
 
 export default function Index({project, document}) {
@@ -18,38 +20,31 @@ export default function Index({project, document}) {
 		</div>
 	);
 
-	// TODO: Replace with actual contributors from API call
-	const contributors = [
-		{src: "/vercel.svg", name: "Martin Park"},
-		{src: "/vercel.svg", name: "Martin Park"},
-		{src: "/vercel.svg", name: "Martin Park"},
-		{src: "/vercel.svg", name: "Martin Park"},
-		{src: "/vercel.svg", name: "Martin Park"},
-	];
-
 	return (
-		// TODO: Update with Layout component
-		<div className="flex flex-col pb-20 bg-neutral-100">
-			{/*TODO: New Navbar goes here*/}
+		<NewLayout>
 			<main
-				className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-w-[1392px] max-md:px-5 max-md:max-w-full">
-				<section className="flex gap-3 justify-between w-full max-md:flex-wrap max-md:max-w-full">
+				className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
+				<section className="flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full">
 					<div className="flex flex-col w-[73%] max-md:max-w-full">
 						<div className="flex gap-3 max-md:flex-wrap">
-							<div
-								className="flex justify-center items-center p-2.5 my-auto rounded-sm border border-gray-200 border-solid">
+							<Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid">
 								<IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.back()}/>
-							</div>
+							</Button>
 							<div className="text-3xl leading-9 text-neutral-950 max-md:max-w-full">{document.name}</div>
 						</div>
 						<div className="mt-3 text-base leading-6 text-neutral-600 max-md:max-w-full">
 							{document.description}
 						</div>
-						<div className="mt-2 text-sm leading-5 text-zinc-500 max-md:max-w-full">Last edit 14 April, 2024</div>
+						{/*TODO: Ben - update with last edit when served from the backend*/}
+						<div className="mt-2 text-sm leading-5 text-zinc-500 max-md:max-w-full">{document.lastEdit}</div>
 					</div>
-					<div className="flex justify-center items-center gap-3 w-[27%] mt-24 max-md:mt-10">
-						<Button variant="outline" onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit`)}>Log history</Button>
-						<Button onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`)}>Vote</Button>
+					<div className="flex justify-center items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
+						<Button variant="outline" disabled={true}>
+							Log History
+						</Button>
+						<Button onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`)}>
+							Vote
+						</Button>
 					</div>
 				</section>
 				<article className="mt-6 max-md:max-w-full">
@@ -61,19 +56,27 @@ export default function Index({project, document}) {
 						</div>
 						<aside className="flex flex-col ml-5 w-[27%] max-md:ml-0 max-md:w-full">
 							<div className="flex flex-col grow text-neutral-950 max-md:mt-8">
-								<div className="text-xl leading-7">Contributors</div>
-								{contributors.map((contributor, index) => (
-									<Contributor key={index} src={contributor.src} name={contributor.name}/>
+								<div className="text-xl">Contributors</div>
+								{document.contributors.map((contributor, index) => (
+									// TODO: Not all users have image_uri
+									<Contributor key={index} src={contributor.image_uri || undefined} name={contributor.name}/>
 								))}
-								{/*	TODO: Add Want more content component*/}
+								<WantMoreComponent
+									project={project}
+									content={{
+										title: "Want more content?",
+										description: "If you notice something missing, get involved and make a new document!",
+										buttonText: "Create Document Edit",
+										buttonLink: `/projects/${encodeURI(project.pid)}/document/${document.did}/edit`,
+									}}
+								/>
 							</div>
 						</aside>
 					</div>
 				</article>
 			</main>
-		</div>
-	)
-		;
+		</NewLayout>
+	);
 }
 
 export const getServerSideProps = async ({req, query}) => {
