@@ -13,10 +13,6 @@ import {getProjects} from "@/lib/project";
 import {getCookie} from "cookies-next";
 import {Input} from "@/components/ui/input";
 
-const ProfileImage = ({src, alt}) => (
-	<Image src={src} alt={alt} width={80} height={80} className="mt-4 w-20 aspect-square"/>
-);
-
 export default function EditProfile() {
 	const router = useRouter();
 	const fileInputRef = useRef(null);
