@@ -20,6 +20,7 @@ export function NewDocumentCard({project}) {
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isDocument = true;
+  const [documentId, setDocumentId] = useState("");
 
   const onFormSubmit = async (data) => {
     console.log(data);
@@ -36,6 +37,7 @@ export function NewDocumentCard({project}) {
       const response = await createProjectDocument(project.pid, data, getCookie("stytch_session_jwt"));
       console.log("Response: ", response);
       const documentId = response.did;
+      setDocumentId(documentId);
       console.log(documentId);
       setIsDialogOpen(true);
     } catch (e) {
@@ -45,7 +47,7 @@ export function NewDocumentCard({project}) {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    router.push(`/projects/${encodeURI(project.pid)}`);
+
   };
 
   return (
@@ -72,7 +74,10 @@ export function NewDocumentCard({project}) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleDialogClose}>
+            <AlertDialogAction onClick={() => {
+              setIsDialogOpen(false);
+              router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURI(documentId)}`);
+            }}>
               OK
             </AlertDialogAction>
           </AlertDialogFooter>
