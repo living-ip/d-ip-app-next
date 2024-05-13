@@ -4,11 +4,18 @@ import {NotPublishedBadge} from "@/components/custom/NotPublishedBadge";
 import {PublishedBadge} from "@/components/custom/PublishedBadge";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
+import {getCookie} from "cookies-next";
+import {deleteChange} from "@/lib/change";
 
 export function DocumentEditCard({project, document, change}) {
 	const router = useRouter();
 
 	console.log(change);
+
+	const handleDeleteChange = async (cid, jwt) => {
+		await deleteChange(cid, jwt);
+		router.reload();
+	}
 
 	return (
 		<div
@@ -32,8 +39,9 @@ export function DocumentEditCard({project, document, change}) {
 						<NotPublishedBadge/>
 						<Button variant="ghost">
 							<PiTrashSimple className="w-4 h-4 shrink-0 self-stretch my-auto aspect-square"
-							               //TODO: Implement delete functionality
-							               onClick={() => {console.log("Delete")}}
+							               onClick={() => {
+															 handleDeleteChange(change.cid, getCookie("stytch_session_jwt"));
+														 }}
 							/>
 						</Button>
 						<div className="flex gap-3 self-stretch my-auto text-base font-medium leading-6 whitespace-nowrap">
