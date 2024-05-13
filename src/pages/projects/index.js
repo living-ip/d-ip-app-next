@@ -59,10 +59,14 @@ export default function Projects({projects}) {
 						))}
 					</div>
 				</div>
-				<h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Other projects</h2>
-				{otherProjects.map((project, index) => (
-					<OtherProjectCard key={index} project={project}/>
-				))}
+				{otherProjects.length > 0 && (
+					<>
+						<h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Other projects</h2>
+						{otherProjects.map((project, index) => (
+							<OtherProjectCard key={index} project={project}/>
+						))}
+					</>
+				)}
 			</main>
 		</NewLayout>
 	);
