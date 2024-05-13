@@ -6,6 +6,7 @@ import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {YourProjectCard} from "@/components/custom/YourProjectCard";
 import {OtherProjectCard} from "@/components/custom/OtherProjectCard";
+import {NewLayout} from "@/components/NewLayout";
 
 export default function Projects({projects}) {
   const router = useRouter();
@@ -60,13 +61,12 @@ export default function Projects({projects}) {
   ];
 
   return (
-    <Layout>
-      <main
-        className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
+    <NewLayout>
+      <main className="flex flex-col px-20 py-8 w-full h-auto bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
         <h1 className="text-3xl text-neutral-950 max-md:max-w-full">Projects</h1>
         <h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Your projects</h2>
         <div className="mt-4 max-md:max-w-full">
-          <div className="flex gap-5 max-md:flex-col max-md:gap-0">
+          <div className="grid grid-cols-2 2xl:grid-cols-3 gap-5 max-md:grid-cols-1 max-md:gap-0">
             {yourProjects.map((project, index) => (
               <YourProjectCard key={index} project={project}/>
             ))}
@@ -77,7 +77,7 @@ export default function Projects({projects}) {
           <OtherProjectCard key={index} project={project}/>
         ))}
       </main>
-    </Layout>
+    </NewLayout>
   );
 }
 

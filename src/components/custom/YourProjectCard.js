@@ -17,16 +17,16 @@ export function YourProjectCard({project}) {
   };
 
   return (
-    <div onClick={goToProject} className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full cursor-pointer">
+    <div onClick={goToProject} className="flex flex-col max-md:ml-0 max-md:w-full cursor-pointer">
       <div className="flex flex-col grow w-full rounded-xl border border-gray-200 border-solid max-md:mt-4 max-md:max-w-full">
         <div className="flex flex-col justify-center items-end rounded-xl max-md:max-w-full">
-          <div className="p-0 w-full flex gap-0.5 justify-between text-sm font-medium leading-5 rounded-sm text-neutral-600">
+          <div className="p-0 w-full max-h-64 flex gap-0.5 justify-between text-sm font-medium rounded-sm text-neutral-600">
             <Image
               className="rounded-t-lg"
               src={project.image_uri}
               alt={project.name}
-              width={500}
-              height={300}
+              width={128}
+              height={64}
               layout="responsive"
             />
           </div>
