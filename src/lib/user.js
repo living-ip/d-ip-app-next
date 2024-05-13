@@ -37,6 +37,25 @@ export async function createUserProfile(userDetails, jwt) {
   return response;
 }
 
+export async function updateUserProfile(userId, userDetails, jwt) {
+  const url = new URL(`${LIP_API_BASE}/user/${userId}`);
+  const func = () => fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-jwt": jwt,
+    },
+    body: JSON.stringify(changeKeys.snakeCase({
+      ...userDetails,
+    })),
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
 export async function getUserRoles(userId, jwt) {
   const url = new URL(`${LIP_API_BASE}/user/${userId}/roles`);
   const func = () => fetch(url, {
