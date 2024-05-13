@@ -8,6 +8,7 @@ import {initializeStore, useStore} from "@/lib/store";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import {DocumentCard} from "@/components/custom/DocumentCard";
+import {NewLayout} from "@/components/NewLayout";
 
 
 const ContributorBadge = ({contributorCount}) => (
@@ -27,7 +28,8 @@ const ProjectHeader = ({projectName, contributorCount}) => {
         <FontAwesomeIcon icon={faArrowLeft} className="w-3 aspect-square"/>
       </div>
       <h1 className="text-3xl leading-9 text-neutral-950">{projectName}</h1>
-      <ContributorBadge contributorCount={contributorCount}/>
+      {/*TODO: Ben - uncomment when contributorCount is returned*/}
+      {/*<ContributorBadge contributorCount={contributorCount}/>*/}
     </div>
   );
 }
@@ -69,10 +71,13 @@ const DocumentCards = ({project, documents}) => {
 
   const goToDocument = () => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
 
+  //TODO: Ben - Update contributorCount to correct count from API
+  const contributorCount = "XX";
+
   return (
-    <Layout>
-      <main className="flex flex-col items-start py-8 w-full">
-        <ProjectHeader projectName={project.name} contributorCount={14}/>
+    <NewLayout>
+      <main className="flex flex-col items-start self-center px-20 max-md:px-2 py-8 max-md:py-2 w-full bg-white rounded-3xl shadow">
+        <ProjectHeader projectName={project.name} contributorCount={contributorCount}/>
         <ProjectDescription description={project.description}/>
         <div className="self-stretch mt-6 mb-14 max-md:mb-10 max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col max-md:gap-0">
@@ -80,7 +85,7 @@ const DocumentCards = ({project, documents}) => {
               <div className="flex flex-col grow text-sm max-md:mt-8 max-md:max-w-full">
                 <h2 className="text-xl leading-7 text-neutral-950 max-md:max-w-full">Documents</h2>
                 {documents.map((document, index) => (
-                  // TODO: Update lastEditDate to correct date field, once added to the ORM
+                  // TODO: Ben - Update lastEditDate to correct date field from API
                   <DocumentCard key={index} name={document.name} description={document.description}
                                 lastEditDate={document.created_at} onClick={goToDocument}
                   />
@@ -93,7 +98,7 @@ const DocumentCards = ({project, documents}) => {
           </div>
         </div>
       </main>
-    </Layout>
+    </NewLayout>
   );
 };
 
