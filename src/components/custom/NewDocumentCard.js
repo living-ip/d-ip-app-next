@@ -45,11 +45,6 @@ export function NewDocumentCard({project}) {
     }
   };
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-
-  };
-
   return (
     <div className="flex flex-col w-full overflow-auto items-left">
       <Card className="w-full border-0">
