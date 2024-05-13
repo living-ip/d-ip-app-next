@@ -15,7 +15,9 @@ export default function Index({project, document}) {
 
 	const Contributor = ({src, name}) => (
 		<div className="flex gap-3 py-2 mt-1 text-base leading-6">
-			<Image src={src} alt={name} className="shrink-0 w-6 aspect-square" width="24" height="24"/>
+			{src && (
+				<Image src={src} alt={name} className="shrink-0 w-6 aspect-square" width="24" height="24"/>
+			)}
 			<div>{name}</div>
 		</div>
 	);
@@ -38,7 +40,7 @@ export default function Index({project, document}) {
 						{/*TODO: Ben - update with last edit when served from the backend*/}
 						{/*<div className="mt-2 text-sm leading-5 text-zinc-500 max-md:max-w-full">{document.lastEdit}</div>*/}
 					</div>
-					<div className="flex justify-center items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
+					<div className="flex justify-end items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
 						<Button variant="outline" disabled={true}>
 							Log History
 						</Button>

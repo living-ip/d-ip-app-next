@@ -29,7 +29,7 @@ export function NewLayout({children}) {
 	}, []);
 
 	return (
-		<div className="flex flex-col pb-6 bg-neutral-100 h-screen px-8">
+		<div className="flex flex-col pb-6 bg-neutral-100 h-screen px-8 overflow-y-auto">
 			<ProfileHeader/>
 			{children}
 			<AlertDialog open={invalidPermissionsDialogOpen} onOpenChange={handleDialogClose}>
