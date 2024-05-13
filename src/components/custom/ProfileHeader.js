@@ -4,7 +4,7 @@ import * as React from "react";
 export function ProfileHeader() {
   return (
     <div className="flex gap-5 justify-between py-3 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
-      <Image loading="lazy" src="/profile/Logo-Design-Full-Color-Black.svg" alt="Company Logo"
+      <Image loading="lazy" src="/Logo-Design-Full-Color-Black.svg" alt="Company Logo"
              className="shrink-0 my-auto max-w-full aspect-[4.55] w-[110px]" width={110} height={24}/>
       <div className="flex gap-1.5 px-2 py-1 rounded">
         {/*TODO: Uncomment once user information is accessible in the Navbar*/}
