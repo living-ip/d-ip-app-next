@@ -61,15 +61,15 @@ const DocumentCards = ({project, documents}) => {
         onClick={() => {
           if (!userRoles.find((role) => role.project === project.pid && role.role.create_document)) {
             setInvalidPermissionsDialogOpen(true);
+            return;
           }
+          router.push(`/projects/${encodeURI(project.pid)}/new`);
         }}
       >
         Create New Document
       </Button>
     </div>
   );
-
-  const goToDocument = () => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
 
   //TODO: Ben - Update contributorCount to correct count from API
   const contributorCount = "XX";
@@ -86,8 +86,10 @@ const DocumentCards = ({project, documents}) => {
                 <h2 className="text-xl leading-7 text-neutral-950 max-md:max-w-full">Documents</h2>
                 {documents.map((document, index) => (
                   // TODO: Ben - Update lastEditDate to correct date field from API
-                  <DocumentCard key={index} name={document.name} description={document.description}
-                                lastEditDate={document.created_at} onClick={goToDocument}
+                  <DocumentCard key={index} name={document.name}
+                                description={document.description}
+                                lastEditDate={document.created_at}
+                                onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}
                   />
                 ))}
               </div>
