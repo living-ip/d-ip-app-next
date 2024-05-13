@@ -12,7 +12,7 @@ import {DocumentCard} from "@/components/custom/DocumentCard";
 
 const ContributorBadge = ({contributorCount}) => (
   <div
-    className="justify-center self-stretch px-2 py-0.5 my-auto text-xs font-medium leading-4 bg-[#E1E5DE] rounded-[100px] text-neutral-950">
+    className="justify-center self-stretch px-2 py-0.5 my-auto text-xs font-medium bg-[#E1E5DE] rounded-[100px] text-neutral-950">
     {contributorCount} contributors
   </div>
 );
@@ -22,12 +22,11 @@ const ProjectHeader = ({projectName, contributorCount}) => {
 
   return (
     <div className="flex gap-3 items-center">
-      <div
-        className="flex justify-center items-center self-stretch p-2.5 my-auto rounded-sm border border-gray-200 border-solid"
+      <div className="justify-center items-center p-2.5 my-auto rounded-sm border border-gray-200 border-solid"
         onClick={() => router.back()}>
         <FontAwesomeIcon icon={faArrowLeft} className="w-3 aspect-square"/>
       </div>
-      <h1 className="self-stretch text-3xl leading-9 text-neutral-950">{projectName}</h1>
+      <h1 className="text-3xl leading-9 text-neutral-950">{projectName}</h1>
       <ContributorBadge contributorCount={contributorCount}/>
     </div>
   );
@@ -44,6 +43,9 @@ const DocumentCards = ({project, documents}) => {
   const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
     [state.userRoles, state.setInvalidPermissionsDialogOpen]
   );
+
+  console.log("Project: ", project);
+  console.log("Documents: ", documents);
 
   const RequestNewDocCTA = () => (
     <div
@@ -69,8 +71,7 @@ const DocumentCards = ({project, documents}) => {
 
   return (
     <Layout>
-      <main
-        className="flex flex-col items-start self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-w-[1392px] max-md:px-5 max-md:max-w-full">
+      <main className="flex flex-col items-start py-8 w-full">
         <ProjectHeader projectName={project.name} contributorCount={14}/>
         <ProjectDescription description={project.description}/>
         <div className="self-stretch mt-6 mb-14 max-md:mb-10 max-md:max-w-full">
