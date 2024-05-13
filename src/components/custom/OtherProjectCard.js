@@ -15,7 +15,7 @@ export function OtherProjectCard({project}) {
           layout="contain"
         />
       </div>
-      <div className="flex flex-col flex-1 text-sm font-medium max-md:max-w-full">
+      <div className="flex flex-col p-3 flex-1 text-sm font-medium max-md:max-w-full">
         <div className="text-lg text-neutral-950 max-md:max-w-full">{project.name}</div>
         <div className="mt-1 text-neutral-600 max-md:max-w-full">{project.description}</div>
         {/*TODO: Ben - Uncomment once API returns relevant values*/}
