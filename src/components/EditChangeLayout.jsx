@@ -15,7 +15,6 @@ import {useRouter} from "next/router";
 
 export function EditChangeLayout({children, publishHandler, saveHandler}) {
 	const router = useRouter();
-	const [navbarHeight, setNavbarHeight] = useState(0);
 	const [invalidPermissionsDialogOpen, setInvalidPermissionsDialogOpen] = useStore((state) =>
 		[state.invalidPermissionsDialogOpen, state.setInvalidPermissionsDialogOpen]
 	);
@@ -23,13 +22,6 @@ export function EditChangeLayout({children, publishHandler, saveHandler}) {
 	const handleDialogClose = () => {
 		setInvalidPermissionsDialogOpen(false);
 	}
-
-	useEffect(() => {
-		const navbar = document.getElementById('navbar');
-		if (navbar) {
-			setNavbarHeight(navbar.offsetHeight);
-		}
-	}, []);
 
 	return (
 		<div className="flex flex-col pb-6 bg-neutral-100 h-screen px-8">

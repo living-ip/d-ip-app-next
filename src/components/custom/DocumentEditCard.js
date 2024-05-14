@@ -5,7 +5,7 @@ import {PublishedBadge} from "@/components/custom/PublishedBadge";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
 import {getCookie} from "cookies-next";
-import {deleteChange} from "@/lib/change";
+import {deleteChange, publishChange} from "@/lib/change";
 
 export function DocumentEditCard({project, document, change}) {
 	const router = useRouter();
@@ -40,19 +40,25 @@ export function DocumentEditCard({project, document, change}) {
 						<Button variant="ghost">
 							<PiTrashSimple className="w-4 h-4 shrink-0 self-stretch my-auto aspect-square"
 							               onClick={() => {
-															 handleDeleteChange(change.cid, getCookie("stytch_session_jwt"));
-														 }}
+								               handleDeleteChange(change.cid, getCookie("stytch_session_jwt"));
+							               }}
 							/>
 						</Button>
 						<div className="flex gap-3 self-stretch my-auto text-base font-medium leading-6 whitespace-nowrap">
-							<Button variant="ghost" onClick={() => {router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${change.cid}`)}}
-								className="flex gap-1 justify-between px-3 py-2 rounded border border-gray-200 border-solid text-neutral-600">
+							<Button variant="ghost" onClick={() => {
+								router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${change.cid}`)
+							}}
+							        className="flex gap-1 justify-between px-3 py-2 rounded border border-gray-200 border-solid text-neutral-600">
 								<FiEdit3 className="w-4 h-4 shrink-0 my-auto aspect-square"/>
 								<div>Edit</div>
 							</Button>
-							<div className="justify-center px-3 py-2 rounded bg-[#E8ECE6]">
+							<Button variant="ghost" className="justify-center px-3 py-2 rounded bg-[#E8ECE6]"
+							        onClick={async () => {
+								        await publishChange(change.cid, getCookie("stytch_session_jwt"));
+								        router.reload();
+							        }}>
 								Publish
-							</div>
+							</Button>
 						</div>
 					</>
 				)}
