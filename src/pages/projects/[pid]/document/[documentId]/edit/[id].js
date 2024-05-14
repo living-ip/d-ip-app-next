@@ -12,7 +12,7 @@ import {getChange} from "@/lib/change";
 import {getCookie} from "cookies-next";
 
 export default function Index({ project, document, change }) {
-  const decodedContent = Buffer.from(document.content, 'base64').toString("utf-8");
+  const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
   const [pageData, setPageData] = useState(decodedContent);
   const router = useRouter();
 
