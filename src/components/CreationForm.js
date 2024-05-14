@@ -37,7 +37,7 @@ export default function CreationForm({titlePlaceholder, descriptionPlaceholder, 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmitFunction)} className="w-full space-y-4 px-8 mb-8">
+      <form onSubmit={form.handleSubmit(onSubmitFunction)} className="w-full space-y-4 px-1">
         <FormField control={form.control} name="name" render={({field}) => (
           <FormItem>
             <FormLabel>Title</FormLabel>
@@ -78,7 +78,7 @@ export default function CreationForm({titlePlaceholder, descriptionPlaceholder, 
             </FormItem>
           )}/>
         )}
-        <Button type="submit">Submit</Button>
+        <Button className="bg-[#245D00] w-full" type="submit">Submit</Button>
       </form>
     </Form>
   )

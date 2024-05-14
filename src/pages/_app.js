@@ -5,6 +5,7 @@ import {DynamicContextProvider} from "@dynamic-labs/sdk-react-core";
 import {SolanaWalletConnectors} from "@dynamic-labs/solana";
 import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
+import {Toaster} from "@/components/ui/toaster";
 
 const stytch = createStytchUIClient(
 	process.env.STYTCH_PUBLIC_TOKEN ||
@@ -30,6 +31,7 @@ export default function App({Component, pageProps}) {
 					</StoreProvider>
 				</StytchProvider>
 			</DynamicContextProvider>
+			<Toaster/>
 		</>
 	)
 }

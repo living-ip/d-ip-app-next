@@ -10,11 +10,10 @@ import {getCookie} from "cookies-next";
 import {EditChangeLayout} from "@/components/EditChangeLayout";
 import {FiEdit3} from "react-icons/fi";
 
-
-export default function Index({project, document, change}) {
-	const decodedContent = Buffer.from(document.content, 'base64').toString("utf-8");
-	const [pageData, setPageData] = useState(decodedContent);
-	const router = useRouter();
+export default function Index({ project, document, change }) {
+  const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
+  const [pageData, setPageData] = useState(decodedContent);
+  const router = useRouter();
 
 	const editorCallback = (data) => {
 		setPageData(data);
