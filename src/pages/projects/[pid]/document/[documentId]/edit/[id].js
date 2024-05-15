@@ -9,11 +9,13 @@ import {getDocument} from "@/lib/document";
 import {getCookie} from "cookies-next";
 import {EditChangeLayout} from "@/components/EditChangeLayout";
 import {FiEdit3} from "react-icons/fi";
+import {useToast} from "@/components/ui/use-toast";
 
 export default function Index({ project, document, change }) {
   const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
   const [pageData, setPageData] = useState(decodedContent);
   const router = useRouter();
+	const { toast } = useToast();
 
 	const editorCallback = (data) => {
 		setPageData(data);
@@ -29,6 +31,10 @@ export default function Index({ project, document, change }) {
 		console.log(response);
 		//TODO: Update with modal saying successfully saved
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
+		toast({
+			title: "Draft saved",
+			description: "Your draft has been saved. To make it accessible to the public, you must publish it.",
+		})
 	};
 
 	const publishHandler = async () => {
@@ -42,6 +48,10 @@ export default function Index({ project, document, change }) {
 		console.log("Publishing Change", pageData);
 		await publishChange(change.cid, getCookie("stytch_session_jwt"));
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`);
+		toast({
+			title: "Edit published",
+			description: "Your edited submission has been made public and is now open for voting.",
+		})
 	};
 
 	return (
