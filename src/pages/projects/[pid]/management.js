@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Layout} from "@/components/ui/layout";
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
@@ -16,9 +16,12 @@ import {
 } from "@/lib/admin";
 import {authStytchRequest} from "@/lib/stytch";
 import {getCookie} from "cookies-next";
+import {initializeStore, useStore} from "@/lib/store";
+import {getUserProfile, getUserRoles} from "@/lib/user";
 
 export default function ManagementPanel({pid, changesRules, votingRules, initialUserList}) {
 	const router = useRouter();
+	const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
 	const timeframes = [
 		{
 			"label": "1 hour",
@@ -296,6 +299,9 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 									<TableCell className="font-medium">{user.email}</TableCell>
 									<TableCell>{user.name}</TableCell>
 									<TableCell>
+										{(user.role === "admin" || roles.indexOf(user.role) <= roles.indexOf(userRoles.find((role) => role.project === currentProject).role.name)) ? (
+											<div>{user.role}</div>
+											) : (
 										<Select onValueChange={(newRole) => handleRoleChange(user.uid, newRole)}>
 											<SelectTrigger id="role">
 												<SelectValue>{user.role}</SelectValue>
@@ -306,6 +312,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 												))}
 											</SelectContent>
 										</Select>
+										)}
 									</TableCell>
 								</TableRow>
 							))}
@@ -328,6 +335,16 @@ export async function getServerSideProps({req, query}) {
 		};
 	}
 	const sessionJWT = req.cookies["stytch_session_jwt"];
+	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+	if (!userProfile) {
+    return {
+      redirect: {
+        destination: "/onboard",
+        permanent: false,
+      },
+    };
+  }
+
 	const {pid} = query;
 	const changesRules = await getChangesRules(pid, sessionJWT);
 	const votingRules = await getVotingRules(pid, sessionJWT);
@@ -341,12 +358,24 @@ export async function getServerSideProps({req, query}) {
 		};
 	}
 
+	const userRoles = await getUserRoles(session.user_id, sessionJWT);
+  console.log("User Roles: ", userRoles);
+
+  const zustandServerStore = initializeStore({
+    userProfile,
+    userRoles,
+    currentProject: pid,
+  });
+
 	return {
 		props: {
 			pid,
 			changesRules,
 			votingRules,
-			initialUserList
+			initialUserList,
+			initialZustandState: JSON.parse(
+        JSON.stringify(zustandServerStore.getState())
+      ),
 		}
 	};
 }
