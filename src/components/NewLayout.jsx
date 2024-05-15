@@ -9,7 +9,7 @@ import {
 	AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import {useStore} from "@/lib/store";
-import {ProfileHeader} from "@/components/custom/ProfileHeader";
+import {NewNavBar} from "@/components/custom/NewNavBar";
 
 export function NewLayout({children}) {
 	const [navbarHeight, setNavbarHeight] = useState(0);
@@ -30,7 +30,7 @@ export function NewLayout({children}) {
 
 	return (
 		<div className="flex flex-col pb-6 bg-neutral-100 h-screen px-8 overflow-y-auto">
-			<ProfileHeader/>
+			<NewNavBar/>
 			{children}
 			<AlertDialog open={invalidPermissionsDialogOpen} onOpenChange={handleDialogClose}>
 				<AlertDialogContent>
