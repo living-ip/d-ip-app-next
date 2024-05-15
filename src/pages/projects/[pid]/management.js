@@ -271,14 +271,14 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 						<label className="block mb-2" htmlFor="total-votes">
 							Minimum number of total votes required for a change to be able to pass:
 						</label>
-						<Input id="total-votes" type="number" placeholder={votingRules.min_votes_required} min="1"
+						<Input id="total-votes" type="number" placeholder={positiveVotesPercentage} value={minimumVotes} min="1"
 						       className="w-[64px]" onChange={handleMinimumVotesChange}/>
 					</div>
 					<div>
 						<label className="block mb-2" htmlFor="positive-votes">
 							What percentage of votes need to be positive for a change to be able to pass:
 						</label>
-						<Input id="positive-votes" type="number" placeholder={votingRules.min_votes_percentage * 100} min="1"
+						<Input id="positive-votes" type="number" placeholder={positiveVotesPercentage} value={positiveVotesPercentage} min="1"
 						       className="w-[64px]" onChange={handlePositiveVotesPercentageChange}/>
 					</div>
 					<Button className="mt-4" onClick={saveVotingRuleChanges}>Save Changes</Button>
