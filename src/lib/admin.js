@@ -39,6 +39,24 @@ export async function addUserToProject(project_id, email, jwt) {
   return response;
 }
 
+
+export async function removeUserFromProject(project_id, user_id, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${project_id}/admin/users/${user_id}`);
+  const func = () => fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, undefined);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+
 export async function updateProjectUserRole(project_id, user_id, role, jwt) {
   const url = new URL(`${LIP_API_BASE}/project/${project_id}/admin/users/${user_id}/role`);
   const func = () => fetch(url, {
