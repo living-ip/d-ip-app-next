@@ -40,10 +40,6 @@ export default function Index({project, document, changes}) {
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit/${change.cid}`);
 	};
 
-	const existingEditHandler = async (changeId) => {
-		await router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${changeId}`);
-	};
-
 	return (
 		<NewLayout>
 			<main
@@ -64,9 +60,11 @@ export default function Index({project, document, changes}) {
 								<Button>New Change</Button>
 							</DialogTrigger>
 						) : (
-							<Button onClick={() => setInvalidPermissionsDialogOpen(true)}>
-								New Change
-							</Button>
+							<>
+								<Button onClick={() => setInvalidPermissionsDialogOpen(true)}>
+									New Change
+								</Button>
+							</>
 						)}
 						<DialogContent className="min-w-full h-screen justify-center items-center">
 							<div className={"flex flex-col"}>
@@ -129,7 +127,22 @@ export default function Index({project, document, changes}) {
 				</div>
 				{
 					changes.map((change, index) => (
-						<DocumentEditCard key={index} project={project} document={document} change={change}/>
+						change.published ?
+							<div key={index} onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/vote/${encodeURIComponent(change.cid)}`)}>
+								<DocumentEditCard
+									key={index}
+									project={project}
+									document={document}
+									change={change}
+								/>
+							</div>
+							:
+							<DocumentEditCard
+								key={index}
+								project={project}
+								document={document}
+								change={change}
+							/>
 					))
 				}
 			</main>
