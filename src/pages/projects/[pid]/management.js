@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Layout} from "@/components/ui/layout";
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
@@ -10,6 +10,7 @@ import {
 	getChangesRules,
 	getProjectUsers,
 	getVotingRules,
+	removeUserFromProject,
 	updateChangesRules,
 	updateProjectUserRole,
 	updateVotingRules
@@ -179,7 +180,15 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			return;
 		}
 		setEmail("");
-		setUserList(userList.append(result));
+		setUserList(userList => [...userList, result]);
+	}
+
+	async function handleRemoveUser(uid) {
+		const result = await removeUserFromProject(pid, uid, getCookie("stytch_session_jwt"));
+		if (!result) {
+			return;
+		}
+		setUserList(userList => userList.filter(user => user.uid !== uid));
 	}
 
 	return (
@@ -291,6 +300,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 								<TableHead>Email</TableHead>
 								<TableHead>Name</TableHead>
 								<TableHead>Role</TableHead>
+								<TableHead>Remove</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -301,17 +311,24 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 									<TableCell>
 										{(user.role === "admin" || roles.indexOf(user.role) <= roles.indexOf(userRoles.find((role) => role.project === currentProject).role.name)) ? (
 											<div>{user.role}</div>
-											) : (
-										<Select onValueChange={(newRole) => handleRoleChange(user.uid, newRole)}>
-											<SelectTrigger id="role">
-												<SelectValue>{user.role}</SelectValue>
-											</SelectTrigger>
-											<SelectContent position="popper">
-												{roles.map(role => (
-													<SelectItem key={role} value={role}>{role}</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
+										) : (
+											<Select onValueChange={(newRole) => handleRoleChange(user.uid, newRole)}>
+												<SelectTrigger id="role">
+													<SelectValue>{user.role}</SelectValue>
+												</SelectTrigger>
+												<SelectContent position="popper">
+													{roles.map(role => (
+														<SelectItem key={role} value={role}>{role}</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+										)}
+									</TableCell>
+									<TableCell>
+										{(user.role === "admin" || roles.indexOf(user.role) <= roles.indexOf(userRoles.find((role) => role.project === currentProject).role.name)) ? (
+											<Button disabled>Remove</Button>
+										) : (
+											<Button onClick={() => handleRemoveUser(user.uid)}>Remove</Button>
 										)}
 									</TableCell>
 								</TableRow>
@@ -337,13 +354,13 @@ export async function getServerSideProps({req, query}) {
 	const sessionJWT = req.cookies["stytch_session_jwt"];
 	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
 	if (!userProfile) {
-    return {
-      redirect: {
-        destination: "/onboard",
-        permanent: false,
-      },
-    };
-  }
+		return {
+			redirect: {
+				destination: "/onboard",
+				permanent: false,
+			},
+		};
+	}
 
 	const {pid} = query;
 	const changesRules = await getChangesRules(pid, sessionJWT);
@@ -359,13 +376,13 @@ export async function getServerSideProps({req, query}) {
 	}
 
 	const userRoles = await getUserRoles(session.user_id, sessionJWT);
-  console.log("User Roles: ", userRoles);
+	console.log("User Roles: ", userRoles);
 
-  const zustandServerStore = initializeStore({
-    userProfile,
-    userRoles,
-    currentProject: pid,
-  });
+	const zustandServerStore = initializeStore({
+		userProfile,
+		userRoles,
+		currentProject: pid,
+	});
 
 	return {
 		props: {
@@ -374,8 +391,8 @@ export async function getServerSideProps({req, query}) {
 			votingRules,
 			initialUserList,
 			initialZustandState: JSON.parse(
-        JSON.stringify(zustandServerStore.getState())
-      ),
+				JSON.stringify(zustandServerStore.getState())
+			),
 		}
 	};
 }
