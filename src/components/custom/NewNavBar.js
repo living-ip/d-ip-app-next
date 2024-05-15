@@ -5,6 +5,7 @@ import {NavigationMenu, NavigationMenuItem, NavigationMenuList} from "@/componen
 import {Button} from "@/components/ui/button";
 import {DynamicWidget} from "@dynamic-labs/sdk-react-core";
 import {useStore} from "@/lib/store";
+import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
 
 export function NewNavBar() {
 	const router = useRouter();
@@ -49,7 +50,7 @@ export function NewNavBar() {
 							</Button>
 						</NavigationMenuItem>
 						<NavigationMenuItem>
-							<DynamicWidget innerButtonComponent={<Button>Connect Wallet</Button>}/>
+							<ConnectWalletButton/>
 						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>
