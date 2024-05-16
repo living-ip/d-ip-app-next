@@ -128,7 +128,8 @@ export default function Index({project, document, changes}) {
 				{
 					changes.map((change, index) => (
 						change.published ?
-							<div key={index} onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/vote/${encodeURIComponent(change.cid)}`)}>
+							<div key={index} className="cursor-pointer"
+							     onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/vote/${encodeURIComponent(change.cid)}`)}>
 								<DocumentEditCard
 									key={index}
 									project={project}
@@ -151,9 +152,7 @@ export default function Index({project, document, changes}) {
 
 }
 
-export const getServerSideProps = async ({
-	                                         req, query
-                                         }) => {
+export const getServerSideProps = async ({req, query}) => {
 	const {session} = await authStytchRequest(req);
 	if (!session) {
 		return {

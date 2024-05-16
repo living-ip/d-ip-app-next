@@ -12,9 +12,12 @@ export default function ConnectWalletButton({}) {
 		)
 	}
 	return (
-		<Button onClick={(e) => {
-			e.preventDefault();
-			setShowAuthFlow(true)
-		}}>Connect Wallet</Button>
+		<Button variant="outline" className="text-green-600"
+		        onClick={(e) => {
+			        e.preventDefault();
+			        setShowAuthFlow(true)
+		        }}>
+			Connect Wallet
+		</Button>
 	)
 }

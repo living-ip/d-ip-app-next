@@ -11,6 +11,23 @@ import {getDocument} from "@/lib/document";
 import {getCookie} from "cookies-next";
 import {getUserRoles} from "@/lib/user";
 import {initializeStore, useStore} from "@/lib/store";
+import {VotingForm} from "@/components/custom/VotingForm";
+import Image from "next/image";
+import {NewLayout} from "@/components/NewLayout";
+import {VotingOngoingBadge} from "@/components/custom/VotingOngoingBadge";
+
+function Results() {
+	return (
+		<div className="flex flex-col px-12 py-10 mt-4 leading-5 text-center text-neutral-600 max-md:px-5">
+			<Image
+				src="/living-ip.png"
+				alt="" className="self-center w-8 shadow-md aspect-square"
+				width="64" height="64"
+			/>
+			<p className="mt-2.5">Results become visible after casting period has ended.</p>
+		</div>
+	);
+}
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
 	const router = useRouter();
@@ -78,37 +95,49 @@ export default function Index({project, document, change, changeVotes, userVoteP
 	};
 
 	return (
-		<Layout>
-			<div className="flex max-h-screen">
-				<div className="w-1/4 pr-6 mt-10">
-					<h1 className="text-4xl font-extrabold">{change.name}</h1>
-					<div className="col-1 space-y-4 space-x-2 mt-8">
-						<Button variant="outline" onClick={goToVotes}>
-							Back to Changes
-						</Button>
-						<Button onClick={goToDocument}>
-							See Document
-						</Button>
-					</div>
-					<div className="mt-4 ml-2 text-2xl font-bold pt-4">Vote Here</div>
-					<div className="py-2">
-						<Button variant={userVote === -1 ? "" : "outline"} onClick={decrementVote}>
-							-1
-						</Button>
-						<Button variant={userVote === 1 ? "" : "outline"} className="mx-8" onClick={incrementVote}>
-							+1
-						</Button>
-					</div>
-					<div className="text-xl">Total Votes: {totalVotes}</div>
-				</div>
+		<NewLayout>
+			<div className="flex flex-col justify-center pb-6 bg-neutral-100">
+				<main
+					className="flex flex-col items-start p-8 w-full bg-white rounded-3xl max-md:px-5 max-md:max-w-full">
+					<VotingOngoingBadge/>
+					<h1 className="mt-7 text-3xl text-neutral-950 max-md:max-w-full">{change.name}</h1>
+					<p className="mt-2 text-sm text-neutral-600 w-[722px] max-md:max-w-full">{change.description}</p>
+					<section className="mt-7 mb-40 max-md:mb-10 max-md:max-w-full">
+						<div className="flex gap-5 max-md:flex-col max-md:gap-0">
+							<article className="flex flex-col w-[69%] max-md:ml-0 max-md:w-full">
+								<div
+									className="flex flex-col p-8 w-full text-base rounded-2xl bg-zinc-50 text-neutral-600 max-md:px-5 max-md:mt-6 max-md:max-w-full">
+									{files.map(renderFile)}
+								</div>
+							</article>
+							<aside className="flex flex-col ml-5 w-[31%] max-md:ml-0 max-md:w-full">
+								<VotingForm/>
+								<h2 className="mt-4 text-lg">Results</h2>
+								<Results/>
+							</aside>
+						</div>
+					</section>
+				</main>
+			</div>
+
+				{/*<Button variant={userVote === -1 ? "" : "outline"} onClick={decrementVote}>*/}
+				{/*	-1*/}
+				{/*</Button>*/}
+				{/*<Button variant={userVote === 1 ? "" : "outline"} className="mx-8" onClick={incrementVote}>*/}
+				{/*	+1*/}
+				{/*</Button>*/}
+
+				{/*<div className="text-xl">Total Votes: {totalVotes}</div>*/}
+
 				<div className="flex-1 max-w-full max-h-screen p-4 ml-2 border-l mt-14 lg:prose-md">
 					<div className="h-full px-5 -mt-6 overflow-x-scroll overflow-y-scroll">
 						{files.map(renderFile)}
 					</div>
 				</div>
-			</div>
-		</Layout>
-	);
+
+		</NewLayout>
+	)
+
 }
 
 export const getServerSideProps = async ({req, query}) => {
