@@ -6,7 +6,8 @@ import {Button} from "@/components/ui/button";
 import {useStore} from "@/lib/store";
 import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
-import {deleteCookie, setCookie} from "cookies-next";
+import {deleteCookie} from "cookies-next";
+import {Avatar, AvatarImage} from "@/components/ui/avatar";
 
 export function NewNavBar() {
 	const router = useRouter();
@@ -51,9 +52,14 @@ export function NewNavBar() {
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<Button variant="ghost"
-									        className="flex flex-row justify-center items-center gap-1.5 bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]">
-										<Image loading="lazy" src={userProfile.img_uri} alt={initials}
-										       className="shrink-0 my-auto rounded-full aspect-square" width={32} height={32}/>
+									        className="pl-0 rounded rounded-l-full flex flex-row justify-center items-center gap-1.5 bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]">
+										<Avatar className="relative inline-block w-9 h-9">
+											<AvatarImage
+												src={userProfile.image_uri}
+												alt={initials}
+												className="rounded-full object-cover"
+											/>
+										</Avatar>
 										<div className="text-sm text-neutral-950">{userProfile.name}</div>
 									</Button>
 								</DropdownMenuTrigger>
