@@ -4,6 +4,8 @@ import {Layout} from "@/components/ui/layout";
 import {getProject} from "@/lib/project";
 import {getDocument, getDocumentChanges} from "@/lib/document";
 import {getChangeVotes} from "@/lib/change";
+import {getUserProfile} from "@/lib/user";
+import {initializeStore} from "@/lib/store";
 
 export default function Index({ project, document, changesWithVotes}) {
   const router = useRouter();
@@ -83,11 +85,18 @@ export const getServerSideProps = async ({req, query}) => {
   );
   console.log("Changes with Votes: ", changesWithVotes);
 
+  const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+	const zustandServerStore = initializeStore({
+    user: userProfile,
+  });
+
   return {
     props: {
       project: project,
       document: document,
       changesWithVotes: changesWithVotes,
+      initialZustandState: JSON.parse(
+          JSON.stringify(zustandServerStore.getState())),
     },
   };
 };

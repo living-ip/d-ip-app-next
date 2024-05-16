@@ -8,6 +8,8 @@ import Image from "next/image";
 import {IoArrowBackOutline} from "react-icons/io5";
 import {NewLayout} from "@/components/NewLayout";
 import {WantMoreComponent} from "@/components/custom/WantMoreComponent";
+import {getUserProfile} from "@/lib/user";
+import {initializeStore} from "@/lib/store";
 
 
 export default function Index({project, document}) {
@@ -103,10 +105,18 @@ export const getServerSideProps = async ({req, query}) => {
 	const document = await getDocument(documentId, sessionJWT);
 	console.log("Document: ", document);
 
+	// get user
+	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+	const zustandServerStore = initializeStore({
+    user: userProfile,
+  });
+
 	return {
 		props: {
 			project,
 			document,
+			initialZustandState: JSON.parse(
+          JSON.stringify(zustandServerStore.getState())),
 		},
 	};
 };

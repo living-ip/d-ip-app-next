@@ -5,7 +5,7 @@ import "react-diff-view/style/index.css";
 import {getChange, getChangeVotes} from "@/lib/change";
 import {getProject} from "@/lib/project";
 import {getDocument} from "@/lib/document";
-import {getUserRoles} from "@/lib/user";
+import {getUserProfile, getUserRoles} from "@/lib/user";
 import {initializeStore, useStore} from "@/lib/store";
 import {VotingForm} from "@/components/custom/VotingForm";
 import {NewLayout} from "@/components/NewLayout";
@@ -134,9 +134,12 @@ export const getServerSideProps = async ({req, query}) => {
 	const userRoles = await getUserRoles(session.user_id, sessionJWT);
 	console.log("User Roles: ", userRoles);
 
+	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+
 	const zustandServerStore = initializeStore({
 		userRoles,
 		currentProject: pid,
+		user: userProfile,
 	});
 
 

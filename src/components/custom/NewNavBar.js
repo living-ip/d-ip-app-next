@@ -3,13 +3,16 @@ import * as React from "react";
 import {useRouter} from "next/router";
 import {NavigationMenu, NavigationMenuItem, NavigationMenuList} from "@/components/ui/navigation-menu";
 import {Button} from "@/components/ui/button";
-import {DynamicWidget} from "@dynamic-labs/sdk-react-core";
 import {useStore} from "@/lib/store";
 import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 
 export function NewNavBar() {
 	const router = useRouter();
 	const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
+	const userProfile = useStore((state) => state.userProfile);
+
+	const initials = userProfile.name.split(' ').map((n) => n[0]).join('');
 
 	return (
 		<div className="flex gap-5 justify-between py-3 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
@@ -22,29 +25,20 @@ export function NewNavBar() {
 				height={24}
 				onClick={() => router.push('/')}
 			/>
-			<div className="flex gap-1.5 px-2 py-1 rounded">
-				{/*TODO: Uncomment once user information is accessible in the Navbar*/}
-				{/*<Image loading="lazy" src="/profile/Profile_Picture.svg" alt="Profile Picture"*/}
-				{/*       className="shrink-0 my-auto w-8 rounded-full aspect-square" width={32} height={32}/>*/}
-				{/*<div className="flex flex-col">*/}
-				{/*  <div className="text-sm leading-5 text-neutral-950"> Martin Park</div>*/}
-				{/*  <div className="text-xs leading-4 text-zinc-500">0xj7...k68</div>*/}
-				{/*</div>*/}
-			</div>
 			{router.pathname !== '/onboard' && (
 				<NavigationMenu>
 					<NavigationMenuList className="space-x-4">
 						{userRoles.find((role) => role.project === currentProject && role.role.access_admin_panel) && (
 							<NavigationMenuItem>
 								<Button variant="outline"
-									onClick={() => router.push(`/projects/${currentProject}/management`)}>
+								        onClick={() => router.push(`/projects/${currentProject}/management`)}>
 									Management
 								</Button>
 							</NavigationMenuItem>
 						)}
 						<NavigationMenuItem>
 							<Button className="bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]" variant="ghost"
-								onClick={() => router.push('/projects/pid-76047bbe1fc241959bb636eaa4d6e27f/document/did-1569a552a4894b90af40f7a3d511abf4')}
+							        onClick={() => router.push('/projects/pid-76047bbe1fc241959bb636eaa4d6e27f/document/did-1569a552a4894b90af40f7a3d511abf4')}
 							>
 								User Guide
 							</Button>
@@ -52,8 +46,29 @@ export function NewNavBar() {
 						<NavigationMenuItem>
 							<ConnectWalletButton/>
 						</NavigationMenuItem>
+						<NavigationMenuItem>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="ghost"
+									        className="flex flex-row justify-center items-center gap-1.5 bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]">
+										<Image loading="lazy" src={userProfile.img_uri} alt={initials}
+										       className="shrink-0 my-auto rounded-full aspect-square" width={32} height={32}/>
+										<div className="text-sm text-neutral-950">{userProfile.name}</div>
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent>
+									<DropdownMenuItem onClick={() => router.push('/profile')}>Profile</DropdownMenuItem>
+									{/*TODO: Fix this so that it logs you out*/}
+									<DropdownMenuItem onClick={() => {
+										localStorage.removeItem('user');
+										router.push('/');
+									}}>Log Out</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>
 			)}
-		</div>);
+		</div>
+	);
 }
