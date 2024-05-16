@@ -1,51 +1,28 @@
-import {Button} from "@/components/ui/button";
-import {useRouter} from "next/router";
 import {useState} from "react";
 import {authStytchRequest} from "@/lib/stytch";
 import {Diff, Hunk, parseDiff} from "react-diff-view";
 import "react-diff-view/style/index.css";
-import {getChange, getChangeVotes, voteOnChange} from "@/lib/change";
-import {Layout} from "@/components/ui/layout";
+import {getChange, getChangeVotes} from "@/lib/change";
 import {getProject} from "@/lib/project";
 import {getDocument} from "@/lib/document";
-import {getCookie} from "cookies-next";
 import {getUserRoles} from "@/lib/user";
 import {initializeStore, useStore} from "@/lib/store";
 import {VotingForm} from "@/components/custom/VotingForm";
-import Image from "next/image";
 import {NewLayout} from "@/components/NewLayout";
 import {VotingOngoingBadge} from "@/components/custom/VotingOngoingBadge";
-
-function Results() {
-	return (
-		<div className="flex flex-col px-12 py-10 mt-4 leading-5 text-center text-neutral-600 max-md:px-5">
-			<Image
-				src="/living-ip.png"
-				alt="" className="self-center w-8 shadow-md aspect-square"
-				width="64" height="64"
-			/>
-			<p className="mt-2.5">Results become visible after casting period has ended.</p>
-		</div>
-	);
-}
+import {ResultsCard} from "@/components/custom/ResultsCard";
+import {AwaitResults} from "@/components/custom/AwaitResults";
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
-	const router = useRouter();
 	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
 		[state.userRoles, state.setInvalidPermissionsDialogOpen]
 	);
-	const [totalVotes, setTotalVotes] = useState(changeVotes.count || 0);
 	const [userVote, setUserVote] = useState(userVoteProp);
 
-	const goToVotes = () => {
-		router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`);
-	};
-
-	const goToDocument = () => {
-		router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
-	}
-
 	const files = parseDiff(change.diff_data);
+
+	console.log("change: ", change);
+	console.log("changeVotes: ", changeVotes);
 
 	const renderFile = ({oldRevision, newRevision, type, hunks}) => (
 		<Diff
@@ -66,33 +43,12 @@ export default function Index({project, document, change, changeVotes, userVoteP
 		return true;
 	}
 
-	const incrementVote = async () => {
-		if (!userCanVote()) {
-			return;
-		}
-		const result = await voteOnChange(change.cid, {vote: 1}, getCookie("stytch_session_jwt"));
-		if (!result) {
-			return;
-		}
-		if (userVote === 0) {
-			setTotalVotes(totalVotes + 1);
-		}
-		setUserVote(1);
-	};
-
-	const decrementVote = async () => {
-		if (!userCanVote()) {
-			return;
-		}
-		const result = await voteOnChange(change.cid, {vote: -1}, getCookie("stytch_session_jwt"));
-		if (!result) {
-			return;
-		}
-		if (userVote === 0) {
-			setTotalVotes(totalVotes + 1);
-		}
-		setUserVote(-1);
-	};
+	const ResultsSection = () => (
+		<>
+			<h2 className="mt-4 text-lg">Results</h2>
+			<AwaitResults/>
+		</>
+	);
 
 	return (
 		<NewLayout>
@@ -106,35 +62,33 @@ export default function Index({project, document, change, changeVotes, userVoteP
 						<div className="flex gap-5 max-md:flex-col max-md:gap-0">
 							<article className="flex flex-col w-[69%] max-md:ml-0 max-md:w-full">
 								<div
-									className="flex flex-col p-8 w-full text-base rounded-2xl bg-zinc-50 text-neutral-600 max-md:px-5 max-md:mt-6 max-md:max-w-full">
-									{files.map(renderFile)}
+									className="flex flex-col p-8 w-full max-h-screen text-base rounded-2xl bg-zinc-50 text-neutral-600 max-md:px-5 max-md:mt-6 max-md:max-w-full">
+									<div className="h-full px-5 -mt-6 overflow-x-scroll overflow-y-scroll">
+										{files.map(renderFile)}
+									</div>
 								</div>
 							</article>
 							<aside className="flex flex-col ml-5 w-[31%] max-md:ml-0 max-md:w-full">
-								<VotingForm/>
-								<h2 className="mt-4 text-lg">Results</h2>
-								<Results/>
+								{(change.closed || change.merged) ? (
+									<ResultsCard change={change} />
+								) : (
+									userCanVote() ? (
+										<>
+											<VotingForm change={change} userVote={userVote} setUserVote={setUserVote}/>
+											<ResultsSection/>
+										</>
+									) : (
+										<>
+											<h2 className="mt-4 text-lg">Results</h2>
+											<ResultsSection/>
+										</>
+									)
+								)}
 							</aside>
 						</div>
 					</section>
 				</main>
 			</div>
-
-				{/*<Button variant={userVote === -1 ? "" : "outline"} onClick={decrementVote}>*/}
-				{/*	-1*/}
-				{/*</Button>*/}
-				{/*<Button variant={userVote === 1 ? "" : "outline"} className="mx-8" onClick={incrementVote}>*/}
-				{/*	+1*/}
-				{/*</Button>*/}
-
-				{/*<div className="text-xl">Total Votes: {totalVotes}</div>*/}
-
-				<div className="flex-1 max-w-full max-h-screen p-4 ml-2 border-l mt-14 lg:prose-md">
-					<div className="h-full px-5 -mt-6 overflow-x-scroll overflow-y-scroll">
-						{files.map(renderFile)}
-					</div>
-				</div>
-
 		</NewLayout>
 	)
 
