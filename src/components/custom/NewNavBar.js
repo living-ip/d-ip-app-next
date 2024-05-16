@@ -6,6 +6,7 @@ import {Button} from "@/components/ui/button";
 import {useStore} from "@/lib/store";
 import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {deleteCookie, setCookie} from "cookies-next";
 
 export function NewNavBar() {
 	const router = useRouter();
@@ -58,9 +59,8 @@ export function NewNavBar() {
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
 									<DropdownMenuItem onClick={() => router.push('/profile')}>Profile</DropdownMenuItem>
-									{/*TODO: Fix this so that it logs you out*/}
 									<DropdownMenuItem onClick={() => {
-										localStorage.removeItem('user');
+										deleteCookie('stytch_session_jwt');
 										router.push('/');
 									}}>Log Out</DropdownMenuItem>
 								</DropdownMenuContent>
