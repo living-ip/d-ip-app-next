@@ -12,6 +12,8 @@ import {NewLayout} from "@/components/NewLayout";
 import {VotingOngoingBadge} from "@/components/custom/VotingOngoingBadge";
 import {ResultsCard} from "@/components/custom/ResultsCard";
 import {AwaitResults} from "@/components/custom/AwaitResults";
+import {VoteNotPassedBadge} from "@/components/custom/VoteNotPassedBadge";
+import {VotePassedBadge} from "@/components/custom/VotePassedBadge";
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
 	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
@@ -55,7 +57,13 @@ export default function Index({project, document, change, changeVotes, userVoteP
 			<div className="flex flex-col justify-center pb-6 bg-neutral-100">
 				<main
 					className="flex flex-col items-start p-8 w-full bg-white rounded-3xl max-md:px-5 max-md:max-w-full">
-					<VotingOngoingBadge/>
+					{!change.closed && !change.merged ? (
+						<VotingOngoingBadge/>
+					) : change.closed ? (
+						<VoteNotPassedBadge/>
+					) : (
+						<VotePassedBadge/>
+					)}
 					<h1 className="mt-7 text-3xl text-neutral-950 max-md:max-w-full">{change.name}</h1>
 					<p className="mt-2 text-sm text-neutral-600 w-[722px] max-md:max-w-full">{change.description}</p>
 					<section className="mt-7 mb-40 max-md:mb-10 max-md:max-w-full">
@@ -70,7 +78,7 @@ export default function Index({project, document, change, changeVotes, userVoteP
 							</article>
 							<aside className="flex flex-col ml-5 w-[31%] max-md:ml-0 max-md:w-full">
 								{(change.closed || change.merged) ? (
-									<ResultsCard change={change} />
+									<ResultsCard change={change} changeVotes={changeVotes}/>
 								) : (
 									userCanVote() ? (
 										<>
@@ -138,7 +146,6 @@ export const getServerSideProps = async ({req, query}) => {
 		userRoles,
 		currentProject: pid,
 	});
-
 
 	return {
 		props: {
