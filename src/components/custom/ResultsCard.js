@@ -53,16 +53,12 @@ export function ResultsCard({change, changeVotes}) {
 			            colorClass="bg-[#DC2626]"/>
 			<div className="mt-8 text-lg leading-7 text-neutral-950">Voters</div>
 			<div className="mt-3 text-base font-medium leading-6 text-neutral-600">Approved</div>
-			{positiveVotes.map(voter => (
-				<VoterItem name={voter.name}
-				           src={voter.avatar}
-				/>
+			{positiveVotes.map((voter, index) => (
+				<VoterItem key={index} name={voter.name} src={voter.avatar}/>
 			))}
 			<div className="mt-2 text-base font-medium leading-6 text-neutral-600">Rejected</div>
-			{negativeVotes.map(voter => (
-				<VoterItem name={voter.name}
-				           src={voter.avatar}
-				/>
+			{negativeVotes.map((voter, index) => (
+				<VoterItem key={index} name={voter.name} src={voter.avatar}/>
 			))}
 		</section>
 	)
