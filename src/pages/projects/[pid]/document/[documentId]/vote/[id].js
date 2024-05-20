@@ -1,4 +1,3 @@
-import {useState} from "react";
 import {authStytchRequest} from "@/lib/stytch";
 import {Diff, Hunk, parseDiff} from "react-diff-view";
 import "react-diff-view/style/index.css";
@@ -6,21 +5,12 @@ import {getChange, getChangeVotes} from "@/lib/change";
 import {getProject} from "@/lib/project";
 import {getDocument} from "@/lib/document";
 import {getUserRoles} from "@/lib/user";
-import {initializeStore, useStore} from "@/lib/store";
-import {VotingForm} from "@/components/custom/VotingForm";
+import {initializeStore} from "@/lib/store";
 import {NewLayout} from "@/components/NewLayout";
-import {VotingOngoingBadge} from "@/components/custom/VotingOngoingBadge";
-import {ResultsCard} from "@/components/custom/ResultsCard";
-import {AwaitResults} from "@/components/custom/AwaitResults";
-import {VoteNotPassedBadge} from "@/components/custom/VoteNotPassedBadge";
-import {VotePassedBadge} from "@/components/custom/VotePassedBadge";
+import {VoteResultsSection} from "@/components/custom/VoteResultsSection";
+import {VoteBadge} from "@/components/custom/VoteBadge";
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
-	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
-		[state.userRoles, state.setInvalidPermissionsDialogOpen]
-	);
-	const [userVote, setUserVote] = useState(userVoteProp);
-
 	const files = parseDiff(change.diff_data);
 
 	console.log("change: ", change);
@@ -37,33 +27,12 @@ export default function Index({project, document, change, changeVotes, userVoteP
 		</Diff>
 	);
 
-	const userCanVote = () => {
-		if (!userRoles.find((role) => role.project === project.pid && role.role.vote_on_change)) {
-			setInvalidPermissionsDialogOpen(true);
-			return false;
-		}
-		return true;
-	}
-
-	const ResultsSection = () => (
-		<>
-			<h2 className="mt-4 text-lg">Results</h2>
-			<AwaitResults/>
-		</>
-	);
-
 	return (
 		<NewLayout>
 			<div className="flex flex-col justify-center pb-6 bg-neutral-100">
 				<main
 					className="flex flex-col items-start p-8 w-full bg-white rounded-3xl max-md:px-5 max-md:max-w-full">
-					{!change.closed && !change.merged ? (
-						<VotingOngoingBadge/>
-					) : change.closed ? (
-						<VoteNotPassedBadge/>
-					) : (
-						<VotePassedBadge/>
-					)}
+					<VoteBadge change={change}/>
 					<h1 className="mt-7 text-3xl text-neutral-950 max-md:max-w-full">{change.name}</h1>
 					<p className="mt-2 text-sm text-neutral-600 w-[722px] max-md:max-w-full">{change.description}</p>
 					<section className="mt-7 mb-40 max-md:mb-10 max-md:max-w-full">
@@ -77,21 +46,8 @@ export default function Index({project, document, change, changeVotes, userVoteP
 								</div>
 							</article>
 							<aside className="flex flex-col ml-5 w-[31%] max-md:ml-0 max-md:w-full">
-								{(change.closed || change.merged) ? (
-									<ResultsCard change={change} changeVotes={changeVotes}/>
-								) : (
-									userCanVote() ? (
-										<>
-											<VotingForm change={change} userVote={userVote} setUserVote={setUserVote}/>
-											<ResultsSection/>
-										</>
-									) : (
-										<>
-											<h2 className="mt-4 text-lg">Results</h2>
-											<ResultsSection/>
-										</>
-									)
-								)}
+								<VoteResultsSection project={project} change={change} changeVotes={changeVotes}
+								                    userVoteProp={userVoteProp}/>
 							</aside>
 						</div>
 					</section>

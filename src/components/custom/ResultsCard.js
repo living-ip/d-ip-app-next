@@ -1,7 +1,6 @@
 import Image from "next/image";
-import {PassedBadge} from "@/components/custom/PassedBadge";
-import {NotPassedBadge} from "@/components/custom/NotPassedBadge";
 import {Progress} from "@/components/ui/progress";
+import {ResultsBadge} from "@/components/custom/ResultsBadge";
 
 export function ResultsCard({change, changeVotes}) {
 
@@ -31,12 +30,8 @@ export function ResultsCard({change, changeVotes}) {
 	return (
 		<section className="flex flex-col px-5 max-md:mt-6">
 			<header className="flex gap-2.5 justify-between whitespace-nowrap">
-				<div className="text-lg leading-7 text-neutral-950">Results</div>
-				{change.closed ? (
-					<NotPassedBadge/>
-				) : (
-					<PassedBadge/>
-				)}
+				<div className="text-lg text-neutral-950">Results</div>
+				<ResultsBadge change={change}/>
 			</header>
 			<div className="flex gap-1 mt-3">
 				<Progress
