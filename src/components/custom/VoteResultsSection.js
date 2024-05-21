@@ -30,7 +30,6 @@ export function VoteResultsSection({project, change, changeVotes, userVoteProp})
 					</>
 				) : (
 					<>
-						<h2 className="mt-4 text-lg">Results</h2>
 						<VotingNotEndedCard/>
 					</>
 				)
