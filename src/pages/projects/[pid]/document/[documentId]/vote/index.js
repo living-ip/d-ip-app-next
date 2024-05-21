@@ -3,16 +3,23 @@ import {authStytchRequest} from "@/lib/stytch";
 import {getProject} from "@/lib/project";
 import {getDocument, getDocumentChanges} from "@/lib/document";
 import {getChangeVotes} from "@/lib/change";
-import {getUserProfile} from "@/lib/user";
 import {NewLayout} from "@/components/NewLayout";
-import {VoteCard} from "@/components/custom/VoteCard";
+import {ChangeCard} from "@/components/custom/ChangeCard";
+import {initializeStore} from "@/lib/store";
+import {getUserProfile, getUserRoles} from "@/lib/user";
 
-export default function Index({project, document, changesWithVotes, userProfile}) {
+export default function Index({project, document, changesWithVotes}) {
 	const router = useRouter();
+
+	console.log("Project: ", project);
+	console.log("Document: ", document);
+	console.log("Changes with Votes: ", changesWithVotes);
+
 
 	return (
 		<NewLayout>
-			<div className="flex flex-col self-center px-20 py-8 w-full bg-white h-screen border rounded-3xl max-md:px-5 max-md:max-w-full">
+			<div
+				className="flex flex-col self-center px-20 py-8 w-full bg-white h-screen border rounded-3xl max-md:px-5 max-md:max-w-full">
 				<div className="flex w-full mt-8 text-4xl font-extrabold ">{document.name}</div>
 				{/*TODO: Uncomment once lastEdit is served with document*/}
 				{/*<div className="self-start mt-2 text-sm leading-5 text-zinc-500">*/}
@@ -22,44 +29,46 @@ export default function Index({project, document, changesWithVotes, userProfile}
 				{/*	year: 'numeric'*/}
 				{/*})}*/}
 				{/*</div>*/}
-				<h2 className="text-xl text-neutral-950">Ongoing</h2>
-				<section className="mt-3 max-md:max-w-full">
+
+				<section className="mt-3 max-md:max-w-full py-4">
+					<h2 className="text-xl text-neutral-950 py-2">Ongoing</h2>
 					<div className="flex gap-5 max-md:flex-col max-md:gap-0">
-						{changesWithVotes.map((change, index) => (
-							(!change.closed && !change.merged) ? (
-								<VoteCard
-									key={index}
-									className="py-8 border-b-2 cursor-pointer "
-									change={change}
-									changeVotes={change.votes}
-									user={userProfile}
-									onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote/${change.cid}`)}
-								/>
-							) : (
-								<div key={index} className="p-4 cursor-pointer justify-between items-center">
-										No ongoing changes
-								</div>
-							)))}
+						{changesWithVotes.some(change => !change.closed && !change.merged) ? (
+							changesWithVotes.map((change, index) => (
+								(!change.closed && !change.merged) && (
+									<ChangeCard
+										key={index}
+										className="py-8 border-b-2 cursor-pointer"
+										change={change}
+										onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote/${change.cid}`)}
+									/>
+								)
+							))
+						) : (
+							<div className="p-4 justify-between items-center">
+								No ongoing changes
+							</div>
+						)}
 					</div>
 				</section>
-				<h2 className="text-xl text-neutral-950">Completed</h2>
-				<section className="mt-3 max-md:max-w-full">
+				<section className="mt-3 max-md:max-w-full py-4">
+					<h2 className="text-xl text-neutral-950 py-2">Completed</h2>
 					<div className="flex gap-5 max-md:flex-col max-md:gap-0">
-						{changesWithVotes.map((change, index) => (
-							((change.closed || change.merged) ? (
-								<VoteCard
-									key={index}
-									className="py-8 border-b-2 cursor-pointer"
-									change={change}
-									changeVotes={change.votes}
-									user={userProfile}
-									onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote/${change.cid}`)}
-								/>
-							) : (
-								<div key={index} className="p-4 cursor-pointer justify-between items-center">
-									No completed changes
-								</div>
-							))))}
+						{changesWithVotes.some(change => change.closed || change.merged) ? (
+							changesWithVotes.map((change, index) => (
+								(change.closed || change.merged) && (
+									<ChangeCard
+										key={index}
+										change={change}
+										onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote/${change.cid}`)}
+									/>
+								)
+							))
+						) : (
+							<div className="p-4 justify-between items-center">
+								No completed changes
+							</div>
+						)}
 					</div>
 				</section>
 			</div>
@@ -86,6 +95,14 @@ export const getServerSideProps = async ({
 
 	const sessionJWT = req.cookies["stytch_session_jwt"];
 	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+  if (!userProfile) {
+    return {
+      redirect: {
+        destination: "/onboard",
+        permanent: false,
+      },
+    };
+  }
 
 	const project = await getProject(pid, sessionJWT);
 	console.log("Project: ", project);
@@ -112,12 +129,21 @@ export const getServerSideProps = async ({
 	);
 	console.log("Changes with Votes: ", changesWithVotes);
 
+	const userRoles = await getUserRoles(session.user_id, sessionJWT);
+	const zustandServerStore = initializeStore({
+		userProfile,
+		userRoles,
+    currentProject: pid,
+	});
+
 	return {
 		props: {
 			project: project,
 			document: document,
 			changesWithVotes: changesWithVotes,
-			userProfile: userProfile,
+			initialZustandState: JSON.parse(
+				JSON.stringify(zustandServerStore.getState())
+			),
 		},
 	};
 };
