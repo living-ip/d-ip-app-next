@@ -20,7 +20,7 @@ export default function App({Component, pageProps}) {
 				<link rel="icon" href="https://storage.googleapis.com/syb_us_cdn/sibylline_favicon.png"/>
 			</Head>
 			<DynamicContextProvider
-				theme={"auto"}
+				theme={"light"}
 				settings={{
 					environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
 					walletConnectors: [SolanaWalletConnectors],

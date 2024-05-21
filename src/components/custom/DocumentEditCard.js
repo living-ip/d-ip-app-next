@@ -55,7 +55,7 @@ export function DocumentEditCard({project, document, change}) {
 							<Button variant="ghost" className="justify-center px-3 py-2 rounded bg-[#E8ECE6]"
 							        onClick={async () => {
 								        await publishChange(change.cid, getCookie("stytch_session_jwt"));
-								        router.reload();
+								        await router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/vote`);
 							        }}>
 								Publish
 							</Button>
