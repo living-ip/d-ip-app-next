@@ -5,6 +5,7 @@ import {NavigationMenu, NavigationMenuItem, NavigationMenuList} from "@/componen
 import {Button} from "@/components/ui/button";
 import {DynamicWidget} from "@dynamic-labs/sdk-react-core";
 import {useStore} from "@/lib/store";
+import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
 
 export function NewNavBar() {
 	const router = useRouter();
@@ -35,24 +36,21 @@ export function NewNavBar() {
 					<NavigationMenuList className="space-x-4">
 						{userRoles.find((role) => role.project === currentProject && role.role.access_admin_panel) && (
 							<NavigationMenuItem>
-								<Button
-									className="p-6 rounded-xl"
-									onClick={() => router.push(`/projects/${currentProject}/management`)}
-								>
+								<Button variant="outline"
+									onClick={() => router.push(`/projects/${currentProject}/management`)}>
 									Management
 								</Button>
 							</NavigationMenuItem>
 						)}
 						<NavigationMenuItem>
-							<Button
-								className="p-6 rounded-xl"
+							<Button className="bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]" variant="ghost"
 								onClick={() => router.push('/projects/pid-76047bbe1fc241959bb636eaa4d6e27f/document/did-1569a552a4894b90af40f7a3d511abf4')}
 							>
 								User Guide
 							</Button>
 						</NavigationMenuItem>
 						<NavigationMenuItem>
-							<DynamicWidget innerButtonComponent={<Button>Connect Wallet</Button>}/>
+							<ConnectWalletButton/>
 						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>
