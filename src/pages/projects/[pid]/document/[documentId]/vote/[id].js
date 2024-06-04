@@ -70,7 +70,7 @@ export default function Index({project, document, change, changeVotes, userVoteP
 							</article>
 							<aside className="flex flex-col ml-5 w-[31%] max-md:ml-0 max-md:w-full">
 								{(change.closed || change.merged) ? (
-									<ResultsCard change={change} />
+									<ResultsCard change={change} changeVotes={changeVotes} />
 								) : (
 									userCanVote() ? (
 										<>
@@ -137,9 +137,9 @@ export const getServerSideProps = async ({req, query}) => {
 	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
 
 	const zustandServerStore = initializeStore({
+		userProfile,
 		userRoles,
 		currentProject: pid,
-		user: userProfile,
 	});
 
 
@@ -148,7 +148,7 @@ export const getServerSideProps = async ({req, query}) => {
 			project: project,
 			document: document,
 			change: change,
-			changeVotes: changeVotes || 0,
+			changeVotes: changeVotes || {},
 			userVoteProp: userVote ? userVote.vote : 0,
 			initialZustandState: JSON.parse(
 				JSON.stringify(zustandServerStore.getState())

@@ -3,7 +3,7 @@ import Image from "next/image";
 import {ChangeResultBadge} from "@/components/custom/ChangeResultBadge";
 import {useStore} from "@/lib/store";
 
-export function ChangeCard({change}) {
+export function ChangeCard({change, onClick}) {
 	const [userProfile] = useStore((state) => [state.userProfile]);
 	console.log("User Profile: ", userProfile);
 
@@ -15,7 +15,7 @@ export function ChangeCard({change}) {
 	);
 
 	return (
-		<div className="md:w-1/3 w-full py-8 cursor-pointer">
+		<div className="md:w-1/3 w-full py-8 cursor-pointer" onClick={onClick}>
 			<Card
 				className="flex flex-col grow justify-center px-5 py-4 mx-auto w-full bg-white rounded-xl border border-gray-200 border-solid max-md:mt-3">
 				<h2 className="text-lg font-medium text-neutral-950">{change.name}</h2>
