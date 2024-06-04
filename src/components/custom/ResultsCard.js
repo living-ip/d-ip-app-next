@@ -1,8 +1,12 @@
 import Image from "next/image";
-import {PassedBadge} from "@/components/custom/PassedBadge";
-import {NotPassedBadge} from "@/components/custom/NotPassedBadge";
+import {Progress} from "@/components/ui/progress";
+import {ResultsBadge} from "@/components/custom/ResultsBadge";
 
-export function ResultsCard({change}) {
+export function ResultsCard({change, changeVotes}) {
+
+	const positiveVotes = changeVotes.positive_voters;
+	const negativeVotes = changeVotes.negative_voters;
+
 	const ResultItem = ({status, count, percentage, colorClass}) => (
 		<div className="flex gap-1 justify-between mt-3 w-full text-xs leading-4 whitespace-nowrap">
 			<div className="flex gap-2 text-neutral-600">
@@ -26,27 +30,31 @@ export function ResultsCard({change}) {
 	return (
 		<section className="flex flex-col px-5 max-md:mt-6">
 			<header className="flex gap-2.5 justify-between whitespace-nowrap">
-				<div className="text-lg leading-7 text-neutral-950">Results</div>
-				{change.closed ? (
-					<NotPassedBadge />
-				) : (
-					<PassedBadge />
-				)}
+				<div className="text-lg text-neutral-950">Results</div>
+				<ResultsBadge change={change}/>
 			</header>
 			<div className="flex gap-1 mt-3">
-				<div className="flex-1 shrink-0 h-1.5 rounded bg-[#7C9E66]"/>
-				<div className="shrink-0 w-10 h-1.5 bg-red-600 rounded"/>
+				<Progress
+					className={"bg-[#DC2626]"}
+					value={(positiveVotes.length / (positiveVotes.length + negativeVotes.length)) * 100}
+					max={100}
+				/>
 			</div>
-			<ResultItem status="Approve" count="12" percentage="75" colorClass="bg-stone-500"/>
-			<ResultItem status="Reject" count="4" percentage="25" colorClass="bg-red-600"/>
+			<ResultItem status="Approve" count={positiveVotes.length}
+			            percentage={(positiveVotes.length / (positiveVotes.length + negativeVotes.length)) * 100}
+			            colorClass="bg-[#7C9E66]"/>
+			<ResultItem status="Reject" count={negativeVotes.length}
+			            percentage={(negativeVotes.length / (positiveVotes.length + negativeVotes.length)) * 100}
+			            colorClass="bg-[#DC2626]"/>
 			<div className="mt-8 text-lg leading-7 text-neutral-950">Voters</div>
 			<div className="mt-3 text-base font-medium leading-6 text-neutral-600">Approved</div>
-			<VoterItem name="Martin Park"
-			           src="/living-ip.png"
-			/>
+			{positiveVotes.map((voter, index) => (
+				<VoterItem key={index} name={voter.name} src={voter.avatar}/>
+			))}
 			<div className="mt-2 text-base font-medium leading-6 text-neutral-600">Rejected</div>
-			<VoterItem name="Martin Park"
-			           src="/favicon.ico"/>
+			{negativeVotes.map((voter, index) => (
+				<VoterItem key={index} name={voter.name} src={voter.avatar}/>
+			))}
 		</section>
 	)
 }
