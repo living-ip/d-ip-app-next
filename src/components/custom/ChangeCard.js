@@ -9,7 +9,9 @@ export function ChangeCard({change, onClick}) {
 
 	const UserItem = ({src, text}) => (
 		<div className="flex gap-3 py-2 mt-1 text-sm font-medium leading-5 text-neutral-950">
-			<Image src={src} alt={`${text}`} height={32} width={32} className="shrink-0 w-8 aspect-square rounded-full"/>
+			{src && (
+				<Image src={src} alt={`${text}`} height={32} width={32} className="shrink-0 w-8 aspect-square rounded-full"/>
+			)}
 			<div className="my-auto">{text}</div>
 		</div>
 	);
