@@ -7,7 +7,7 @@ import {createDocumentChange, getDocument, getDocumentChanges} from "@/lib/docum
 import {convertNameToGithubRepo} from "@/lib/utils";
 import {getProject} from "@/lib/project";
 import {getCookie} from "cookies-next";
-import {getUserRoles} from "@/lib/user";
+import {getUserProfile, getUserRoles} from "@/lib/user";
 import {initializeStore, useStore} from "@/lib/store";
 import {NewLayout} from "@/components/NewLayout";
 import {TbArrowsSort} from "react-icons/tb";
@@ -186,9 +186,12 @@ export const getServerSideProps = async ({req, query}) => {
 	const userRoles = await getUserRoles(session.user_id, sessionJWT);
 	console.log("User Roles: ", userRoles);
 
+	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+
 	const zustandServerStore = initializeStore({
 		userRoles,
 		currentProject: pid,
+		user: userProfile,
 	});
 
 	return {

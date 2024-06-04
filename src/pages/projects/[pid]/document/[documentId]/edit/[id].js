@@ -10,6 +10,8 @@ import {getCookie} from "cookies-next";
 import {EditChangeLayout} from "@/components/EditChangeLayout";
 import {FiEdit3} from "react-icons/fi";
 import {useToast} from "@/components/ui/use-toast";
+import {getUserProfile} from "@/lib/user";
+import {initializeStore} from "@/lib/store";
 
 export default function Index({ project, document, change }) {
   const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
@@ -72,9 +74,7 @@ export default function Index({ project, document, change }) {
 	);
 }
 
-export const getServerSideProps = async ({
-	                                         req, query
-                                         }) => {
+export const getServerSideProps = async ({req, query}) => {
 	const {session} = await authStytchRequest(req);
 	if (!session) {
 		return {

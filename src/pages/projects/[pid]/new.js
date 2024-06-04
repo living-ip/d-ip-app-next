@@ -17,6 +17,7 @@ import {
 import {useState} from "react";
 import {createProjectDocument, getProject} from "@/lib/project";
 import {getCookie} from "cookies-next";
+import {initializeStore} from "@/lib/store";
 
 export default function CreateNewDocument({project}) {
   const router = useRouter();
@@ -106,6 +107,9 @@ export const getServerSideProps = async ({req, query}) => {
       },
     };
   }
+  const zustandServerStore = initializeStore({
+    user: userProfile,
+  });
 
   const {pid} = query;
   console.log("pid: ", pid)
@@ -115,6 +119,8 @@ export const getServerSideProps = async ({req, query}) => {
   return {
     props: {
       project,
+      initialZustandState: JSON.parse(
+          JSON.stringify(zustandServerStore.getState())),
     },
   };
 };
