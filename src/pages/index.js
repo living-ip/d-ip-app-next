@@ -74,10 +74,11 @@ export default function Home() {
 					</div>
 					<div>
 						<LogInDialog>
-              <Button className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
-                Log in
-              </Button>
-            </LogInDialog>
+							<Button
+								className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
+								Log in
+							</Button>
+						</LogInDialog>
 					</div>
 				</header>
 				<h1
@@ -90,7 +91,8 @@ export default function Home() {
 				</p>
 				<Button onClick={() => router.push('/login')}
 				        className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
-					<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32} className="bg-white p-2 rounded"/>
+					<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32}
+					       className="bg-white p-2 rounded"/>
 					<span className="my-auto mr-1">Create account</span>
 				</Button>
 				<div className="flex flex-row col-1 space-x-8">
@@ -145,7 +147,8 @@ export default function Home() {
 					className="mt-12 w-full aspect-[1.96] max-w-[1062px] max-md:mt-10 max-md:max-w-full"
 				/>
 			</div>
-			<section className="flex justify-center items-center px-16 py-20 w-full bg-white max-md:px-5 max-md:max-w-full">
+			<section
+				className="flex justify-center items-center px-16 py-20 w-full bg-white max-md:px-5 max-md:max-w-full">
 				<div className="w-full max-w-[1160px] max-md:max-w-full">
 					<div className="flex gap-5 max-md:flex-col max-md:gap-0">
 						{featurePoints.map((point, index) => (
