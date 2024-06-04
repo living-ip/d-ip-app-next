@@ -108,7 +108,7 @@ export const getServerSideProps = async ({req, query}) => {
 	// get user
 	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
 	const zustandServerStore = initializeStore({
-    user: userProfile,
+    userProfile,
   });
 
 	return {
