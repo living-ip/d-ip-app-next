@@ -18,7 +18,7 @@ const Login = () => {
   const styles = {
     container: {
       backgroundColor: "#FFFFFF",
-      borderColor: "#ADBCC5",
+      borderColor: "#FFFFFF",
       borderRadius: "8px",
       width: "400px",
     },
@@ -30,9 +30,9 @@ const Login = () => {
     },
     buttons: {
       primary: {
-        backgroundColor: "#19303D",
+        backgroundColor: "#245D00",
         textColor: "#FFFFFF",
-        borderColor: "#19303D",
+        borderColor: "#245D00",
         borderRadius: "4px",
       },
       secondary: {
@@ -42,10 +42,10 @@ const Login = () => {
         borderRadius: "4px",
       },
     },
-    fontFamily: "Monaco",
+    fontFamily: "Inter",
     hideHeaderText: false,
     logo: {
-      logoImageUrl: "",
+      logoImageUrl: "Logo-Design-Full-Color-Black.svg",
     },
   };
   return <StytchLogin config={config} styles={styles} />;
