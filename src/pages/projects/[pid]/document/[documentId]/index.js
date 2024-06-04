@@ -113,8 +113,8 @@ export const getServerSideProps = async ({req, query}) => {
 
 	return {
 		props: {
-			project,
-			document,
+			project: project || {},
+			document: document || {},
 			initialZustandState: JSON.parse(
           JSON.stringify(zustandServerStore.getState())),
 		},
