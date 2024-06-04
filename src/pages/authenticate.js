@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useStytch, useStytchUser } from '@stytch/nextjs'
 import { setCookie } from 'cookies-next'
+import LoadingSplash from "@/components/LoadingSplash";
 
 const OAUTH_TOKEN = 'oauth'
 const MAGIC_LINKS_TOKEN = 'magic_links'
@@ -43,7 +44,12 @@ const Authenticate = () => {
 		}
 	}, [router, user, isInitialized])
 
-	return null
+	return (
+		<div className="flex items-center justify-center min-h-screen bg-gray-100">
+			<LoadingSplash/>
+			<div>Logging you in...</div>
+		</div>
+	);
 }
 
 export default Authenticate
