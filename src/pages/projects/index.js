@@ -1,11 +1,11 @@
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile, getUserRoles} from "@/lib/user";
-import {Card, CardContent, CardDescription, CardHeader, CardImage, CardTitle,} from "@/components/ui/card";
-import {Button} from "@/components/ui/button";
-import {Layout} from "@/components/ui/layout";
 import {useRouter} from "next/router";
 import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
+import {YourProjectCard} from "@/components/custom/YourProjectCard";
+import {OtherProjectCard} from "@/components/custom/OtherProjectCard";
+import {NewLayout} from "@/components/NewLayout";
 
 export default function Projects({projects}) {
 	const router = useRouter();
@@ -36,46 +36,39 @@ export default function Projects({projects}) {
 		}
 	});
 
+	// Filter projects based on user roles
+	const yourProjects = sortedProjects.filter(project =>
+		userRoles.find(role => role.project === project.pid)
+	);
+
+// Projects in which the user doesn't have a role
+	const otherProjects = sortedProjects.filter(project =>
+		!userRoles.find(role => role.project === project.pid)
+	);
+
 	return (
-		<Layout>
-			<div className="my-10 flex justify-between items-center w-full">
-				<div className={"text-4xl font-extrabold"}>Projects</div>
-			</div>
-			<div className="flex flex-col w-full overflow-auto mb-8">
-				{sortedProjects.map((project, index) => (
-					<div key={index} className={"w-full my-8"}>
-						<Card className={"flex-grow w-full"}>
-							<CardHeader className={"p-0 w-full"}>
-								<CardImage
-									className={"w-full h-auto max-h-[480px] rounded-t-lg"}
-									src={project.image_uri}
-								/>
-							</CardHeader>
-							<CardContent className={"mt-4"}>
-								<CardTitle className={"mb-2"}>{project.name}</CardTitle>
-								<CardDescription className={"py-2"}>
-									{project.description}
-								</CardDescription>
-								<Button
-									className={"my-2"}
-									onClick={() => {
-										if (!userRoles.find((role) => role.project === project.pid)) {
-											setInvalidPermissionsDialogOpen(true);
-											return;
-										}
-										router.push(
-											`/projects/${encodeURIComponent(project.pid)}`
-										)
-									}}
-								>
-									Open Project
-								</Button>
-							</CardContent>
-						</Card>
+		<NewLayout>
+			<main
+				className="flex flex-col px-20 py-8 w-full h-auto bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
+				<h1 className="text-3xl text-neutral-950 max-md:max-w-full">Projects</h1>
+				<h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Your projects</h2>
+				<div className="mt-4 max-md:max-w-full">
+					<div className="grid grid-cols-2 2xl:grid-cols-3 gap-5 max-md:grid-cols-1 max-md:gap-0">
+						{yourProjects.map((project, index) => (
+							<YourProjectCard key={index} project={project}/>
+						))}
 					</div>
-				))}
-			</div>
-		</Layout>
+				</div>
+				{otherProjects.length > 0 && (
+					<>
+						<h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Other projects</h2>
+						{otherProjects.map((project, index) => (
+							<OtherProjectCard key={index} project={project}/>
+						))}
+					</>
+				)}
+			</main>
+		</NewLayout>
 	);
 }
 

@@ -5,6 +5,7 @@ import {DynamicContextProvider} from "@dynamic-labs/sdk-react-core";
 import {SolanaWalletConnectors} from "@dynamic-labs/solana";
 import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
+import {Toaster} from "@/components/ui/toaster";
 
 const stytch = createStytchUIClient(
 	process.env.STYTCH_PUBLIC_TOKEN ||
@@ -19,7 +20,7 @@ export default function App({Component, pageProps}) {
 				<link rel="icon" href="https://storage.googleapis.com/syb_us_cdn/sibylline_favicon.png"/>
 			</Head>
 			<DynamicContextProvider
-				theme={"auto"}
+				theme={"light"}
 				settings={{
 					environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
 					walletConnectors: [SolanaWalletConnectors],
@@ -30,6 +31,7 @@ export default function App({Component, pageProps}) {
 					</StoreProvider>
 				</StytchProvider>
 			</DynamicContextProvider>
+			<Toaster/>
 		</>
 	)
 }
