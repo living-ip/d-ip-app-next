@@ -3,7 +3,7 @@ import { doApiCall } from "./api";
 import * as changeKeys from "change-case/keys";
 
 export async function getProjects(jwt) {
-  const url = new URL(`${LIP_API_BASE}/project`);
+  const url = new URL(`${LIP_API_BASE}/project/`);
   const func = () => fetch(url, {
     method: "GET",
     headers: {

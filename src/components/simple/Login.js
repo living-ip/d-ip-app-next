@@ -42,7 +42,6 @@ const Login = () => {
         borderRadius: "4px",
       },
     },
-    fontFamily: "Inter",
     hideHeaderText: false,
     logo: {
       logoImageUrl: "Logo-Design-Full-Color-Black.svg",

@@ -8,6 +8,7 @@ import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {deleteCookie} from "cookies-next";
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
+import {useStytch, useStytchSession, useStytchUser} from "@stytch/nextjs";
 
 export function NewNavBar() {
 	const router = useRouter();
@@ -15,6 +16,18 @@ export function NewNavBar() {
 	const userProfile = useStore((state) => state.userProfile);
 
 	const initials = userProfile.name.split(' ').map((n) => n[0]).join('');
+
+	const stytch = useStytch();
+
+	const {user} = useStytchUser();
+
+	const homeHandler = () => {
+		if (user) {
+			router.push("/projects");
+			return;
+		}
+		router.push("/");
+	}
 
 	return (
 		<div className="flex gap-5 justify-between py-3 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
@@ -25,7 +38,7 @@ export function NewNavBar() {
 				className="shrink-0 my-auto max-w-full aspect-[4.55] w-[110px] hover:cursor-pointer"
 				width={110}
 				height={24}
-				onClick={() => router.push('/')}
+				onClick={homeHandler}
 			/>
 			{router.pathname !== '/onboard' && (
 				<NavigationMenu>
@@ -64,9 +77,9 @@ export function NewNavBar() {
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
-									<DropdownMenuItem onClick={() => router.push('/profile')}>Profile</DropdownMenuItem>
-									<DropdownMenuItem onClick={() => {
-										deleteCookie('stytch_session_jwt');
+									<DropdownMenuItem onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
+									<DropdownMenuItem onSelect={() => {
+										stytch.session.revoke();
 										router.push('/');
 									}}>Log Out</DropdownMenuItem>
 								</DropdownMenuContent>

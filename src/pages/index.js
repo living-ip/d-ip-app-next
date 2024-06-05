@@ -4,8 +4,7 @@ import * as React from "react";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
 import {LogInDialog} from "@/components/custom/LogInDialog";
-
-const inter = Inter({subsets: ["latin"]});
+import {useStytchUser} from "@stytch/nextjs";
 
 const FeaturePoint = ({src, title, description}) => (
 	<div className="flex flex-col grow max-md:mt-10">
@@ -50,6 +49,10 @@ const socialIcons = [
 export default function Home() {
 	const router = useRouter();
 
+	const {user} = useStytchUser();
+
+	console.log(user)
+
 	return (
 		<div className="bg-gradient-to-b from-[#002500] to-[#245D00]">
 			<div
@@ -73,12 +76,23 @@ export default function Home() {
 						/>
 					</div>
 					<div>
-						<LogInDialog>
-							<Button
-								className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
-								Log in
-							</Button>
-						</LogInDialog>
+						{
+							user ? (
+								<Button onClick={() => {
+									router.push("/projects")
+								}}
+								        className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
+									Home</Button>
+							) : (
+								<LogInDialog>
+									<Button
+										className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
+										Log in
+									</Button>
+								</LogInDialog>
+							)
+						}
+
 					</div>
 				</header>
 				<h1
@@ -89,12 +103,23 @@ export default function Home() {
 					LivingIP empowers project by unlocking the untapped potential of their
 					communities, enabling them to influence project evolution.
 				</p>
-				<Button onClick={() => router.push('/login')}
-				        className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
-					<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32}
-					       className="bg-white p-2 rounded"/>
-					<span className="my-auto mr-1">Create account</span>
-				</Button>
+				{
+					user ? (
+						<Button onClick={() => {
+							router.push("/projects")
+						}}
+						        className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
+							<span className="my-auto mr-1">To Projects</span>
+						</Button>
+					) : (
+						<Button onClick={() => router.push('/login')}
+						        className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
+							<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32}
+							       className="bg-white p-2 rounded"/>
+							<span className="my-auto mr-1">Create account</span>
+						</Button>
+					)
+				}
 				<div className="flex flex-row col-1 space-x-8">
 					<Image
 						src="/landingpage/Holder_Logo.svg"
