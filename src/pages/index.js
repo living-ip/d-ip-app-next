@@ -16,22 +16,22 @@ const FeaturePoint = ({src, title, description}) => (
 
 const featurePoints = [
 	{
-		src: "/codesandbox.svg",
-		title: "Feature point 1",
+		src: "/users.svg",
+		title: "Community-Driven Decisions",
 		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+			"Amplify your community's voice with our transparent system for contributions and votes.",
 	},
 	{
 		src: "/book-open.svg",
-		title: "Feature point 2",
+		title: "Merit-Based Rewards",
 		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+			"Assign reputation scores and grant more voting power to active contributors, enhancing meritocracy.",
 	},
 	{
-		src: "/users.svg",
-		title: "Feature point 3",
+		src: "/codesandbox.svg",
+		title: "Immutable Record Keeping",
 		description:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+			"Ensure trust with a permanent, transparent log of document edits and voting history.",
 	},
 ];
 
@@ -97,11 +97,10 @@ export default function Home() {
 				</header>
 				<h1
 					className="relative mt-20 text-6xl text-center leading-[64px] w-[720px] max-md:mt-10 max-md:max-w-full max-md:text-4xl max-md:leading-10">
-					Giving voice to communities
+					Give Your Community a <span className={"text-green-400"}>Voice</span>
 				</h1>
 				<p className="relative mt-3 leading-6 text-center w-[620px] max-md:max-w-full">
-					LivingIP empowers project by unlocking the untapped potential of their
-					communities, enabling them to influence project evolution.
+					LivingIP empowers organizations to harness the collective intelligence of their communities through gamified living documents, rewarding contributors with recognition and fostering continuous improvement.
 				</p>
 				{
 					user ? (
