@@ -29,7 +29,7 @@ export default function Index({project, document, change}) {
 			content: btoa(pageData),
 		}, getCookie("stytch_session_jwt"));
 		console.log(response);
-		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
+		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit`);
 		toast({
 			title: "Draft saved",
 			description: "Your draft has been saved. To make it accessible to the public, you must publish it.",

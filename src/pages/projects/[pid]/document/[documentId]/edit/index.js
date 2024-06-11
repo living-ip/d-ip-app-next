@@ -16,6 +16,7 @@ import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {DocumentEditCard} from "@/components/custom/DocumentEditCard";
 import {Loader2} from "lucide-react";
+import {IoArrowBackOutline} from "react-icons/io5";
 
 
 export default function Index({project, document, changes}) {
@@ -51,9 +52,15 @@ export default function Index({project, document, changes}) {
 				className="flex flex-col self-center px-8 py-8 w-full h-screen bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
 				<div className="flex gap-4 justify-between max-md:flex-wrap max-md:max-w-full">
 					<div className="flex flex-col">
-						<h1 className="text-3xl leading-9 text-neutral-950">
-							{document.name}
-						</h1>
+						<div className="flex gap-3 max-md:flex-wrap">
+							<Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid">
+								<IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.back()}/>
+							</Button>
+							<h1 className="text-3xl leading-9 text-neutral-950">
+								{document.name}
+							</h1>
+						</div>
+
 						{/*TODO: Ben - have backend serve this information*/}
 						<div className="mt-2 text-sm leading-5 text-zinc-500">
 							{document.lastEdit}

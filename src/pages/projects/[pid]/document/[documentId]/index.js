@@ -49,6 +49,10 @@ export default function Index({project, document}) {
 						<Button onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`)}>
 							Vote
 						</Button>
+						<Button variant={"secondary"}
+							onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit`)}>
+							Edit
+						</Button>
 					</div>
 				</section>
 				<article className="mt-6 max-md:max-w-full">
@@ -65,15 +69,6 @@ export default function Index({project, document}) {
 									// TODO: Not all users have image_uri
 									<Contributor key={index} src={contributor.image_uri || undefined} name={contributor.name}/>
 								))}
-								<WantMoreComponent
-									project={project}
-									content={{
-										title: "Want more content?",
-										description: "If you notice something missing, get involved and make a change to the document!",
-										buttonText: "Create Document Edit",
-										buttonLink: `/projects/${encodeURI(project.pid)}/document/${document.did}/edit`,
-									}}
-								/>
 							</div>
 						</aside>
 					</div>

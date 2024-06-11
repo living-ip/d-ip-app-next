@@ -15,7 +15,7 @@ export function NewNavBar() {
 	const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
 	const userProfile = useStore((state) => state.userProfile);
 
-	const initials = userProfile.name.split(' ').map((n) => n[0]).join('');
+	const initials = userProfile?.name.split(' ').map((n) => n[0]).join('') || "LIP";
 
 	const stytch = useStytch();
 
@@ -30,7 +30,7 @@ export function NewNavBar() {
 	}
 
 	const handleAdmin = () => {
-		if (userProfile?.email === "dan@sibylline.xyz") {
+		if (userProfile?.email === "dan@sibylline.xyz" || userProfile?.email === "m3taversal@gmail.com") {
 			return (
 				<DropdownMenuItem onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>
 			)
