@@ -5,9 +5,9 @@ import {useStore} from "@/lib/store";
 
 export function WantMoreComponent({project, content}) {
 	const router = useRouter();
-  const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
-    [state.userRoles, state.setInvalidPermissionsDialogOpen]
-  );
+	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
+		[state.userRoles, state.setInvalidPermissionsDialogOpen]
+	);
 
 	return (
 		<div

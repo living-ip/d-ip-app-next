@@ -15,6 +15,7 @@ import {FiEdit3} from "react-icons/fi";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {DocumentEditCard} from "@/components/custom/DocumentEditCard";
+import {Loader2} from "lucide-react";
 
 
 export default function Index({project, document, changes}) {
@@ -28,7 +29,10 @@ export default function Index({project, document, changes}) {
 	const [descriptionFilled, setDescriptionFilled] = useState(false);
 	const [filteredStatus, setFilteredStatus] = useState("not-published");
 
+	const [loading, setLoading] = useState(false)
+
 	const newEditHandler = async (document) => {
+		setLoading(true)
 		const change = await createDocumentChange(
 			document.did,
 			{
@@ -38,6 +42,7 @@ export default function Index({project, document, changes}) {
 			getCookie("stytch_session_jwt")
 		);
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit/${change.cid}`);
+		setLoading(false)
 	};
 
 	return (
@@ -86,7 +91,8 @@ export default function Index({project, document, changes}) {
 														setName(convertNameToGithubRepo(e.target.value))
 													}
 												/>
-												<Button disabled={!name} onClick={() => setNameFilled(true)}>Continue</Button>
+												<Button disabled={!name}
+												        onClick={() => setNameFilled(true)}>Continue</Button>
 											</>
 										)}
 										{nameFilled && !descriptionFilled && (
@@ -103,9 +109,18 @@ export default function Index({project, document, changes}) {
 														setDescription(e.target.value)
 													}
 												/>
-												<Button type="submit" disabled={!description} onClick={() => newEditHandler(document)}>
-													Create Edit
-												</Button>
+												{loading ? (
+													<Button className={"bg-[#245D00]"} disabled>
+														<Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+														Please wait
+													</Button>
+												) : (
+													<Button type="submit" disabled={!description}
+													        onClick={() => newEditHandler(document)}>
+														Create Edit
+													</Button>
+												)
+												}
 											</>
 										)}
 									</div>

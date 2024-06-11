@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {Layout} from "@/components/ui/layout";
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
@@ -19,6 +18,7 @@ import {authStytchRequest} from "@/lib/stytch";
 import {getCookie} from "cookies-next";
 import {initializeStore, useStore} from "@/lib/store";
 import {getUserProfile, getUserRoles} from "@/lib/user";
+import {NewLayout} from "@/components/NewLayout";
 
 export default function ManagementPanel({pid, changesRules, votingRules, initialUserList}) {
 	const router = useRouter();
@@ -192,7 +192,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 	}
 
 	return (
-		<Layout>
+		<NewLayout>
 			<div className="max-w-4xl mx-auto p-8">
 
 				<h1 className="text-3xl font-bold mb-6">Project Management Admin Panel</h1>
@@ -206,7 +206,8 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 					<h2 className="text-xl font-semibold mb-4">Change Rules</h2>
 					<div className="space-y-2">
 						<div className="flex items-center space-x-2">
-							<Input placeholder={rule1Start} type="number" className="w-[64px]" value={rule1Start} readOnly/>
+							<Input placeholder={rule1Start} type="number" className="w-[64px]" value={rule1Start}
+							       readOnly/>
 							<span>to</span>
 							<Input placeholder={rule1End} type="number" className="w-[64px]" value={rule1End}
 							       onChange={handleRule1EndChange}/>
@@ -218,7 +219,8 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 									</SelectTrigger>
 									<SelectContent position="popper">
 										{timeframes.map(timeframe => (
-											<SelectItem key={timeframe.value} value={timeframe.value}>{timeframe.label}</SelectItem>
+											<SelectItem key={timeframe.value}
+											            value={timeframe.value}>{timeframe.label}</SelectItem>
 										))}
 									</SelectContent>
 								</Select>
@@ -238,7 +240,8 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 									</SelectTrigger>
 									<SelectContent position="popper">
 										{timeframes.map(timeframe => (
-											<SelectItem key={timeframe.value} value={timeframe.value}>{timeframe.label}</SelectItem>
+											<SelectItem key={timeframe.value}
+											            value={timeframe.value}>{timeframe.label}</SelectItem>
 										))}
 									</SelectContent>
 								</Select>
@@ -255,7 +258,8 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 									</SelectTrigger>
 									<SelectContent position="popper">
 										{timeframes.map(timeframe => (
-											<SelectItem key={timeframe.value} value={timeframe.value}>{timeframe.label}</SelectItem>
+											<SelectItem key={timeframe.value}
+											            value={timeframe.value}>{timeframe.label}</SelectItem>
 										))}
 									</SelectContent>
 								</Select>
@@ -271,14 +275,16 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 						<label className="block mb-2" htmlFor="total-votes">
 							Minimum number of total votes required for a change to be able to pass:
 						</label>
-						<Input id="total-votes" type="number" placeholder={positiveVotesPercentage} value={minimumVotes} min="1"
+						<Input id="total-votes" type="number" placeholder={positiveVotesPercentage} value={minimumVotes}
+						       min="1"
 						       className="w-[64px]" onChange={handleMinimumVotesChange}/>
 					</div>
 					<div>
 						<label className="block mb-2" htmlFor="positive-votes">
 							What percentage of votes need to be positive for a change to be able to pass:
 						</label>
-						<Input id="positive-votes" type="number" placeholder={positiveVotesPercentage} value={positiveVotesPercentage} min="1"
+						<Input id="positive-votes" type="number" placeholder={positiveVotesPercentage}
+						       value={positiveVotesPercentage} min="1"
 						       className="w-[64px]" onChange={handlePositiveVotesPercentageChange}/>
 					</div>
 					<Button className="mt-4" onClick={saveVotingRuleChanges}>Save Changes</Button>
@@ -287,7 +293,8 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 				<section className="mb-6">
 					<h2 className="text-xl font-semibold mb-4">Invite User</h2>
 					<div className="flex items-center space-x-2">
-						<Input placeholder="Email address" type="email" value={email} onChange={e => setEmail(e.target.value)}/>
+						<Input placeholder="Email address" type="email" value={email}
+						       onChange={e => setEmail(e.target.value)}/>
 						<Button onClick={inviteUserToProject}>Add User</Button>
 					</div>
 				</section>
@@ -337,7 +344,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 					</Table>
 				</section>
 			</div>
-		</Layout>
+		</NewLayout>
 	);
 }
 

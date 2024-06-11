@@ -10,8 +10,6 @@ import {deleteChange, publishChange} from "@/lib/change";
 export function DocumentEditCard({project, document, change}) {
 	const router = useRouter();
 
-	console.log(change);
-
 	const handleDeleteChange = async (cid, jwt) => {
 		await deleteChange(cid, jwt);
 		router.reload();
@@ -44,7 +42,8 @@ export function DocumentEditCard({project, document, change}) {
 							               }}
 							/>
 						</Button>
-						<div className="flex gap-3 self-stretch my-auto text-base font-medium leading-6 whitespace-nowrap">
+						<div
+							className="flex gap-3 self-stretch my-auto text-base font-medium leading-6 whitespace-nowrap">
 							<Button variant="ghost" onClick={() => {
 								router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/edit/${change.cid}`)
 							}}

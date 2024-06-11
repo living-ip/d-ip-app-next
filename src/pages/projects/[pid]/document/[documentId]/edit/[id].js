@@ -10,14 +10,12 @@ import {getCookie} from "cookies-next";
 import {EditChangeLayout} from "@/components/EditChangeLayout";
 import {FiEdit3} from "react-icons/fi";
 import {useToast} from "@/components/ui/use-toast";
-import {getUserProfile} from "@/lib/user";
-import {initializeStore} from "@/lib/store";
 
-export default function Index({ project, document, change }) {
-  const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
-  const [pageData, setPageData] = useState(decodedContent);
-  const router = useRouter();
-	const { toast } = useToast();
+export default function Index({project, document, change}) {
+	const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
+	const [pageData, setPageData] = useState(decodedContent);
+	const router = useRouter();
+	const {toast} = useToast();
 
 	const editorCallback = (data) => {
 		setPageData(data);
@@ -31,7 +29,6 @@ export default function Index({ project, document, change }) {
 			content: btoa(pageData),
 		}, getCookie("stytch_session_jwt"));
 		console.log(response);
-		//TODO: Update with modal saying successfully saved
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`);
 		toast({
 			title: "Draft saved",

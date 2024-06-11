@@ -29,6 +29,14 @@ export function NewNavBar() {
 		router.push("/");
 	}
 
+	const handleAdmin = () => {
+		if (userProfile?.email === "dan@sibylline.xyz") {
+			return (
+				<DropdownMenuItem onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>
+			)
+		}
+	}
+
 	return (
 		<div className="flex gap-5 justify-between py-3 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
 			<Image
@@ -65,7 +73,7 @@ export function NewNavBar() {
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<Button variant="ghost"
-									        className="pl-0 rounded rounded-l-full flex flex-row justify-center items-center gap-1.5 bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]">
+									        className="pl-0 flex flex-row justify-center items-center gap-1.5 bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]">
 										<Avatar className="relative inline-block w-9 h-9">
 											<AvatarImage
 												src={userProfile.image_uri}
@@ -78,6 +86,7 @@ export function NewNavBar() {
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
 									<DropdownMenuItem onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
+									{handleAdmin()}
 									<DropdownMenuItem onSelect={() => {
 										stytch.session.revoke();
 										router.push('/');

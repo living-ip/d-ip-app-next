@@ -1,4 +1,3 @@
-import {Layout} from "@/components/ui/layout";
 import {Card, CardContent} from "@/components/ui/card";
 import CreateEditForm from "@/components/CreateEditForm";
 import {useRouter} from "next/router";
@@ -8,6 +7,7 @@ import {getUserProfile, getUserRoles} from "@/lib/user";
 import {getProject, updateProject} from "@/lib/project";
 import {getCookie} from "cookies-next";
 import {initializeStore} from "@/lib/store";
+import {NewLayout} from "@/components/NewLayout";
 
 
 export default function EditProject({project}) {
@@ -35,7 +35,7 @@ export default function EditProject({project}) {
 	};
 
 	return (
-		<Layout childClassName={"bg-gray-100"}>
+		<NewLayout>
 			<div className="flex flex-col w-full overflow-auto items-left min-h-screen">
 				<Card className="w-full bg-white mt-10">
 					<CardContent className="mt-10 mb-4 text-4xl font-bold">Edit a Project</CardContent>
@@ -52,7 +52,7 @@ export default function EditProject({project}) {
 					/>
 				</Card>
 			</div>
-		</Layout>
+		</NewLayout>
 	)
 }
 
@@ -78,8 +78,8 @@ export const getServerSideProps = async ({req, query}) => {
 		};
 	}
 	const zustandServerStore = initializeStore({
-    user: userProfile,
-  });
+		user: userProfile,
+	});
 
 	const {pid} = query;
 	const userRoles = await getUserRoles(session.user_id, sessionJWT);
@@ -98,7 +98,7 @@ export const getServerSideProps = async ({req, query}) => {
 		props: {
 			project: project,
 			initialZustandState: JSON.parse(
-          JSON.stringify(zustandServerStore.getState())),
+				JSON.stringify(zustandServerStore.getState())),
 		},
 	};
 }

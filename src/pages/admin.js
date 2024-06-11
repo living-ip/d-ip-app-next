@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {Layout} from "@/components/ui/layout";
 import {Button} from "@/components/ui/button";
 import {deleteProject, getProjects} from "@/lib/project";
 import {Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader} from "@/components/ui/dialog";
@@ -7,6 +6,7 @@ import {AlertDialog, AlertDialogContent, AlertDialogHeader} from "@/components/u
 import {authStytchRequest} from "@/lib/stytch";
 import {useRouter} from "next/router";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
+import {NewLayout} from "@/components/NewLayout";
 
 export default function AdminPanel({projects}) {
 	const router = useRouter();
@@ -31,7 +31,7 @@ export default function AdminPanel({projects}) {
 	};
 
 	return (
-		<Layout>
+		<NewLayout>
 			<div className="py-8 space-y-8">
 
 				{/*Create a Project*/}
@@ -110,7 +110,8 @@ export default function AdminPanel({projects}) {
 							</DialogDescription>
 							<div className="flex justify-between w-full">
 								<Button className="inline-flex" onClick={handleDelete}>Confirm</Button>
-								<Button className="inline-flex" variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+								<Button className="inline-flex" variant="outline"
+								        onClick={() => setShowDialog(false)}>Cancel</Button>
 							</div>
 						</DialogContent>
 					</Dialog>
@@ -123,10 +124,8 @@ export default function AdminPanel({projects}) {
 						</AlertDialogContent>
 					</AlertDialog>
 				)}
-
 			</div>
-
-		</Layout>
+		</NewLayout>
 	);
 }
 
