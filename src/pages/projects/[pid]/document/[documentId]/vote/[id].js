@@ -95,64 +95,66 @@ export default function Index({project, document, change, changeVotes, userVoteP
 }
 
 export const getServerSideProps = async ({req, query}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
+    const {session} = await authStytchRequest(req);
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
 
-	const {pid, documentId, id} = query;
-	console.log("Pid: ", pid);
-	console.log("Document ID: ", documentId);
-	console.log("Change ID: ", id);
+    const {pid, documentId, id} = query;
+    console.log("Pid: ", pid);
+    console.log("Document ID: ", documentId);
+    console.log("Change ID: ", id);
 
-	const sessionJWT = req.cookies["stytch_session_jwt"];
+    const sessionJWT = req.cookies["stytch_session_jwt"];
 
-	const project = await getProject(pid, sessionJWT);
-	console.log("Project: ", project);
-	const document = await getDocument(documentId, sessionJWT);
-	console.log("Document: ", document);
-	const change = await getChange(id, sessionJWT);
-	console.log("Change: ", change);
-	if (!project || !document || !change) {
-		return {
-			redirect: {
-				destination: `/projects/${pid}/document/${documentId}`,
-				permanent: false,
-			},
-		};
-	}
-	const changeVotes = await getChangeVotes(id, {"include_voters": true}, sessionJWT);
-	console.log("Change Votes: ", changeVotes);
-	const userVote = changeVotes.voters.find((vote) => vote.voter_id === session.user_id);
-	console.log("User Vote: ", userVote);
+    // Execute the following requests in parallel
+    const [project, document, change, changeVotes] = await Promise.all([
+        getProject(pid, sessionJWT),
+        getDocument(documentId, sessionJWT),
+        getChange(id, sessionJWT),
+        getChangeVotes(id, {"include_voters": true}, sessionJWT)
+    ]);
 
-	const userRoles = await getUserRoles(session.user_id, sessionJWT);
-	console.log("User Roles: ", userRoles);
+    console.log("Project: ", project);
+    console.log("Document: ", document);
+    console.log("Change: ", change);
+    console.log("Change Votes: ", changeVotes);
 
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+    if (!project || !document || !change) {
+        return {
+            redirect: {
+                destination: `/projects/${pid}/document/${documentId}`,
+                permanent: false,
+            },
+        };
+    }
 
-	const zustandServerStore = initializeStore({
-		userProfile,
-		userRoles,
-		currentProject: pid,
-	});
+    const userVote = changeVotes.voters.find((vote) => vote.voter_id === session.user_id);
+    console.log("User Vote: ", userVote);
 
+    const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
 
-	return {
-		props: {
-			project: project,
-			document: document,
-			change: change,
-			changeVotes: changeVotes || {},
-			userVoteProp: userVote ? userVote.vote : 0,
-			initialZustandState: JSON.parse(
-				JSON.stringify(zustandServerStore.getState())
-			),
-		},
-	};
+    const zustandServerStore = initializeStore({
+        userProfile,
+        userRoles: roles,
+        currentProject: pid,
+    });
+
+    return {
+        props: {
+            project: project,
+            document: document,
+            change: change,
+            changeVotes: changeVotes || {},
+            userVoteProp: userVote ? userVote.vote : 0,
+            initialZustandState: JSON.parse(
+                JSON.stringify(zustandServerStore.getState())
+            ),
+        },
+    };
 };

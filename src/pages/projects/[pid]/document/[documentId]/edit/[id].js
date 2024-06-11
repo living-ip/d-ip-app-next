@@ -83,18 +83,22 @@ export const getServerSideProps = async ({req, query}) => {
 	}
 
 	const {pid, documentId, id} = query;
-	console.log("Pid: ", pid);
-	console.log("Document ID: ", documentId);
-	console.log("Change ID: ", id);
-
 	const sessionJWT = req.cookies["stytch_session_jwt"];
+	// Fetch project, document, and change concurrently
+	const [project, document, change] = await Promise.all([
+		getProject(pid, sessionJWT),
+		getDocument(documentId, sessionJWT),
+		getChange(id, sessionJWT)
+	]);
 
-	const project = await getProject(pid, sessionJWT);
-	console.log("Project: ", project);
-	const document = await getDocument(documentId, sessionJWT);
-	console.log("Document: ", document);
-	const change = await getChange(id, sessionJWT);
-	console.log("Change: ", change);
+	if (!project || !document || !change) {
+		return {
+			redirect: {
+				destination: `/projects/${pid}/documents/${documentId}`,  // Redirect path might need to be adjusted.
+				permanent: false,
+			},
+		};
+	}
 
 	return {
 		props: {

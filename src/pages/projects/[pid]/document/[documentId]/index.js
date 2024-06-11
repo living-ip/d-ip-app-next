@@ -79,39 +79,48 @@ export default function Index({project, document}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
+    const {session} = await authStytchRequest(req);
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
 
-	const {pid, documentId} = query;
-	console.log("Pid: ", pid);
-	console.log("Document ID: ", documentId);
+    const {pid, documentId} = query;
+    console.log("Pid: ", pid);
+    console.log("Document ID: ", documentId);
 
-	const sessionJWT = req.cookies["stytch_session_jwt"];
+    const sessionJWT = req.cookies["stytch_session_jwt"];
 
-	const project = await getProject(pid, sessionJWT);
-	console.log("Project: ", project);
-	const document = await getDocument(documentId, sessionJWT);
-	console.log("Document: ", document);
+    const [project, document, userProfile] = await Promise.all([
+        getProject(pid, sessionJWT),
+        getDocument(documentId, sessionJWT),
+        getUserProfile(session.user_id, sessionJWT).then(response => response.userProfile)
+    ]);
 
-	// get user
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
-	const zustandServerStore = initializeStore({
-    userProfile,
-  });
+    if (!userProfile) {
+        return {
+            redirect: {
+                destination: "/onboard",
+                permanent: false,
+            },
+        };
+    }
 
-	return {
-		props: {
-			project: project || {},
-			document: document || {},
-			initialZustandState: JSON.parse(
-          JSON.stringify(zustandServerStore.getState())),
-		},
-	};
+    const zustandServerStore = initializeStore({
+        userProfile,
+    });
+
+    return {
+        props: {
+            project: project || {},
+            document: document || {},
+            initialZustandState: JSON.parse(
+                JSON.stringify(zustandServerStore.getState())
+            ),
+        },
+    };
 };

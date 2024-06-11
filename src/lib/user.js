@@ -13,7 +13,8 @@ export async function getUserProfile(userId, jwt) {
   });
   const response = await doApiCall(func, {});
   if (response instanceof Response) {
-    return { userProfile: await response.json() };
+    const data = await response.json()
+    return { userProfile: data.user, roles: data.roles };
   }
   return response;
 }

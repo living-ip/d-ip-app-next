@@ -6,7 +6,7 @@ import {getChangeVotes} from "@/lib/change";
 import {NewLayout} from "@/components/NewLayout";
 import {ChangeCard} from "@/components/custom/ChangeCard";
 import {initializeStore} from "@/lib/store";
-import {getUserProfile, getUserRoles} from "@/lib/user";
+import {getUserProfile} from "@/lib/user";
 
 export default function Index({project, document, changesWithVotes}) {
 	const router = useRouter();
@@ -89,25 +89,24 @@ export const getServerSideProps = async ({
 		};
 	}
 
-	const {pid, documentId} = query;
-	console.log("Pid: ", pid);
-	console.log("Document ID: ", documentId);
+	const {pid, documentId} = query
 
 	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
-  if (!userProfile) {
-    return {
-      redirect: {
-        destination: "/onboard",
-        permanent: false,
-      },
-    };
-  }
 
-	const project = await getProject(pid, sessionJWT);
-	console.log("Project: ", project);
-	const document = await getDocument(documentId, sessionJWT);
-	console.log("Document: ", document);
+	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
+	if (!userProfile) {
+		return {
+			redirect: {
+				destination: "/onboard",
+				permanent: false,
+			},
+		};
+	}
+
+	const [project, document] = await Promise.all([
+		getProject(pid, sessionJWT),
+		getDocument(documentId, sessionJWT)
+	]);
 	if (!project || !document) {
 		return {
 			redirect: {
@@ -116,24 +115,22 @@ export const getServerSideProps = async ({
 			},
 		};
 	}
+
 	const publishedChanges = await getDocumentChanges(documentId, {"published": true}, sessionJWT);
-	console.log("Document Changes: ", publishedChanges);
+
 	const changesWithVotes = await Promise.all(
-		publishedChanges.map(async (change) => {
-			const votes = await getChangeVotes(change.cid, {}, sessionJWT);
-			return {
+		publishedChanges.map((change) =>
+			getChangeVotes(change.cid, {}, sessionJWT).then(votes => ({
 				...change,
 				votes,
-			};
-		})
+			}))
+		)
 	);
-	console.log("Changes with Votes: ", changesWithVotes);
 
-	const userRoles = await getUserRoles(session.user_id, sessionJWT);
 	const zustandServerStore = initializeStore({
 		userProfile,
-		userRoles,
-    currentProject: pid,
+		userRoles: roles,
+		currentProject: pid,
 	});
 
 	return {

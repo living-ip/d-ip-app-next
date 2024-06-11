@@ -175,55 +175,53 @@ export default function Index({project, document, changes}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
+    const {session} = await authStytchRequest(req);
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
 
-	const {pid, documentId} = query;
-	console.log("Pid: ", pid);
-	console.log("Document ID: ", documentId);
+    const {pid, documentId} = query;
+    console.log("Pid: ", pid);
+    console.log("Document ID: ", documentId);
 
-	const sessionJWT = req.cookies["stytch_session_jwt"];
+    const sessionJWT = req.cookies["stytch_session_jwt"];
 
-	const project = await getProject(pid, sessionJWT);
-	console.log("Project: ", project);
-	const document = await getDocument(documentId, sessionJWT);
-	console.log("Document: ", document);
-	const userChanges = await getDocumentChanges(documentId, {
-		"user_id": session.user_id,
-	}, sessionJWT);
-	console.log("User Changes: ", userChanges);
+    const [project, document, userChangesRaw] = await Promise.all([
+        getProject(pid, sessionJWT),
+        getDocument(documentId, sessionJWT),
+        getDocumentChanges(documentId, {"user_id": session.user_id}, sessionJWT)
+    ]);
 
-	const orderedChanges = userChanges.sort((a, b) => {
-		return new Date(b.updatedAt) - new Date(a.updatedAt);
-	});
-	console.log("Ordered Changes: ", orderedChanges);
+    console.log("Project: ", project);
+    console.log("Document: ", document);
+    console.log("User Changes: ", userChangesRaw);
 
-	const userRoles = await getUserRoles(session.user_id, sessionJWT);
-	console.log("User Roles: ", userRoles);
+    const orderedChanges = userChangesRaw.sort((a, b) => {
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+    });
+    console.log("Ordered Changes: ", orderedChanges);
 
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+    const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
 
-	const zustandServerStore = initializeStore({
-		userRoles,
-		currentProject: pid,
-		user: userProfile,
-	});
+    const zustandServerStore = initializeStore({
+        userRoles: roles,
+        currentProject: pid,
+        user: userProfile,
+    });
 
-	return {
-		props: {
-			project: project,
-			document: document,
-			changes: orderedChanges,
-			initialZustandState: JSON.parse(
-				JSON.stringify(zustandServerStore.getState())
-			),
-		},
-	};
+    return {
+        props: {
+            project: project,
+            document: document,
+            changes: orderedChanges,
+            initialZustandState: JSON.parse(
+                JSON.stringify(zustandServerStore.getState())
+            ),
+        },
+    };
 };

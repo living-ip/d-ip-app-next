@@ -349,57 +349,57 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 }
 
 export async function getServerSideProps({req, query}) {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
-	if (!userProfile) {
-		return {
-			redirect: {
-				destination: "/onboard",
-				permanent: false,
-			},
-		};
-	}
+    const {session} = await authStytchRequest(req);
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
+    const sessionJWT = req.cookies["stytch_session_jwt"];
+    const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
+    if (!userProfile) {
+        return {
+            redirect: {
+                destination: "/onboard",
+                permanent: false,
+            },
+        };
+    }
 
-	const {pid} = query;
-	const changesRules = await getChangesRules(pid, sessionJWT);
-	const votingRules = await getVotingRules(pid, sessionJWT);
-	const initialUserList = await getProjectUsers(pid, sessionJWT);
-	if (!changesRules || !votingRules || !initialUserList) {
-		return {
-			redirect: {
-				destination: `/projects/${pid}`,
-				permanent: false,
-			},
-		};
-	}
+    const {pid} = query;
+    const [changesRules, votingRules, initialUserList] = await Promise.all([
+        getChangesRules(pid, sessionJWT),
+        getVotingRules(pid, sessionJWT),
+        getProjectUsers(pid, sessionJWT)
+    ]);
 
-	const userRoles = await getUserRoles(session.user_id, sessionJWT);
-	console.log("User Roles: ", userRoles);
+    if (!changesRules || !votingRules || !initialUserList) {
+        return {
+            redirect: {
+                destination: `/projects/${pid}`,
+                permanent: false,
+            },
+        };
+    }
 
-	const zustandServerStore = initializeStore({
-		userProfile,
-		userRoles,
-		currentProject: pid,
-	});
+    const zustandServerStore = initializeStore({
+        userProfile,
+        userRoles: roles,
+        currentProject: pid,
+    });
 
-	return {
-		props: {
-			pid,
-			changesRules,
-			votingRules,
-			initialUserList,
-			initialZustandState: JSON.parse(
-				JSON.stringify(zustandServerStore.getState())
-			),
-		}
-	};
+    return {
+        props: {
+            pid,
+            changesRules,
+            votingRules,
+            initialUserList,
+            initialZustandState: JSON.parse(
+                JSON.stringify(zustandServerStore.getState())
+            ),
+        }
+    };
 }

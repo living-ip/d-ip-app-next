@@ -106,15 +106,6 @@ export default function EditProfile() {
 								/>
 							</div>
 						</div>
-						{/*<div className="flex gap-3 mt-3 leading-[143%] max-md:flex-wrap">*/}
-						{/*  <div className="flex flex-col flex-1">*/}
-						{/*    <InputWithLabel label="Company" type="text" id="company" placeholder="Where you work?"/>*/}
-						{/*  </div>*/}
-						{/*  <div className="flex flex-col flex-1">*/}
-						{/*    <InputWithLabel label="Position" type="text" id="position" placeholder="Your position"/>*/}
-						{/*  </div>*/}
-						{/*</div>*/}
-						{/*<InputWithLabel label="Wallet" type="text" id="wallet" placeholder="Enter your chosen crypto wallet"/>*/}
 						<Button
 							className="justify-center self-end px-3 py-2 mt-8 text-base font-medium leading-6 text-white bg-lime-900 rounded"
 							onClick={handleSaveProfile}>
@@ -138,7 +129,7 @@ export const getServerSideProps = async ({req}) => {
 		};
 	}
 	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {
@@ -147,19 +138,12 @@ export const getServerSideProps = async ({req}) => {
 			},
 		};
 	}
-
 	const projects = await getProjects(sessionJWT);
-	console.log("Projects: ", projects);
-
-	const userRoles = await getUserRoles(session.user_id, sessionJWT);
-	console.log("User Roles: ", userRoles);
-
 	const zustandServerStore = initializeStore({
 		userProfile,
-		userRoles,
+		userRoles: roles,
 		currentProject: undefined,
 	});
-
 	return {
 		props: {
 			projects,

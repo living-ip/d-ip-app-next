@@ -68,7 +68,7 @@ export const getServerSideProps = async ({req, query}) => {
 		};
 	}
 	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {
@@ -82,9 +82,7 @@ export const getServerSideProps = async ({req, query}) => {
 	});
 
 	const {pid} = query;
-	const userRoles = await getUserRoles(session.user_id, sessionJWT);
-	console.log("User Roles: ", userRoles);
-	if (!userRoles.find((role) => role.project === pid && role.role.edit_project)) {
+	if (!roles.find((role) => role.project === pid && role.role.edit_project)) {
 		return {
 			redirect: {
 				destination: `/projects/${pid}`,
