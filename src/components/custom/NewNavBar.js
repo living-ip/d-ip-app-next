@@ -76,7 +76,7 @@ export function NewNavBar() {
 									        className="pl-0 flex flex-row justify-center items-center gap-1.5 bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]">
 										<Avatar className="relative inline-block w-9 h-9">
 											<AvatarImage
-												src={userProfile.image_uri}
+												src={userProfile?.image_uri || "https://storage.googleapis.com/syb_us_cdn/cyber_future_da.png"}
 												alt={initials}
 												className="rounded-full object-cover"
 											/>
