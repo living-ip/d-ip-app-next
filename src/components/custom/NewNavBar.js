@@ -81,7 +81,7 @@ export function NewNavBar() {
 												className="rounded-full object-cover"
 											/>
 										</Avatar>
-										<div className="text-sm text-neutral-950">{userProfile.name}</div>
+										<div className="text-sm text-neutral-950">{userProfile?.name}</div>
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
