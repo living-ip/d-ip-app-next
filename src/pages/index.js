@@ -1,10 +1,10 @@
-import {Inter} from "next/font/google";
 import Image from "next/image";
 import * as React from "react";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
 import {LogInDialog} from "@/components/custom/LogInDialog";
 import {useStytchUser} from "@stytch/nextjs";
+import Link from "next/link"
 
 const FeaturePoint = ({src, title, description}) => (
 	<div className="flex flex-col grow max-md:mt-10">
@@ -78,11 +78,12 @@ export default function Home() {
 					<div>
 						{
 							user ? (
-								<Button onClick={() => {
-									router.push("/projects")
-								}}
-								        className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
-									Home</Button>
+								<Link href={"/projects"}>
+									<Button
+										className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
+										Home</Button>
+								</Link>
+
 							) : (
 								<LogInDialog>
 									<Button
@@ -100,23 +101,28 @@ export default function Home() {
 					Give Your Community a <span className={"text-green-400"}>Voice</span>
 				</h1>
 				<p className="relative mt-3 leading-6 text-center w-[620px] max-md:max-w-full">
-					LivingIP empowers organizations to harness the collective intelligence of their communities through gamified living documents, rewarding contributors with recognition and fostering continuous improvement.
+					LivingIP empowers organizations to harness the collective intelligence of their communities through
+					gamified living documents, rewarding contributors with recognition and fostering continuous
+					improvement.
 				</p>
 				{
 					user ? (
-						<Button onClick={() => {
-							router.push("/projects")
-						}}
-						        className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
-							<span className="my-auto mr-1">To Projects</span>
-						</Button>
+						<Link href={"/projects"}>
+							<Button
+								className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
+								<span className="my-auto mr-1">To Projects</span>
+							</Button>
+						</Link>
+
 					) : (
-						<Button onClick={() => router.push('/login')}
-						        className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
-							<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32}
-							       className="bg-white p-2 rounded"/>
-							<span className="my-auto mr-1">Create account</span>
-						</Button>
+						<Link href={"/login"}>
+							<Button
+								className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
+								<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32}
+								       className="bg-white p-2 rounded"/>
+								<span className="my-auto mr-1">Create account</span>
+							</Button>
+						</Link>
 					)
 				}
 				<div className="flex flex-row col-1 space-x-8">

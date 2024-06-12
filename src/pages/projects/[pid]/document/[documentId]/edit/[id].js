@@ -26,7 +26,7 @@ export default function Index({project, document, change}) {
 		const response = await updateChange(change.cid, {
 			name: change.name,
 			description: change.description,
-			content: btoa(pageData),
+			content: Buffer.from(pageData, 'utf-8').toString('base64'),
 		}, getCookie("stytch_session_jwt"));
 		console.log(response);
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit`);
@@ -41,7 +41,7 @@ export default function Index({project, document, change}) {
 		const updateResponse = await updateChange(change.cid, {
 			name: change.name,
 			description: change.description,
-			content: btoa(pageData),
+			content: Buffer.from(pageData, 'utf-8').toString('base64'),
 		}, getCookie("stytch_session_jwt"));
 		console.log(updateResponse);
 		console.log("Publishing Change", pageData);
