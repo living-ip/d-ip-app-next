@@ -6,7 +6,7 @@ import {NewLayout} from "@/components/NewLayout";
 export default function Onboard() {
 	return (
 		<NewLayout>
-			<div className="flex items-center justify-center min-h-screen">
+			<div className="flex items-center justify-center">
 				<RegisterCard/>
 			</div>
 		</NewLayout>
