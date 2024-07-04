@@ -42,8 +42,9 @@ export default function Editor({markdown, onChange}) {
     }
 
     return (
-        <div className={"w-full h-full overflow-y-scroll prose max-w-none"}>
+        <div className={"w-full bg-white h-full overflow-y-scroll prose max-w-none"}>
             <MDXEditor
+                className={"bg-white"}
                 onChange={onChange}
                 markdown={markdown}
                 plugins={[

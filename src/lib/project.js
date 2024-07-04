@@ -19,7 +19,7 @@ export async function getProjects(jwt) {
 }
 
 export async function createProject(projectDetails, jwt) {
-  const url = new URL(`${LIP_API_BASE}/project`);
+  const url = new URL(`${LIP_API_BASE}/project/`);
   const func = () => fetch(url, {
     method: "POST",
     headers: {
