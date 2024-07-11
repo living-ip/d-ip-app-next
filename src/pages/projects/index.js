@@ -1,11 +1,13 @@
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile, getUserRoles} from "@/lib/user";
+import {getUserProfile} from "@/lib/user";
 import {useRouter} from "next/router";
 import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {YourProjectCard} from "@/components/custom/YourProjectCard";
 import {OtherProjectCard} from "@/components/custom/OtherProjectCard";
 import {NewLayout} from "@/components/NewLayout";
+import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Projects({projects}) {
 	const router = useRouter();
@@ -50,7 +52,12 @@ export default function Projects({projects}) {
 		<NewLayout>
 			<main
 				className="flex flex-col px-20 py-8 w-full h-auto bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
-				<h1 className="text-3xl text-neutral-950 max-md:max-w-full">Projects</h1>
+				<div className={"justify-between flex"}>
+					<h1 className="text-3xl text-neutral-950 max-md:max-w-full">Projects</h1>
+					<Link href={"/projects/new"}>
+						<Button>Create Project</Button>
+					</Link>
+				</div>
 				<h2 className="mt-6 text-xl text-neutral-950 max-md:max-w-full">Your projects</h2>
 				<div className="mt-4 max-md:max-w-full">
 					<div className="grid grid-cols-2 2xl:grid-cols-3 gap-5 max-md:grid-cols-1 max-md:gap-0">
