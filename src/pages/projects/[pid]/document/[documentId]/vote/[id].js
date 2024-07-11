@@ -18,15 +18,13 @@ import {useRouter} from "next/router";
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
 	const router = useRouter();
-	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) =>
-		[state.userRoles, state.setInvalidPermissionsDialogOpen]
-	);
+	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
+		state.userRoles,
+		state.setInvalidPermissionsDialogOpen,
+	]);
 	const [userVote, setUserVote] = useState(userVoteProp);
 
 	const files = parseDiff(change.diff_data);
-
-	console.log("change: ", change);
-	console.log("changeVotes: ", changeVotes);
 
 	const renderFile = ({oldRevision, newRevision, type, hunks}) => (
 		<Diff
@@ -44,16 +42,11 @@ export default function Index({project, document, change, changeVotes, userVoteP
 		const hours = Math.floor(minutes / 60);
 		const days = Math.floor(hours / 24);
 
-		if (remainingTime <= 0) {
-			return "Expired";
-		} else if (minutes < 60) {
-			return `${minutes} min${minutes !== 1 ? 's' : ''}`;
-		} else if (hours < 24) {
-			return `${hours} hr${hours !== 1 ? 's' : ''}`;
-		} else {
-			return `${days} day${days !== 1 ? 's' : ''}`;
-		}
-	}
+		if (remainingTime <= 0) return "Expired";
+		if (minutes < 60) return `${minutes} min${minutes !== 1 ? 's' : ''}`;
+		if (hours < 24) return `${hours} hr${hours !== 1 ? 's' : ''}`;
+		return `${days} day${days !== 1 ? 's' : ''}`;
+	};
 
 	const userCanVote = () => {
 		if (!userRoles.find((role) => role.project === project.pid && role.role.vote_on_change)) {
@@ -61,7 +54,7 @@ export default function Index({project, document, change, changeVotes, userVoteP
 			return false;
 		}
 		return true;
-	}
+	};
 
 	const ResultsSection = () => (
 		<>
@@ -81,38 +74,30 @@ export default function Index({project, document, change, changeVotes, userVoteP
 						</Button>
 						<div className="text-3xl leading-9 text-neutral-950 max-md:max-w-full">{document.name}</div>
 					</div>
-					<div className={"flex mt-2 space-x-2"}>
+					<div className="flex mt-2 space-x-2">
 						<VotePageBadge>Vote Ongoing</VotePageBadge>
 						{change.time_left_ms && (
 							<VotePageBadge>{getTimeBadge(change.time_left_ms)}</VotePageBadge>
 						)}
 					</div>
-					<p className="mt-2 text-sm text-neutral-600 w-[722px] max-md:max-w-full">{change.description}</p>
-					<section className="mt-7 mb-40 max-md:mb-10 max-md:max-w-full">
-						<div className="flex gap-5 max-md:flex-col max-md:gap-0">
-							<article className="flex flex-col w-[69%] max-md:ml-0 max-md:w-full">
-								<div
-									className="flex flex-col p-8 w-full max-h-screen text-base rounded-2xl bg-zinc-50 text-neutral-600 max-md:px-5 max-md:mt-6 max-md:max-w-full">
-									<div className="h-full px-5 -mt-6 overflow-x-scroll overflow-y-scroll">
-										{files.map(renderFile)}
-									</div>
+					<p className="mt-2 text-sm text-neutral-600 w-full max-w-3xl">{change.description}</p>
+					<section className="mt-7 mb-40 w-full max-md:mb-10">
+						<div className="flex gap-5 max-md:flex-col">
+							<article className="flex flex-col w-2/3 max-md:w-full">
+								<div className="w-full max-h-screen overflow-x-auto overflow-y-auto">
+									{files.map(renderFile)}
 								</div>
 							</article>
-							<aside className="flex flex-col ml-5 w-[31%] max-md:ml-0 max-md:w-full">
+							<aside className="flex flex-col w-1/3 max-md:w-full">
 								{(change.closed || change.merged) ? (
 									<ResultsCard change={change} changeVotes={changeVotes}/>
+								) : userCanVote() ? (
+									<>
+										<VotingForm change={change} userVote={userVote} setUserVote={setUserVote}/>
+										<ResultsSection/>
+									</>
 								) : (
-									userCanVote() ? (
-										<>
-											<VotingForm change={change} userVote={userVote} setUserVote={setUserVote}/>
-											<ResultsSection/>
-										</>
-									) : (
-										<>
-											<h2 className="mt-4 text-lg">Results</h2>
-											<ResultsSection/>
-										</>
-									)
+									<ResultsSection/>
 								)}
 							</aside>
 						</div>
@@ -120,8 +105,7 @@ export default function Index({project, document, change, changeVotes, userVoteP
 				</main>
 			</div>
 		</NewLayout>
-	)
-
+	);
 }
 
 export const getServerSideProps = async ({req, query}) => {
@@ -136,24 +120,14 @@ export const getServerSideProps = async ({req, query}) => {
 	}
 
 	const {pid, documentId, id} = query;
-	console.log("Pid: ", pid);
-	console.log("Document ID: ", documentId);
-	console.log("Change ID: ", id);
-
 	const sessionJWT = req.cookies["stytch_session_jwt"];
 
-	// Execute the following requests in parallel
 	const [project, document, change, changeVotes] = await Promise.all([
 		getProject(pid, sessionJWT),
 		getDocument(documentId, sessionJWT),
 		getChange(id, sessionJWT),
 		getChangeVotes(id, {"include_voters": true}, sessionJWT)
 	]);
-
-	console.log("Project: ", project);
-	console.log("Document: ", document);
-	console.log("Change: ", change);
-	console.log("Change Votes: ", changeVotes);
 
 	if (!project || !document || !change) {
 		return {
@@ -165,8 +139,6 @@ export const getServerSideProps = async ({req, query}) => {
 	}
 
 	const userVote = changeVotes.voters.find((vote) => vote.voter_id === session.user_id);
-	console.log("User Vote: ", userVote);
-
 	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
 
 	const zustandServerStore = initializeStore({
@@ -177,14 +149,12 @@ export const getServerSideProps = async ({req, query}) => {
 
 	return {
 		props: {
-			project: project,
-			document: document,
-			change: change,
+			project,
+			document,
+			change,
 			changeVotes: changeVotes || {},
 			userVoteProp: userVote ? userVote.vote : 0,
-			initialZustandState: JSON.parse(
-				JSON.stringify(zustandServerStore.getState())
-			),
+			initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
 		},
 	};
 };
