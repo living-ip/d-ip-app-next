@@ -28,34 +28,36 @@ export default function Index({project, document, changesWithVotes}) {
 
 	return (
 		<NewLayout>
-			<div className="container mx-auto px-4 py-8 bg-white min-h-screen">
-				<h1 className="text-4xl font-extrabold mb-2">{document.name}</h1>
-				{/* TODO: Uncomment once lastEdit is served with document */}
-				{/* <p className="text-sm text-zinc-500 mb-6">
-          Last edit {new Date(document.lastEdit).toLocaleDateString('en-US', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-          })}
-        </p> */}
+			<div className="bg-white min-h-screen">
+				<div className="container mx-auto px-4 sm:px-20 py-8">
+					<h1 className="text-4xl font-extrabold mb-2">{document.name}</h1>
+					{/* TODO: Uncomment once lastEdit is served with document */}
+					{/* <p className="text-sm text-zinc-500 mb-6">
+            Last edit {new Date(document.lastEdit).toLocaleDateString('en-US', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            })}
+          </p> */}
 
-				<section className="mb-8">
-					<h2 className="text-xl font-semibold text-neutral-950 mb-4">Ongoing</h2>
-					{ongoingChanges.length > 0 ? (
-						renderChangeCards(ongoingChanges)
-					) : (
-						<p className="text-gray-500">No ongoing changes</p>
-					)}
-				</section>
+					<section className="mb-8">
+						<h2 className="text-xl font-semibold text-neutral-950 mb-4">Ongoing</h2>
+						{ongoingChanges.length > 0 ? (
+							renderChangeCards(ongoingChanges)
+						) : (
+							<p className="text-gray-500">No ongoing changes</p>
+						)}
+					</section>
 
-				<section>
-					<h2 className="text-xl font-semibold text-neutral-950 mb-4">Completed</h2>
-					{completedChanges.length > 0 ? (
-						renderChangeCards(completedChanges)
-					) : (
-						<p className="text-gray-500">No completed changes</p>
-					)}
-				</section>
+					<section>
+						<h2 className="text-xl font-semibold text-neutral-950 mb-4">Completed</h2>
+						{completedChanges.length > 0 ? (
+							renderChangeCards(completedChanges)
+						) : (
+							<p className="text-gray-500">No completed changes</p>
+						)}
+					</section>
+				</div>
 			</div>
 		</NewLayout>
 	);
