@@ -64,7 +64,7 @@ export default function Home() {
 				}}
 			>
 				<header
-					className="flex items-center justify-between px-10 py-4 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
+					className="flex items-center justify-between px-10 py-4 mt-2 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
 					<div className="w-[110px] h-[24px]">
 						<Image
 							src="/landingpage/Logo-Design-Full-Color-White.png"
@@ -79,15 +79,12 @@ export default function Home() {
 						{
 							user ? (
 								<Link href={"/projects"}>
-									<Button
-										className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
-										Home</Button>
+									<Button>Home</Button>
 								</Link>
 
 							) : (
 								<LogInDialog>
-									<Button
-										className="px-2 py-1 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20 h-fit">
+									<Button>
 										Log in
 									</Button>
 								</LogInDialog>
@@ -108,16 +105,14 @@ export default function Home() {
 				{
 					user ? (
 						<Link href={"/projects"}>
-							<Button
-								className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
-								<span className="my-auto mr-1">To Projects</span>
+							<Button className={"mt-4"}>
+								To Projects
 							</Button>
 						</Link>
 
 					) : (
 						<Link href={"/login"}>
-							<Button
-								className="flex relative gap-1 justify-between p-1 mt-10 bg-lime-900 rounded border border-solid shadow-md border-stone-500 border-opacity-20">
+							<Button className={"mt-4 space-x-2"}>
 								<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32}
 								       className="bg-white p-2 rounded"/>
 								<span className="my-auto mr-1">Create account</span>
