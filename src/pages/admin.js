@@ -121,7 +121,7 @@ export default function AdminPanel({projects, users}) {
 						</TableHeader>
 						<TableBody>
 							{users.map((user) => (
-								<TableRow key={user.id}>
+								<TableRow key={user.uid}>
 									<TableCell className="font-medium">{user.name}</TableCell>
 									<TableCell>{user.email}</TableCell>
 									<TableCell>{formatDate(user.created_at)}</TableCell>
@@ -175,8 +175,10 @@ export const getServerSideProps = async ({req}) => {
 			props: {},
 		};
 	}
-	const projects = await getProjects(sessionJWT);
-	const users = await getUsers(sessionJWT);
+	const [projects, users] = await Promise.all([
+		getProjects(sessionJWT),
+		getUsers(sessionJWT)
+	]);
 	return {
 		props: {
 			projects,
