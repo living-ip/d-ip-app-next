@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,26 +12,19 @@ import {useStore} from "@/lib/store";
 import {NewNavBar} from "@/components/custom/NewNavBar";
 
 export function NewLayout({children}) {
-	const [navbarHeight, setNavbarHeight] = useState(0);
-	const [invalidPermissionsDialogOpen, setInvalidPermissionsDialogOpen] = useStore((state) =>
-		[state.invalidPermissionsDialogOpen, state.setInvalidPermissionsDialogOpen]
-	);
-
+	const [invalidPermissionsDialogOpen, setInvalidPermissionsDialogOpen] = useStore((state) => [
+		state.invalidPermissionsDialogOpen,
+		state.setInvalidPermissionsDialogOpen
+	]);
 	const handleDialogClose = () => {
 		setInvalidPermissionsDialogOpen(false);
 	}
-
-	useEffect(() => {
-		const navbar = document.getElementById('navbar');
-		if (navbar) {
-			setNavbarHeight(navbar.offsetHeight);
-		}
-	}, []);
-
 	return (
-		<div className="flex flex-col pb-6 bg-neutral-100 h-screen px-8 overflow-y-auto">
+		<div className="flex flex-col min-h-screen bg-neutral-100">
 			<NewNavBar/>
-			{children}
+			<main className="flex-grow px-4 md:px-8 py-6 overflow-y-auto">
+				{children}
+			</main>
 			<AlertDialog open={invalidPermissionsDialogOpen} onOpenChange={handleDialogClose}>
 				<AlertDialogContent>
 					<AlertDialogHeader>

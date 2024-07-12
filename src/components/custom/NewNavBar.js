@@ -1,92 +1,110 @@
 import Image from "next/image";
-import * as React from "react";
 import {useRouter} from "next/router";
 import {NavigationMenu, NavigationMenuItem, NavigationMenuList} from "@/components/ui/navigation-menu";
 import {Button} from "@/components/ui/button";
 import {useStore} from "@/lib/store";
 import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
-import {deleteCookie} from "cookies-next";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
-import {useStytch, useStytchSession, useStytchUser} from "@stytch/nextjs";
+import {useStytch, useStytchUser} from "@stytch/nextjs";
+import {useEffect, useState} from "react";
 
 export function NewNavBar() {
 	const router = useRouter();
-	const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
-	const userProfile = useStore((state) => state.userProfile);
-
-	const initials = userProfile?.name.split(' ').map((n) => n[0]).join('') || "LIP";
-
+	const [userRoles, currentProject, userProfile] = useStore((state) => [state.userRoles, state.currentProject, state.userProfile]);
 	const stytch = useStytch();
-
 	const {user} = useStytchUser();
+	const [isMobile, setIsMobile] = useState(false);
 
-	const homeHandler = () => {
-		if (user) {
-			router.push("/projects");
-			return;
-		}
-		router.push("/");
-	}
+	const initials = userProfile?.name?.split(' ').map((n) => n[0]).join('') || "LIP";
 
-	const handleAdmin = () => {
-		if (userProfile?.email === "dan@sibylline.xyz" || userProfile?.email === "m3taversal@gmail.com") {
-			return (
-				<DropdownMenuItem onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>
-			)
-		}
-	}
+	const homeHandler = () => router.push(user ? "/projects" : "/");
+
+	const isAdmin = userProfile?.email === "dan@sibylline.xyz" || userProfile?.email === "m3taversal@gmail.com";
+
+	const canAccessAdminPanel = userRoles.some((role) => role.project === currentProject && role.role.access_admin_panel);
+
+	useEffect(() => {
+		const checkScreenSize = () => {
+			setIsMobile(window.innerWidth < 768); // Adjust this breakpoint as needed
+		};
+
+		checkScreenSize();
+		window.addEventListener('resize', checkScreenSize);
+
+		return () => window.removeEventListener('resize', checkScreenSize);
+	}, []);
+
+	const navItems = [
+		...(canAccessAdminPanel ? [{
+			label: "Management",
+			onClick: () => router.push(`/projects/${currentProject}/management`),
+		}] : []),
+		{
+			label: "User Guide",
+			onClick: () => router.push('/projects/pid-76047bbe1fc241959bb636eaa4d6e27f/document/did-1569a552a4894b90af40f7a3d511abf4'),
+		},
+	];
 
 	return (
-		<div className="flex gap-5 justify-between py-3 w-full max-md:flex-wrap max-md:px-5 max-md:max-w-full">
+		<div className="flex items-center justify-between w-full px-4 py-3 lg:px-6">
 			<Image
-				loading="lazy"
 				src="/Logo-Design-Full-Color-Black.svg"
 				alt="Company Logo"
-				className="shrink-0 my-auto max-w-full aspect-[4.55] w-[110px] hover:cursor-pointer"
+				className="w-[110px] h-auto cursor-pointer"
 				width={110}
 				height={24}
 				onClick={homeHandler}
+				priority
 			/>
 			{router.pathname !== '/onboard' && (
-				<NavigationMenu>
-					<NavigationMenuList className="space-x-4">
-						{userRoles.find((role) => role.project === currentProject && role.role.access_admin_panel) && (
-							<NavigationMenuItem>
-								<Button variant="outline"
-								        onClick={() => router.push(`/projects/${currentProject}/management`)}>
-									Management
+				<NavigationMenu className="flex-grow justify-end">
+					<NavigationMenuList className="flex items-center gap-2 sm:gap-4">
+						{!isMobile && navItems.map((item, index) => (
+							<NavigationMenuItem key={index}>
+								<Button
+									className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black"
+									variant="ghost"
+									onClick={item.onClick}
+								>
+									{item.label}
 								</Button>
+							</NavigationMenuItem>
+						))}
+						{!isMobile && (
+							<NavigationMenuItem>
+								<ConnectWalletButton/>
 							</NavigationMenuItem>
 						)}
 						<NavigationMenuItem>
-							<Button className="bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]" variant="ghost"
-							        onClick={() => router.push('/projects/pid-76047bbe1fc241959bb636eaa4d6e27f/document/did-1569a552a4894b90af40f7a3d511abf4')}
-							>
-								User Guide
-							</Button>
-						</NavigationMenuItem>
-						<NavigationMenuItem>
-							<ConnectWalletButton/>
-						</NavigationMenuItem>
-						<NavigationMenuItem>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="ghost"
-									        className="pl-0 flex flex-row justify-center items-center gap-1.5 bg-[#E1E5DE] hover:border hover:border-[#E1E5DE]">
-										<Avatar className="relative inline-block w-9 h-9">
+									<Button variant="ghost" className="p-1 bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black">
+										<Avatar className="w-8 h-8 mr-2">
 											<AvatarImage
 												src={userProfile?.image_uri || "https://storage.googleapis.com/syb_us_cdn/cyber_future_da.png"}
 												alt={initials}
-												className="rounded-full object-cover"
 											/>
 										</Avatar>
-										<div className="text-sm text-neutral-950">{userProfile?.name}</div>
+										<span className="max-w-[100px] truncate">{userProfile?.name}</span>
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
-									<DropdownMenuItem onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
-									{handleAdmin()}
+									{isMobile && navItems.map((item, index) => (
+										<DropdownMenuItem key={index} onSelect={item.onClick}>
+											{item.label}
+										</DropdownMenuItem>
+									))}
+									{isMobile && (
+										<DropdownMenuItem onSelect={() => {
+										}}>
+											<ConnectWalletButton/>
+										</DropdownMenuItem>
+									)}
+									<DropdownMenuItem
+										onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
+									{isAdmin && <DropdownMenuItem
+										onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>}
 									<DropdownMenuItem onSelect={() => {
 										stytch.session.revoke();
 										router.push('/');
