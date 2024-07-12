@@ -15,6 +15,7 @@ import {AwaitResults} from "@/components/custom/AwaitResults";
 import {Button} from "@/components/ui/button";
 import {IoArrowBackOutline} from "react-icons/io5";
 import {useRouter} from "next/router";
+import VoteTimeRemainingBadge from "@/components/custom/VoteTimeRemainingBadge";
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
 	const router = useRouter();
@@ -25,6 +26,8 @@ export default function Index({project, document, change, changeVotes, userVoteP
 	const [userVote, setUserVote] = useState(userVoteProp);
 
 	const files = parseDiff(change.diff_data);
+
+	const voteTimeLeft = change.vote_timeout - Date.now();
 
 	const renderFile = ({oldRevision, newRevision, type, hunks}) => (
 		<Diff
@@ -76,10 +79,10 @@ export default function Index({project, document, change, changeVotes, userVoteP
 					</div>
 					<div className="flex mt-2 space-x-2">
 						{
-							change.time_left_ms ? (
+							(voteTimeLeft > 0) ? (
 								<>
 									<VotePageBadge>Voting Ongoing</VotePageBadge>
-									<VotePageBadge>{getTimeBadge(change.time_left_ms)}</VotePageBadge>
+									<VoteTimeRemainingBadge change={change}/>
 								</>
 							) : (
 								<VotePageBadge>Voting Closed</VotePageBadge>

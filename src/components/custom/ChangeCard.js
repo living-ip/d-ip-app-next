@@ -2,6 +2,7 @@ import {Card} from "@/components/ui/card";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {ChangeResultBadge} from "@/components/custom/ChangeResultBadge";
 import {useStore} from "@/lib/store";
+import VoteTimeRemainingBadge from "@/components/custom/VoteTimeRemainingBadge";
 
 export function ChangeCard({change, onClick}) {
 	const [userProfile] = useStore((state) => [state.userProfile]);
@@ -26,6 +27,7 @@ export function ChangeCard({change, onClick}) {
 			<div className="flex flex-row gap-2 justify-between items-center mt-3">
 				{!change.closed && !change.merged ? (
 					<>
+						<VoteTimeRemainingBadge change={change}/>
 						<div className="text-sm font-medium text-neutral-950">{change.votes.count} votes</div>
 						{change.creator_id === userProfile.uid && (
 							<UserItem src={change.creator.image_uri} text="Your Change"/>
