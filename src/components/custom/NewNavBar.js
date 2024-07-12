@@ -79,14 +79,14 @@ export function NewNavBar() {
 						<NavigationMenuItem>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<Button variant="ghost" className="p-1 bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black">
+									<Button variant="ghost" className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black">
 										<Avatar className="w-8 h-8 mr-2">
 											<AvatarImage
 												src={userProfile?.image_uri || "https://storage.googleapis.com/syb_us_cdn/cyber_future_da.png"}
 												alt={initials}
 											/>
 										</Avatar>
-										<span className="max-w-[100px] truncate">{userProfile?.name}</span>
+										{userProfile?.name}
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
