@@ -30,16 +30,12 @@ export const authStytchRequest = async (req) => {
 };
 
 export const authStytchToken = async (token) => {
-  console.log("Validating token");
   const stytchClient = loadStytch();
   try {
     // Authenticate the session JWT. If an error is thrown the session authentication has failed.
-    const { session, user } = await stytchClient.sessions.authenticate({
-      session_jwt: token,
-    });
+    const { session } = await stytchClient.sessions.authenticateJwt(token);
     console.log("Got stytch session", session);
-    console.log("Got stytch user", user);
-    return { session, user };
+    return { session };
   } catch (e) {
     return {};
   }

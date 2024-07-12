@@ -68,7 +68,11 @@ export const getServerSideProps = async ({req}) => {
 		};
 	}
 	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
+	const [user, projects] = await Promise.all([
+		getUserProfile(session.user_id, sessionJWT),
+		getProjects(sessionJWT),
+	]);
+	const {userProfile, roles} = user;
 	if (!userProfile) {
 		return {
 			redirect: {
@@ -77,7 +81,6 @@ export const getServerSideProps = async ({req}) => {
 			},
 		};
 	}
-	const projects = await getProjects(sessionJWT);
 	const zustandServerStore = initializeStore({
 		userProfile,
 		userRoles: roles,
