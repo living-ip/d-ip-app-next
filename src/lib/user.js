@@ -1,6 +1,22 @@
-import { LIP_API_BASE } from "./constants";
-import { doApiCall } from "./api";
+import {LIP_API_BASE} from "./constants";
+import {doApiCall} from "./api";
 import * as changeKeys from "change-case/keys";
+
+export async function getUsers(jwt) {
+  const url = new URL(`${LIP_API_BASE}/user/`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
 
 export async function getUserProfile(userId, jwt) {
   const url = new URL(`${LIP_API_BASE}/user/${userId}`);
