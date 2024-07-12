@@ -120,50 +120,6 @@ export default function Home() {
 						</Link>
 					)
 				}
-				<div className="flex flex-row col-1 space-x-8">
-					<Image
-						src="/landingpage/Holder_Logo.svg"
-						alt=""
-						width={320}
-						height={115}
-						className="self-stretch mt-12 w-full max-md:mt-10 max-md:max-w-full"
-					/>
-					<Image
-						src="/landingpage/Holder_Logo.svg"
-						alt=""
-						width={320}
-						height={115}
-						className="self-stretch mt-12 w-full max-md:mt-10 max-md:max-w-full"
-					/>
-					<Image
-						src="/landingpage/Holder_Logo.svg"
-						alt=""
-						width={320}
-						height={115}
-						className="self-stretch mt-12 w-full max-md:mt-10 max-md:max-w-full"
-					/>
-					<Image
-						src="/landingpage/Holder_Logo.svg"
-						alt=""
-						width={320}
-						height={115}
-						className="self-stretch mt-12 w-full max-md:mt-10 max-md:max-w-full"
-					/>
-					<Image
-						src="/landingpage/Holder_Logo.svg"
-						alt=""
-						width={320}
-						height={115}
-						className="self-stretch mt-12 w-full max-md:mt-10 max-md:max-w-full"
-					/>
-					<Image
-						src="/landingpage/Holder_Logo.svg"
-						alt=""
-						width={320}
-						height={115}
-						className="self-stretch mt-12 w-full max-md:mt-10 max-md:max-w-full"
-					/>
-				</div>
 				<Image
 					src="/landingpage/holder_application_screenshot.png"
 					alt=""
