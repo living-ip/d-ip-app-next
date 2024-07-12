@@ -1,78 +1,46 @@
 import {useRouter} from "next/router";
-import {useToast} from "@/components/ui/use-toast";
 import {Button} from "@/components/ui/button";
 import * as React from "react";
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {AiOutlineCamera} from "react-icons/ai";
 
-function copyToClipboard(text) {
-	navigator.clipboard.writeText(text).then(function () {
-		console.log('Copying to clipboard was successful!');
-	}, function (err) {
-		console.error('Could not copy text: ', err);
-	});
-}
-
 export function ProfileCard({profile}) {
 	const router = useRouter();
-	const {toast} = useToast()
-
 	return (
-		<div className="flex flex-col self-stretch px-6 py-5 mx-auto w-full bg-white rounded-xl max-md:pl-5 max-md:mt-10">
-			<div
-				className="flex justify-between self-end max-w-full text-sm font-medium leading-5 whitespace-nowrap text-neutral-500 w-[211px]">
-				<Avatar className="relative inline-block w-32 h-32">
-					{profile.image_uri ? (
-						<AvatarImage
-							src={profile.image_uri}
-							alt="Profile picture"
-							className="rounded-full object-cover"
-						/>
-					) : (
-						<div className="w-32 h-32 rounded-full bg-gray-100 flex justify-center items-center">
-							<AiOutlineCamera size={32} className="text-gray-600"/>
-						</div>
-					)}
-				</Avatar>
-				<Button variant="ghost" onClick={() => router.push('/profile/edit')}>Edit</Button>
-			</div>
-			<div
-				className="flex flex-col items-center px-14 mt-6 text-base leading-6 text-neutral-950 max-md:px-5 max-md:mr-2">
-				<div className="self-stretch mt-3 text-4xl leading-10 text-center">{profile.name}</div>
-				{/*<div className="mt-2 text-center text-neutral-600">{profile.role} @ {profile.company}</div>*/}
-			</div>
-			<div className="flex flex-col mt-6 w-full bg-white rounded-xl max-md:mr-2">
-				{/*<div className="flex gap-2.5 justify-between w-full whitespace-nowrap">*/}
-				{/*  <div className="text-base leading-6 text-center text-zinc-500">Projects</div>*/}
-				{/*  <div className="flex gap-2 my-auto text-xs font-medium leading-4 text-neutral-950">*/}
-				{/*    <div className="justify-center px-2 py-0.5 bg-stone-200 rounded-[100px]">Claynosaurz</div>*/}
-				{/*    <div className="justify-center px-2 py-0.5 bg-stone-200 rounded-[100px]">LivingIP</div>*/}
-				{/*  </div>*/}
-				{/*</div>*/}
-				{/*<div*/}
-				{/*  className="flex gap-2.5 justify-between mt-3 w-full text-base leading-6 text-center whitespace-nowrap text-zinc-500">*/}
-				{/*  <div>Wallet</div>*/}
-				{/*  <div className="flex gap-1 justify-between pr-1.5">*/}
-				{/*    <div>{profile.walletAddress}</div>*/}
-				{/*    <Image*/}
-				{/*      className="shrink-0 my-auto w-3 aspect-square hover:cursor-pointer" width={12} height={12}*/}
-				{/*      loading="lazy" src="/profile/copy-01.svg" alt="Copy Icon"*/}
-				{/*      onClick={() => {*/}
-				{/*        copyToClipboard(profile.walletAddress)*/}
-				{/*        toast({*/}
-				{/*          description: "Wallet address copied to clipboard",*/}
-				{/*        })*/}
-				{/*      }}*/}
-				{/*    />*/}
-				{/*  </div>*/}
-				{/*</div>*/}
-				<div className="flex gap-2.5 justify-between mt-3 text-base leading-6 text-center">
-					<div className="text-zinc-500">Email</div>
-					<div className="text-neutral-950">{profile.email}</div>
+		<div className="bg-white rounded-xl shadow-md overflow-hidden">
+			<div className="p-6 sm:p-8">
+				<div className="flex justify-between items-start mb-6">
+					<Avatar className="w-24 h-24 sm:w-32 sm:h-32">
+						{profile.image_uri ? (
+							<AvatarImage
+								src={profile.image_uri}
+								alt="Profile picture"
+								className="rounded-full object-cover"
+							/>
+						) : (
+							<div className="w-full h-full rounded-full bg-gray-100 flex justify-center items-center">
+								<AiOutlineCamera size={32} className="text-gray-600"/>
+							</div>
+						)}
+					</Avatar>
+					<Button variant="ghost" onClick={() => router.push('/profile/edit')}>
+						Edit
+					</Button>
 				</div>
-				<div className="flex gap-2.5 justify-between mt-3 text-base leading-6 text-center">
-					<div className="text-zinc-500">Joined</div>
-					<div className="text-neutral-950">{new Date(profile.created_at).toLocaleDateString()}</div>
+				<div className="text-center mb-6">
+					<h1 className="text-3xl sm:text-4xl text-neutral-950 mb-2">
+						{profile.name}
+					</h1>
+				</div>
+				<div className="space-y-4">
+					<div className="flex justify-between items-center">
+						<span className="text-zinc-500">Email</span>
+						<span className="text-neutral-950">{profile.email}</span>
+					</div>
+					<div className="flex justify-between items-center">
+						<span className="text-zinc-500">Joined</span>
+						<span className="text-neutral-950">{new Date(profile.created_at).toLocaleDateString()}</span>
+					</div>
 				</div>
 			</div>
 		</div>
