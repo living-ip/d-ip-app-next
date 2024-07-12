@@ -75,10 +75,16 @@ export default function Index({project, document, change, changeVotes, userVoteP
 						<div className="text-3xl leading-9 text-neutral-950 max-md:max-w-full">{document.name}</div>
 					</div>
 					<div className="flex mt-2 space-x-2">
-						<VotePageBadge>Vote Ongoing</VotePageBadge>
-						{change.time_left_ms && (
-							<VotePageBadge>{getTimeBadge(change.time_left_ms)}</VotePageBadge>
-						)}
+						{
+							change.time_left_ms ? (
+								<>
+									<VotePageBadge>Voting Ongoing</VotePageBadge>
+									<VotePageBadge>{getTimeBadge(change.time_left_ms)}</VotePageBadge>
+								</>
+							) : (
+								<VotePageBadge>Voting Closed</VotePageBadge>
+							)
+						}
 					</div>
 					<p className="mt-2 text-sm text-neutral-600 w-full max-w-3xl">{change.description}</p>
 					<section className="mt-7 mb-40 w-full max-md:mb-10">
