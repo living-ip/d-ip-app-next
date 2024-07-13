@@ -40,17 +40,6 @@ export default function Index({project, document, change, changeVotes, userVoteP
 		</Diff>
 	);
 
-	const getTimeBadge = (remainingTime) => {
-		const minutes = Math.floor(remainingTime / 60000);
-		const hours = Math.floor(minutes / 60);
-		const days = Math.floor(hours / 24);
-
-		if (remainingTime <= 0) return "Expired";
-		if (minutes < 60) return `${minutes} min${minutes !== 1 ? 's' : ''}`;
-		if (hours < 24) return `${hours} hr${hours !== 1 ? 's' : ''}`;
-		return `${days} day${days !== 1 ? 's' : ''}`;
-	};
-
 	const userCanVote = () => {
 		if (!userRoles.find((role) => role.project === project.pid && role.role.vote_on_change)) {
 			setInvalidPermissionsDialogOpen(true);

@@ -71,7 +71,7 @@ const DocumentCards = ({ project, documents }) => {
                   key={index}
                   name={document.name}
                   description={document.description}
-                  lastEditDate={document.created_at}
+                  lastEditDate={document.last_edit || document.created_at}
                   onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}
                 />
               ))}
