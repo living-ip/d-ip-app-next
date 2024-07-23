@@ -1,405 +1,350 @@
-import React, {useState} from 'react';
-import {Button} from "@/components/ui/button"
-import {Input} from "@/components/ui/input"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import {useRouter} from "next/router";
+import React, { useState, useCallback } from 'react';
+import { useRouter } from "next/router";
+import { getCookie } from "cookies-next";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { NewLayout } from "@/components/NewLayout";
 import {
-	addUserToProject,
-	getChangesRules,
-	getProjectUsers,
-	getVotingRules,
-	removeUserFromProject,
-	updateChangesRules,
-	updateProjectUserRole,
-	updateVotingRules
+  addUserToProject,
+  getChangesRules,
+  getProjectUsers,
+  getVotingRules,
+  removeUserFromProject,
+  updateChangesRules,
+  updateProjectUserRole,
+  updateVotingRules
 } from "@/lib/admin";
-import {authStytchRequest} from "@/lib/stytch";
-import {getCookie} from "cookies-next";
-import {initializeStore, useStore} from "@/lib/store";
-import {getUserProfile, getUserRoles} from "@/lib/user";
-import {NewLayout} from "@/components/NewLayout";
+import { authStytchRequest } from "@/lib/stytch";
+import { initializeStore, useStore } from "@/lib/store";
+import { getUserProfile } from "@/lib/user";
 
-export default function ManagementPanel({pid, changesRules, votingRules, initialUserList}) {
-	const router = useRouter();
-	const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
-	const timeframes = [
-		{
-			"label": "1 hour",
-			"value": 1 * 60 * 60 * 1000  // 1 hour in milliseconds
-		},
-		{
-			"label": "4 hours",
-			"value": 4 * 60 * 60 * 1000  // 4 hours in milliseconds
-		},
-		{
-			"label": "8 hours",
-			"value": 8 * 60 * 60 * 1000  // 8 hours in milliseconds
-		},
-		{
-			"label": "12 hours",
-			"value": 12 * 60 * 60 * 1000  // 12 hours in milliseconds
-		},
-		{
-			"label": "1 day",
-			"value": 24 * 60 * 60 * 1000  // 1 day in milliseconds
-		},
-		{
-			"label": "3 days",
-			"value": 72 * 60 * 60 * 1000  // 3 days in milliseconds
-		},
-		{
-			"label": "7 days",
-			"value": 168 * 60 * 60 * 1000  // 7 days in milliseconds
-		}
-	]
-	const [userList, setUserList] = useState(initialUserList);
-	const rule1Start = changesRules[0].start;
-	const [rule1End, setRule1End] = useState(changesRules[0].end);
-	const [rule1Timeframe, setRule1Timeframe] = useState(changesRules[0].time);
-	const [rule2Start, setRule2Start] = useState(changesRules[1].start);
-	const [rule2End, setRule2End] = useState(changesRules[1].end);
-	const [rule2Timeframe, setRule2Timeframe] = useState(changesRules[1].time);
-	const [rule3Start, setRule3Start] = useState(changesRules[2].start);
-	const rule3End = changesRules[2].end;
-	const [rule3Timeframe, setRule3Timeframe] = useState(changesRules[2].time);
-	const [minimumVotes, setMinimumVotes] = useState(votingRules.min_votes_required);
-	const [positiveVotesPercentage, setPositiveVotesPercentage] = useState(votingRules.min_votes_percentage * 100);
-	const [email, setEmail] = useState('');
-	const roles = ["project_manager", "moderator", "editor", "voter", "viewer"];
+const TIMEFRAMES = [
+  { label: "1 hour", value: 1 * 60 * 60 * 1000 },
+  { label: "4 hours", value: 4 * 60 * 60 * 1000 },
+  { label: "8 hours", value: 8 * 60 * 60 * 1000 },
+  { label: "12 hours", value: 12 * 60 * 60 * 1000 },
+  { label: "1 day", value: 24 * 60 * 60 * 1000 },
+  { label: "3 days", value: 72 * 60 * 60 * 1000 },
+  { label: "7 days", value: 168 * 60 * 60 * 1000 }
+];
 
-	const handleRule1EndChange = (e) => {
-		setRule1End(e.target.value);
-	}
+const ROLES = ["project_manager", "moderator", "editor", "voter", "viewer"];
 
-	const handleRule1TimeframeChange = (value) => {
-		setRule1Timeframe(value);
-	}
+export default function ManagementPanel({ pid, changesRules, votingRules, initialUserList }) {
+  const router = useRouter();
+  const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
+  const [userList, setUserList] = useState(initialUserList);
+  const [email, setEmail] = useState('');
 
-	const handleRule2StartChange = (e) => {
-		setRule2Start(e.target.value);
-	}
+  const [rules, setRules] = useState(changesRules.map((rule, index) => ({
+    start: rule.start,
+    end: rule.end,
+    timeframe: rule.time,
+    isStartEditable: index !== 0,
+    isEndEditable: index !== 2
+  })));
 
-	const handleRule2EndChange = (e) => {
-		setRule2End(e.target.value);
-	}
+  const [votingSettings, setVotingSettings] = useState({
+    minimumVotes: votingRules.min_votes_required,
+    positiveVotesPercentage: votingRules.min_votes_percentage * 100
+  });
 
-	const handleRule2TimeframeChange = (value) => {
-		setRule2Timeframe(value);
-	}
+  const handleRuleChange = useCallback((index, field, value) => {
+    setRules(prevRules => prevRules.map((rule, i) =>
+      i === index ? { ...rule, [field]: value } : rule
+    ));
+  }, []);
 
-	const handleRule3StartChange = (e) => {
-		setRule3Start(e.target.value);
-	}
+  const handleVotingSettingChange = useCallback((field, value) => {
+    setVotingSettings(prev => ({ ...prev, [field]: value }));
+  }, []);
 
-	const handleRule3TimeframeChange = (value) => {
-		setRule3Timeframe(value);
-	}
+  const saveChangeRuleChanges = async () => {
+    const changeRulesData = rules.map(rule => ({
+      start: rule.start,
+      end: rule.end,
+      time: rule.timeframe
+    }));
+    await updateChangesRules(pid, changeRulesData, getCookie("stytch_session_jwt"));
+  };
 
-	const handleMinimumVotesChange = (e) => {
-		setMinimumVotes(e.target.value);
-	}
+  const saveVotingRuleChanges = async () => {
+    const votingRulesData = {
+      min_votes_required: votingSettings.minimumVotes,
+      min_votes_percentage: votingSettings.positiveVotesPercentage / 100
+    };
+    await updateVotingRules(pid, votingRulesData, getCookie("stytch_session_jwt"));
+  };
 
-	const handlePositiveVotesPercentageChange = (e) => {
-		setPositiveVotesPercentage(e.target.value);
-	}
+  const inviteUserToProject = async () => {
+    try {
+      const result = await addUserToProject(pid, email, getCookie("stytch_session_jwt"));
+      if (result) {
+        setEmail("");
+        setUserList(prevList => [...prevList, result]);
+      }
+    } catch (error) {
+      console.error("Failed to invite user:", error);
+      // TODO: Add user-facing error message
+    }
+  };
 
-	const handleRoleChange = async (uid, newRole) => {
-		const user = userList.find(user => user.uid === uid);
-		if (user.role === "admin") {
-			console.log("Cannot change role of admin user");
-			return;
-		}
+  const handleRemoveUser = async (uid) => {
+    try {
+      const result = await removeUserFromProject(pid, uid, getCookie("stytch_session_jwt"));
+      if (result) {
+        setUserList(prevList => prevList.filter(user => user.uid !== uid));
+      }
+    } catch (error) {
+      console.error("Failed to remove user:", error);
+      // TODO: Add user-facing error message
+    }
+  };
 
-		const result = await updateProjectUserRole(pid, uid, newRole, getCookie("stytch_session_jwt"));
-		if (!result) {
-			return;
-		}
+  const handleRoleChange = async (uid, newRole) => {
+    const user = userList.find(user => user.uid === uid);
+    if (user.role === "admin") {
+      console.log("Cannot change role of admin user");
+      return;
+    }
 
-		const updatedUserList = userList.map(user => {
-			if (user.uid === uid) {
-				return {...user, role: newRole};
-			}
-			return user;
-		});
-		setUserList(updatedUserList);
-	};
+    try {
+      const result = await updateProjectUserRole(pid, uid, newRole, getCookie("stytch_session_jwt"));
+      if (result) {
+        setUserList(prevList => prevList.map(user =>
+          user.uid === uid ? { ...user, role: newRole } : user
+        ));
+      }
+    } catch (error) {
+      console.error("Failed to update user role:", error);
+      // TODO: Add user-facing error message
+    }
+  };
 
-	async function goToEditPage() {
-		await router.push(`/projects/${pid}/edit`);
-	}
+  return (
+    <NewLayout>
+      <div className="max-w-4xl mx-auto p-8">
+        <h1 className="text-3xl font-bold mb-6">Project Management Admin Panel</h1>
 
-	async function saveChangeRuleChanges() {
-		console.log("Rule 1 start: ", rule1Start);
-		console.log("Rule 1 end: ", rule1End);
-		console.log("Rule 1 timeframe: ", rule1Timeframe);
-		console.log("Rule 2 start: ", rule2Start);
-		console.log("Rule 2 end: ", rule2End);
-		console.log("Rule 2 timeframe: ", rule2Timeframe);
-		console.log("Rule 3 start: ", rule3Start);
-		console.log("Rule 3 timeframe: ", rule3Timeframe);
+        <Section title="Edit Project">
+          <Button onClick={() => router.push(`/projects/${pid}/edit`)}>Go to Edit Project page</Button>
+        </Section>
 
-		const changeRulesData = [
-			{
-				start: rule1Start,
-				end: rule1End,
-				time: rule1Timeframe,
-			},
-			{
-				start: rule2Start,
-				end: rule2End,
-				time: rule2Timeframe
-			},
-			{
-				start: rule3Start,
-				end: rule3End,
-				time: rule3Timeframe
-			}
-		];
+        <Section title="Change Rules">
+          {rules.map((rule, index) => (
+            <RuleInput
+              key={index}
+              rule={rule}
+              index={index}
+              handleRuleChange={handleRuleChange}
+            />
+          ))}
+          <Button className="mt-4" onClick={saveChangeRuleChanges}>Save Changes</Button>
+        </Section>
 
-		await updateChangesRules(pid, changeRulesData, getCookie("stytch_session_jwt"));
-	}
+        <Section title="Voting Rules">
+          <VotingRulesInput
+            votingSettings={votingSettings}
+            handleVotingSettingChange={handleVotingSettingChange}
+          />
+          <Button className="mt-4" onClick={saveVotingRuleChanges}>Save Changes</Button>
+        </Section>
 
-	async function saveVotingRuleChanges() {
-		console.log("Saving minimum votes: ", minimumVotes);
-		console.log("Saving positive votes percentage: ", positiveVotesPercentage);
+        <Section title="Invite User">
+          <div className="flex items-center space-x-2">
+            <Input
+              placeholder="Email address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Button onClick={inviteUserToProject}>Add User</Button>
+          </div>
+        </Section>
 
-		const votingRulesData = {
-			min_votes_required: minimumVotes,
-			min_votes_percentage: positiveVotesPercentage / 100
-		};
-
-		console.log(votingRulesData);
-		await updateVotingRules(pid, votingRulesData, getCookie("stytch_session_jwt"));
-	}
-
-
-	async function inviteUserToProject() {
-		const result = await addUserToProject(pid, email, getCookie("stytch_session_jwt"));
-		if (!result) {
-			return;
-		}
-		setEmail("");
-		setUserList(userList => [...userList, result]);
-	}
-
-	async function handleRemoveUser(uid) {
-		const result = await removeUserFromProject(pid, uid, getCookie("stytch_session_jwt"));
-		if (!result) {
-			return;
-		}
-		setUserList(userList => userList.filter(user => user.uid !== uid));
-	}
-
-	return (
-		<NewLayout>
-			<div className="max-w-4xl mx-auto p-8">
-
-				<h1 className="text-3xl font-bold mb-6">Project Management Admin Panel</h1>
-
-				<section className="mb-6">
-					<h2 className="text-xl font-semibold mb-4">Edit Project</h2>
-					<Button onClick={goToEditPage}>Go to Edit Project page</Button>
-				</section>
-
-				<section className="mb-6">
-					<h2 className="text-xl font-semibold mb-4">Change Rules</h2>
-					<div className="space-y-2">
-						<div className="flex items-center space-x-2">
-							<Input placeholder={rule1Start} type="number" className="w-[64px]" value={rule1Start}
-							       readOnly/>
-							<span>to</span>
-							<Input placeholder={rule1End} type="number" className="w-[64px]" value={rule1End}
-							       onChange={handleRule1EndChange}/>
-							<span>line changes will be available to vote on for</span>
-							<div className="w-[180px]">
-								<Select onValueChange={handleRule1TimeframeChange} defaultValue={rule1Timeframe}>
-									<SelectTrigger id="timeframe1">
-										<SelectValue/>
-									</SelectTrigger>
-									<SelectContent position="popper">
-										{timeframes.map(timeframe => (
-											<SelectItem key={timeframe.value}
-											            value={timeframe.value}>{timeframe.label}</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-						</div>
-						<div className="flex items-center space-x-2">
-							<Input placeholder={rule2Start} type="number" className="w-[64px]" value={rule2Start}
-							       onChange={handleRule2StartChange}/>
-							<span>to</span>
-							<Input placeholder={rule2End} type="number" className="w-[64px]" value={rule2End}
-							       onChange={handleRule2EndChange}/>
-							<span>line changes will be available to vote on for</span>
-							<div className="w-[180px]">
-								<Select onValueChange={handleRule2TimeframeChange} defaultValue={rule2Timeframe}>
-									<SelectTrigger id="timeframe2">
-										<SelectValue/>
-									</SelectTrigger>
-									<SelectContent position="popper">
-										{timeframes.map(timeframe => (
-											<SelectItem key={timeframe.value}
-											            value={timeframe.value}>{timeframe.label}</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-						</div>
-						<div className="flex items-center space-x-2">
-							<span>More than</span>
-							<Input placeholder={rule3Start} type="number" className="w-[64px]" value={rule3Start}
-							       onChange={handleRule3StartChange}/>
-							<div className="w-[180px]">
-								<Select onValueChange={handleRule3TimeframeChange} defaultValue={rule3Timeframe}>
-									<SelectTrigger id="timeframe3">
-										<SelectValue/>
-									</SelectTrigger>
-									<SelectContent position="popper">
-										{timeframes.map(timeframe => (
-											<SelectItem key={timeframe.value}
-											            value={timeframe.value}>{timeframe.label}</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-						</div>
-					</div>
-					<Button className="mt-4" onClick={saveChangeRuleChanges}>Save Changes</Button>
-				</section>
-
-				<section className="mb-6">
-					<h2 className="text-xl font-semibold mb-4">Voting Rules</h2>
-					<div className="mb-4">
-						<label className="block mb-2" htmlFor="total-votes">
-							Minimum number of total votes required for a change to be able to pass:
-						</label>
-						<Input id="total-votes" type="number" placeholder={positiveVotesPercentage} value={minimumVotes}
-						       min="1"
-						       className="w-[64px]" onChange={handleMinimumVotesChange}/>
-					</div>
-					<div>
-						<label className="block mb-2" htmlFor="positive-votes">
-							What percentage of votes need to be positive for a change to be able to pass:
-						</label>
-						<Input id="positive-votes" type="number" placeholder={positiveVotesPercentage}
-						       value={positiveVotesPercentage} min="1"
-						       className="w-[64px]" onChange={handlePositiveVotesPercentageChange}/>
-					</div>
-					<Button className="mt-4" onClick={saveVotingRuleChanges}>Save Changes</Button>
-				</section>
-
-				<section className="mb-6">
-					<h2 className="text-xl font-semibold mb-4">Invite User</h2>
-					<div className="flex items-center space-x-2">
-						<Input placeholder="Email address" type="email" value={email}
-						       onChange={e => setEmail(e.target.value)}/>
-						<Button onClick={inviteUserToProject}>Add User</Button>
-					</div>
-				</section>
-
-				<section>
-					<h2 className="text-xl font-semibold mb-4">User Roles</h2>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Email</TableHead>
-								<TableHead>Name</TableHead>
-								<TableHead>Role</TableHead>
-								<TableHead>Remove</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{userList.map(user => (
-								<TableRow key={user.email}>
-									<TableCell className="font-medium">{user.email}</TableCell>
-									<TableCell>{user.name}</TableCell>
-									<TableCell>
-										{(user.role === "admin" || roles.indexOf(user.role) <= roles.indexOf(userRoles.find((role) => role.project === currentProject).role.name)) ? (
-											<div>{user.role}</div>
-										) : (
-											<Select onValueChange={(newRole) => handleRoleChange(user.uid, newRole)}>
-												<SelectTrigger id="role">
-													<SelectValue>{user.role}</SelectValue>
-												</SelectTrigger>
-												<SelectContent position="popper">
-													{roles.map(role => (
-														<SelectItem key={role} value={role}>{role}</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										)}
-									</TableCell>
-									<TableCell>
-										{(user.role === "admin" || roles.indexOf(user.role) <= roles.indexOf(userRoles.find((role) => role.project === currentProject).role.name)) ? (
-											<Button disabled>Remove</Button>
-										) : (
-											<Button onClick={() => handleRemoveUser(user.uid)}>Remove</Button>
-										)}
-									</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</section>
-			</div>
-		</NewLayout>
-	);
+        <Section title="User Roles">
+          <UserRolesTable
+            userList={userList}
+            userRoles={userRoles}
+            currentProject={currentProject}
+            handleRoleChange={handleRoleChange}
+            handleRemoveUser={handleRemoveUser}
+          />
+        </Section>
+      </div>
+    </NewLayout>
+  );
 }
 
-export async function getServerSideProps({req, query}) {
-    const {session} = await authStytchRequest(req);
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/login",
-                permanent: false,
-            },
-        };
-    }
-    const sessionJWT = req.cookies["stytch_session_jwt"];
-    const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
-    if (!userProfile) {
-        return {
-            redirect: {
-                destination: "/onboard",
-                permanent: false,
-            },
-        };
-    }
+const Section = ({ title, children }) => (
+  <section className="mb-6">
+    <h2 className="text-xl font-semibold mb-4">{title}</h2>
+    {children}
+  </section>
+);
 
-    const {pid} = query;
-    const [changesRules, votingRules, initialUserList] = await Promise.all([
-        getChangesRules(pid, sessionJWT),
-        getVotingRules(pid, sessionJWT),
-        getProjectUsers(pid, sessionJWT)
-    ]);
+const RuleInput = ({ rule, index, handleRuleChange }) => (
+  <div className="flex items-center space-x-2 mb-2">
+    <Input
+      type="number"
+      className="w-[64px]"
+      value={rule.start}
+      onChange={(e) => handleRuleChange(index, 'start', e.target.value)}
+      readOnly={!rule.isStartEditable}
+    />
+    <span>to</span>
+    <Input
+      type="number"
+      className="w-[64px]"
+      value={rule.end}
+      onChange={(e) => handleRuleChange(index, 'end', e.target.value)}
+      readOnly={!rule.isEndEditable}
+    />
+    <span>line changes will be available to vote on for</span>
+    <Select
+      onValueChange={(value) => handleRuleChange(index, 'timeframe', value)}
+      defaultValue={rule.timeframe}
+    >
+      <SelectTrigger className="w-[180px]">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {TIMEFRAMES.map(timeframe => (
+          <SelectItem key={timeframe.value} value={timeframe.value}>
+            {timeframe.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+);
 
-    if (!changesRules || !votingRules || !initialUserList) {
-        return {
-            redirect: {
-                destination: `/projects/${pid}`,
-                permanent: false,
-            },
-        };
-    }
+const VotingRulesInput = ({ votingSettings, handleVotingSettingChange }) => (
+  <>
+    <div className="mb-4">
+      <label className="block mb-2" htmlFor="total-votes">
+        Minimum number of total votes required for a change to be able to pass:
+      </label>
+      <Input
+        id="total-votes"
+        type="number"
+        className="w-[64px]"
+        value={votingSettings.minimumVotes}
+        onChange={(e) => handleVotingSettingChange('minimumVotes', e.target.value)}
+        min="1"
+      />
+    </div>
+    <div>
+      <label className="block mb-2" htmlFor="positive-votes">
+        What percentage of votes need to be positive for a change to be able to pass:
+      </label>
+      <Input
+        id="positive-votes"
+        type="number"
+        className="w-[64px]"
+        value={votingSettings.positiveVotesPercentage}
+        onChange={(e) => handleVotingSettingChange('positiveVotesPercentage', e.target.value)}
+        min="1"
+        max="100"
+      />
+    </div>
+  </>
+);
 
-    const zustandServerStore = initializeStore({
-        userProfile,
-        userRoles: roles,
-        currentProject: pid,
-    });
+const UserRolesTable = ({ userList, userRoles, currentProject, handleRoleChange, handleRemoveUser }) => (
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Email</TableHead>
+        <TableHead>Name</TableHead>
+        <TableHead>Role</TableHead>
+        <TableHead>Remove</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {userList.map(user => {
+        const currentUserRole = userRoles.find((role) => role.project === currentProject)?.role.name;
+        const canModifyUser = user.role !== "admin" && ROLES.indexOf(user.role) > ROLES.indexOf(currentUserRole);
 
+        return (
+          <TableRow key={user.email}>
+            <TableCell className="font-medium">{user.email}</TableCell>
+            <TableCell>{user.name}</TableCell>
+            <TableCell>
+              {canModifyUser ? (
+                <Select onValueChange={(newRole) => handleRoleChange(user.uid, newRole)}>
+                  <SelectTrigger>
+                    <SelectValue>{user.role}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ROLES.map(role => (
+                      <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div>{user.role}</div>
+              )}
+            </TableCell>
+            <TableCell>
+              <Button
+                onClick={() => handleRemoveUser(user.uid)}
+                disabled={!canModifyUser}
+              >
+                Remove
+              </Button>
+            </TableCell>
+          </TableRow>
+        );
+      })}
+    </TableBody>
+  </Table>
+);
+
+export async function getServerSideProps({ req, query }) {
+  const { session } = await authStytchRequest(req);
+  if (!session) {
     return {
-        props: {
-            pid,
-            changesRules,
-            votingRules,
-            initialUserList,
-            initialZustandState: JSON.parse(
-                JSON.stringify(zustandServerStore.getState())
-            ),
-        }
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
     };
+  }
+
+  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const { userProfile, roles } = await getUserProfile(session.user_id, sessionJWT);
+  if (!userProfile) {
+    return {
+      redirect: {
+        destination: "/onboard",
+        permanent: false,
+      },
+    };
+  }
+
+  const { pid } = query;
+  const [changesRules, votingRules, initialUserList] = await Promise.all([
+    getChangesRules(pid, sessionJWT),
+    getVotingRules(pid, sessionJWT),
+    getProjectUsers(pid, sessionJWT)
+  ]);
+
+  const zustandServerStore = initializeStore({
+    userProfile,
+    userRoles: roles,
+    currentProject: pid,
+  });
+
+  return {
+    props: {
+      pid,
+      changesRules: changesRules || [],
+      votingRules: votingRules || { min_votes_required: 1, min_votes_percentage: 0.5 },
+      initialUserList: initialUserList || [],
+      initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
+    }
+  };
 }

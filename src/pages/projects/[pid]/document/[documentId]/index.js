@@ -39,8 +39,6 @@ export default function Index({project, document}) {
 						<div className="mt-3 text-base leading-6 text-neutral-600 max-md:max-w-full">
 							{document.description}
 						</div>
-						{/*TODO: Ben - update with last edit when served from the backend*/}
-						{/*<div className="mt-2 text-sm leading-5 text-zinc-500 max-md:max-w-full">{document.lastEdit}</div>*/}
 					</div>
 					<div className="flex justify-end items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
 						<Button variant="outline" disabled={true}>
