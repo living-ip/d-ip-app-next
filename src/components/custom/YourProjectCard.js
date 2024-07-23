@@ -36,7 +36,7 @@ export function YourProjectCard({ project }) {
           <h3 className="mb-2 text-lg font-medium leading-7 text-neutral-950">
             {project.name}
           </h3>
-          <p className="text-sm leading-5 text-neutral-600">
+          <p className="text-sm leading-5 text-neutral-600 overflow-x-clip">
             {project.description}
           </p>
         </div>

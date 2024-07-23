@@ -3,7 +3,6 @@ import {getUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {YourProjectCard} from "@/components/custom/YourProjectCard";
-import {OtherProjectCard} from "@/components/custom/OtherProjectCard";
 import {NewLayout} from "@/components/NewLayout";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
@@ -15,19 +14,21 @@ const desiredOrder = [
 	"LivingIP",
 	"LivingIP Product"
 ];
+
 export default function Projects({projects}) {
 	const userRoles = useStore((state) => state.userRoles);
-	const sortedProjects = [...projects].sort((a, b) => {
+
+	// Filter projects to only include those the user has a role in
+	const accessibleProjects = projects.filter(project =>
+		userRoles.some(role => role.project === project.pid)
+	);
+
+	const sortedProjects = [...accessibleProjects].sort((a, b) => {
 		const indexA = desiredOrder.indexOf(a.name);
 		const indexB = desiredOrder.indexOf(b.name);
 		return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
 	});
-	const yourProjects = sortedProjects.filter(project =>
-		userRoles.some(role => role.project === project.pid)
-	);
-	const otherProjects = sortedProjects.filter(project =>
-		!userRoles.some(role => role.project === project.pid)
-	);
+
 	return (
 		<NewLayout>
 			<main className="flex flex-col px-5 sm:px-10 lg:px-20 py-8 w-full h-auto bg-white rounded-3xl shadow">
@@ -39,24 +40,18 @@ export default function Projects({projects}) {
 				</div>
 				<h2 className="mt-6 text-xl text-neutral-950">Your projects</h2>
 				<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-5">
-					{yourProjects.map((project) => (
+					{sortedProjects.map((project) => (
 						<YourProjectCard key={project.pid} project={project}/>
 					))}
 				</div>
-				{otherProjects.length > 0 && (
-					<>
-						<h2 className="mt-10 text-xl text-neutral-950">Other projects</h2>
-						<div className="mt-4 space-y-4">
-							{otherProjects.map((project) => (
-								<OtherProjectCard key={project.pid} project={project}/>
-							))}
-						</div>
-					</>
+				{sortedProjects.length === 0 && (
+					<p className="mt-4 text-neutral-600">{"You don't have access to any projects yet."}</p>
 				)}
 			</main>
 		</NewLayout>
 	);
 }
+
 export const getServerSideProps = async ({req}) => {
 	const {session} = await authStytchRequest(req);
 	if (!session) {
