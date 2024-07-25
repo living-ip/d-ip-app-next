@@ -34,7 +34,7 @@ export function NewDocumentCard({project}) {
     }
 
     try {
-      const response = await createProjectDocument(project.pid, data, getCookie("stytch_session_jwt"));
+      const response = await createProjectDocument(project.pid, data, getCookie("x_d_jwt"));
       console.log("Response: ", response);
       const documentId = response.did;
       setDocumentId(documentId);

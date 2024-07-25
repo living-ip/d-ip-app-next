@@ -8,7 +8,7 @@ export async function getProjectSettings(pid, jwt) {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			"x-lip-jwt": jwt,
+			"x-lip-d-jwt": jwt,
 		},
 	});
 	const response = await doApiCall(func, {});
@@ -24,7 +24,7 @@ export async function updateProjectSettings(pid, settings, jwt) {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
-			"x-lip-jwt": jwt,
+			"x-lip-d-jwt": jwt,
 		},
 		body: JSON.stringify(settings),
 	});

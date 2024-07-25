@@ -40,7 +40,7 @@ export default function CreateNewDocument({project}) {
 		}
 
 		try {
-			const response = await createProjectDocument(project.pid, data, getCookie("stytch_session_jwt"));
+			const response = await createProjectDocument(project.pid, data, getCookie("x_d_jwt"));
 			console.log("Response: ", response);
 			if (response.did) {
 				setNewDid(response.did);
@@ -106,17 +106,8 @@ export default function CreateNewDocument({project}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+	const sessionJWT = req.cookies["x_d_jwt"];
+    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

@@ -168,9 +168,8 @@ export default function AdminPanel({projects, users}) {
 	);
 }
 export const getServerSideProps = async ({req}) => {
-	const session = await authStytchRequest(req);
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	if (!session || !sessionJWT) {
+	const sessionJWT = req.cookies["x_d_jwt"];
+	if (!sessionJWT) {
 		return {
 			props: {},
 		};

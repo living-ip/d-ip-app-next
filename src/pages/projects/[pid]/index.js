@@ -86,17 +86,8 @@ const DocumentCards = ({ project, documents }) => {
 export default DocumentCards;
 
 export const getServerSideProps = async ({ req, query }) => {
-  const { session } = await authStytchRequest(req);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-  const sessionJWT = req.cookies["stytch_session_jwt"];
-  const { userProfile, roles } = await getUserProfile(session.user_id, sessionJWT);
+  const sessionJWT = req.cookies["x_d_jwt"];
+  const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
   if (!userProfile) {
     return {
       redirect: {

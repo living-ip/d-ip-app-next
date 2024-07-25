@@ -21,7 +21,7 @@ export default function CreateNewProject() {
 		};
 		console.log(data.image);
 		try {
-			const response = await createProject(data, getCookie("stytch_session_jwt"));
+			const response = await createProject(data, getCookie("x_d_jwt"));
 			console.log(response);
 			if (response.pid) {
 				toast({

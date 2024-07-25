@@ -10,6 +10,7 @@ import {getCookie} from "cookies-next";
 import {EditChangeLayout} from "@/components/EditChangeLayout";
 import {FiEdit3} from "react-icons/fi";
 import {useToast} from "@/components/ui/use-toast";
+import {getUserProfile} from "@/lib/user";
 
 export default function Index({project, document, change}) {
 	const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
@@ -27,7 +28,7 @@ export default function Index({project, document, change}) {
 			name: change.name,
 			description: change.description,
 			content: Buffer.from(pageData, 'utf-8').toString('base64'),
-		}, getCookie("stytch_session_jwt"));
+		}, getCookie("x_d_jwt"));
 		console.log(response);
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit`);
 		toast({
@@ -42,10 +43,10 @@ export default function Index({project, document, change}) {
 			name: change.name,
 			description: change.description,
 			content: Buffer.from(pageData, 'utf-8').toString('base64'),
-		}, getCookie("stytch_session_jwt"));
+		}, getCookie("x_d_jwt"));
 		console.log(updateResponse);
 		console.log("Publishing Change", pageData);
-		await publishChange(change.cid, getCookie("stytch_session_jwt"));
+		await publishChange(change.cid, getCookie("x_d_jwt"));
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote`);
 		toast({
 			title: "Edit published",
@@ -72,19 +73,8 @@ export default function Index({project, document, change}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
-
 	const {pid, documentId, id} = query;
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	// Fetch project, document, and change concurrently
+	const sessionJWT = req.cookies["x_d_jwt"];
 	const [project, document, change] = await Promise.all([
 		getProject(pid, sessionJWT),
 		getDocument(documentId, sessionJWT),

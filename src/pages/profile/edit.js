@@ -50,7 +50,7 @@ export default function EditProfile() {
 				content: await fileToBase64(file),
 			};
 		}
-		await updateUserProfile(userProfile.uid, userDetails, getCookie("stytch_session_jwt"));
+		await updateUserProfile(userProfile.uid, userDetails, getCookie("x_d_jwt"));
 		console.log("Profile saved successfully");
 		await router.push("/profile")
 	}
@@ -119,17 +119,8 @@ export default function EditProfile() {
 }
 
 export const getServerSideProps = async ({req}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
+	const sessionJWT = req.cookies["x_d_jwt"];
+    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

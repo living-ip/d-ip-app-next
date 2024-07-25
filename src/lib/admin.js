@@ -9,7 +9,7 @@ export async function getProjectUsers(project_id, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, undefined);
@@ -26,7 +26,7 @@ export async function addUserToProject(project_id, email, jwt) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       email: email,
@@ -46,7 +46,7 @@ export async function removeUserFromProject(project_id, user_id, jwt) {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, undefined);
@@ -63,7 +63,7 @@ export async function updateProjectUserRole(project_id, user_id, role, jwt) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       role: role,
@@ -83,7 +83,7 @@ export async function getChangesRules(project_id, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     }
   });
   const response = await doApiCall(func, undefined);
@@ -100,7 +100,7 @@ export async function updateChangesRules(project_id, updateChangesRules, jwt) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       changes_rules: updateChangesRules,
@@ -120,7 +120,7 @@ export async function getVotingRules(project_id, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     }
   });
   const response = await doApiCall(func, undefined);
@@ -137,7 +137,7 @@ export async function updateVotingRules(project_id, updateVotingRules, jwt) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase(updateVotingRules)),
   });

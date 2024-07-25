@@ -8,7 +8,7 @@ export async function getUsers(jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, []);
@@ -24,7 +24,7 @@ export async function getUserProfile(userId, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, {});
@@ -41,7 +41,7 @@ export async function createUserProfile(userDetails, jwt) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       ...userDetails,
@@ -60,7 +60,7 @@ export async function updateUserProfile(userId, userDetails, jwt) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       ...userDetails,
@@ -79,7 +79,7 @@ export async function getUserRoles(userId, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, []);

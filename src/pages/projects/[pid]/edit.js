@@ -26,7 +26,7 @@ export default function EditProject({project}) {
 			delete data.image;
 		}
 		try {
-			const response = await updateProject(project.pid, data, getCookie("stytch_session_jwt"));
+			const response = await updateProject(project.pid, data, getCookie("x_d_jwt"));
 			console.log(response);
 			await router.push(`/projects/${encodeURI(project.pid)}`)
 		} catch (e) {
@@ -58,17 +58,8 @@ export default function EditProject({project}) {
 
 
 export const getServerSideProps = async ({req, query}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
+	const sessionJWT = req.cookies["x_d_jwt"];
+    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

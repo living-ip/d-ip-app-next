@@ -7,7 +7,7 @@ export async function getDocument(documentId, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, undefined);
@@ -23,7 +23,7 @@ export async function updateDocument(documentId, documentDetails, jwt) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(documentDetails),
   });
@@ -40,7 +40,7 @@ export async function deleteDocument(documentId, jwt) {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, {});
@@ -56,7 +56,7 @@ export async function createDocumentChange(documentId, changeDetails, jwt) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeDetails),
   });
@@ -75,7 +75,7 @@ export async function getDocumentChanges(documentId, queryParams = {}, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, []);

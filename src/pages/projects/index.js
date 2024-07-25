@@ -69,19 +69,10 @@ export default function Projects({ projects }) {
 }
 
 export const getServerSideProps = async ({ req }) => {
-  const { session } = await authStytchRequest(req);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-  const sessionJWT = req.cookies["stytch_session_jwt"];
+  const dynamicAuthToken = req.cookies["x_d_jwt"];
   const [user, projects] = await Promise.all([
-    getUserProfile(session.user_id, sessionJWT),
-    getProjects(sessionJWT),
+    getUserProfile("TODO", dynamicAuthToken),
+    getProjects(dynamicAuthToken),
   ]);
   const { userProfile, roles } = user;
   if (!userProfile) {

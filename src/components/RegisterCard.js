@@ -30,7 +30,7 @@ export function RegisterCard() {
 	const handleSubmit = async () => {
 		const response = await createUserProfile({
       name
-    }, getCookie("stytch_session_jwt"));
+    }, getCookie("x_d_jwt"));
 		console.log('success', response)
 		await router.push('/onboard')
 	}

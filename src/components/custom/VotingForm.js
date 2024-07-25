@@ -50,7 +50,7 @@ export function VotingForm({change, userVote, setUserVote}) {
 					        className="justify-center items-center mt-4 disabled:bg-[#E8ECE6] disabled:text-[#B0B0B0]"
 					        onClick={() => {
 						        console.log("vote submitted: ", userVote)
-						        voteOnChange(change.cid, {vote: userVote}, getCookie("stytch_session_jwt")).then(setChangeVotes(false))
+						        voteOnChange(change.cid, {vote: userVote}, getCookie("x_d_jwt")).then(setChangeVotes(false))
 					        }}>
 						Vote
 					</Button>

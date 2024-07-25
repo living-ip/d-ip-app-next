@@ -79,23 +79,12 @@ export default function Index({ project, document }) {
 
 export const getServerSideProps = async ({ req, query }) => {
   try {
-    const { session } = await authStytchRequest(req);
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
-
+    const sessionJWT = req.cookies["x_d_jwt"];
     const { pid, documentId } = query;
-    const sessionJWT = req.cookies["stytch_session_jwt"];
-
     const [project, document, userProfile] = await Promise.all([
       getProject(pid, sessionJWT),
       getDocument(documentId, sessionJWT),
-      getUserProfile(session.user_id, sessionJWT).then(response => response.userProfile)
+      getUserProfile("TODO", sessionJWT).then(response => response.userProfile)
     ]);
 
     if (!userProfile) {

@@ -5,6 +5,8 @@ import {useRouter} from "next/router";
 import {LogInDialog} from "@/components/custom/LogInDialog";
 import {useStytchUser} from "@stytch/nextjs";
 import Link from "next/link"
+import {DynamicWidget, useDynamicContext} from "@dynamic-labs/sdk-react-core";
+import {useEffect, useState} from "react";
 
 const FeaturePoint = ({src, title, description}) => (
 	<div className="flex flex-col grow max-md:mt-10">
@@ -47,11 +49,17 @@ const socialIcons = [
 ];
 
 export default function Home() {
+	const {isAuthenticated} = useDynamicContext();
 	const router = useRouter();
 
-	const {user} = useStytchUser();
+	const [auth, setAuth] = useState(false);
 
-	console.log(user)
+	useEffect(() => {
+		setAuth(isAuthenticated);
+		if (isAuthenticated) {
+			router.push("/projects");
+		}
+	}, [isAuthenticated, router]);
 
 	return (
 		<div className="bg-gradient-to-b from-[#002500] to-[#245D00]">
@@ -77,17 +85,13 @@ export default function Home() {
 					</div>
 					<div>
 						{
-							user ? (
+							auth ? (
 								<Link href={"/projects"}>
 									<Button>Home</Button>
 								</Link>
 
 							) : (
-								<LogInDialog>
-									<Button>
-										Log in
-									</Button>
-								</LogInDialog>
+								<DynamicWidget/>
 							)
 						}
 
@@ -103,7 +107,7 @@ export default function Home() {
 					improvement.
 				</p>
 				{
-					user ? (
+					auth ? (
 						<Link href={"/projects"}>
 							<Button className={"mt-4"}>
 								To Projects
@@ -111,13 +115,9 @@ export default function Home() {
 						</Link>
 
 					) : (
-						<Link href={"/login"}>
-							<Button className={"mt-4 space-x-2"}>
-								<Image src="/landingpage/Symbol-Color.svg" alt="" width={32} height={32}
-								       className="bg-white p-2 rounded"/>
-								<span className="my-auto mr-1">Create account</span>
-							</Button>
-						</Link>
+						<div className={"pt-4"}>
+							<DynamicWidget/>
+						</div>
 					)
 				}
 				<Image

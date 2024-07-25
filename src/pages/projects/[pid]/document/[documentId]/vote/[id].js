@@ -125,18 +125,9 @@ export default function Index({project, document, change, changeVotes, userVoteP
 }
 
 export const getServerSideProps = async ({req, query}) => {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
 
 	const {pid, documentId, id} = query;
-	const sessionJWT = req.cookies["stytch_session_jwt"];
+	const sessionJWT = req.cookies["x_d_jwt"];
 
 	const [project, document, change, changeVotes] = await Promise.all([
 		getProject(pid, sessionJWT),
@@ -154,8 +145,8 @@ export const getServerSideProps = async ({req, query}) => {
 		};
 	}
 
-	const userVote = changeVotes.voters.find((vote) => vote.voter_id === session.user_id);
-	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
+    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
+	const userVote = changeVotes.voters.find((vote) => vote.voter_id === userProfile.uid);
 
 	const zustandServerStore = initializeStore({
 		userProfile,

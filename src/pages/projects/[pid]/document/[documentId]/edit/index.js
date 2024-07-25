@@ -40,7 +40,7 @@ export default function Index({project, document, changes}) {
 				name: name,
 				description: description,
 			},
-			getCookie("stytch_session_jwt")
+			getCookie("x_d_jwt")
 		);
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit/${change.cid}`);
 		setLoading(false)
@@ -175,38 +175,19 @@ export default function Index({project, document, changes}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
-    const {session} = await authStytchRequest(req);
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/login",
-                permanent: false,
-            },
-        };
-    }
-
     const {pid, documentId} = query;
-    console.log("Pid: ", pid);
-    console.log("Document ID: ", documentId);
-
-    const sessionJWT = req.cookies["stytch_session_jwt"];
+	const sessionJWT = req.cookies["x_d_jwt"];
+    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
 
     const [project, document, userChangesRaw] = await Promise.all([
         getProject(pid, sessionJWT),
         getDocument(documentId, sessionJWT),
-        getDocumentChanges(documentId, {"user_id": session.user_id}, sessionJWT)
+        getDocumentChanges(documentId, {"user_id": userProfile.uid}, sessionJWT)
     ]);
-
-    console.log("Project: ", project);
-    console.log("Document: ", document);
-    console.log("User Changes: ", userChangesRaw);
 
     const orderedChanges = userChangesRaw.sort((a, b) => {
         return new Date(b.updatedAt) - new Date(a.updatedAt);
     });
-    console.log("Ordered Changes: ", orderedChanges);
-
-    const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
 
     const zustandServerStore = initializeStore({
         userRoles: roles,

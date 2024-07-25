@@ -8,7 +8,7 @@ export async function getChange(changeId, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, undefined);
@@ -24,7 +24,7 @@ export async function updateChange(changeId, changeDetails, jwt) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeDetails),
   });
@@ -41,7 +41,7 @@ export async function deleteChange(changeId, jwt) {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, {});
@@ -57,7 +57,7 @@ export async function publishChange(changeId, jwt) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, {});
@@ -75,7 +75,7 @@ export async function getChangeVotes(changeId, queryParams = {}, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, []);
@@ -91,7 +91,7 @@ export async function voteOnChange(changeId, vote, jwt) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(vote),
   });

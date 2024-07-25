@@ -8,17 +8,18 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {useStytch, useStytchUser} from "@stytch/nextjs";
 import {useEffect, useState} from "react";
+import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
 
 export function NewNavBar() {
 	const router = useRouter();
 	const [userRoles, currentProject, userProfile] = useStore((state) => [state.userRoles, state.currentProject, state.userProfile]);
 	const stytch = useStytch();
-	const {user} = useStytchUser();
+	const {isAuthenticated, handleLogOut} = useDynamicContext();
 	const [isMobile, setIsMobile] = useState(false);
 
 	const initials = userProfile?.name?.split(' ').map((n) => n[0]).join('') || "LIP";
 
-	const homeHandler = () => router.push(user ? "/projects" : "/");
+	const homeHandler = () => router.push(isAuthenticated ? "/projects" : "/");
 
 	const isAdmin = userProfile?.email === "dan@sibylline.xyz" || userProfile?.email === "m3taversal@gmail.com";
 
@@ -71,11 +72,6 @@ export function NewNavBar() {
 								</Button>
 							</NavigationMenuItem>
 						))}
-						{!isMobile && (
-							<NavigationMenuItem>
-								<ConnectWalletButton/>
-							</NavigationMenuItem>
-						)}
 						<NavigationMenuItem>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -106,8 +102,7 @@ export function NewNavBar() {
 									{isAdmin && <DropdownMenuItem
 										onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>}
 									<DropdownMenuItem onSelect={() => {
-										stytch.session.revoke();
-										router.push('/');
+										handleLogOut().then(r => router.push('/'));
 									}}>Log Out</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>

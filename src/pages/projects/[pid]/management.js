@@ -57,7 +57,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 	const handleNotificationsToggle = async (enabled) => {
 		setNotificationsEnabled(enabled);
 		try {
-			await updateProjectSettings(pid, {notifications: enabled}, getCookie("stytch_session_jwt"));
+			await updateProjectSettings(pid, {notifications: enabled}, getCookie("x_d_jwt"));
 		} catch (error) {
 			console.error("Failed to update notification settings:", error);
 			// TODO: Add user-facing error message
@@ -81,7 +81,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			end: rule.end,
 			time: rule.timeframe
 		}));
-		await updateChangesRules(pid, changeRulesData, getCookie("stytch_session_jwt"));
+		await updateChangesRules(pid, changeRulesData, getCookie("x_d_jwt"));
 	};
 
 	const saveVotingRuleChanges = async () => {
@@ -89,12 +89,12 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			min_votes_required: votingSettings.minimumVotes,
 			min_votes_percentage: votingSettings.positiveVotesPercentage / 100
 		};
-		await updateVotingRules(pid, votingRulesData, getCookie("stytch_session_jwt"));
+		await updateVotingRules(pid, votingRulesData, getCookie("x_d_jwt"));
 	};
 
 	const inviteUserToProject = async () => {
 		try {
-			const result = await addUserToProject(pid, email, getCookie("stytch_session_jwt"));
+			const result = await addUserToProject(pid, email, getCookie("x_d_jwt"));
 			if (result) {
 				setEmail("");
 				setUserList(prevList => [...prevList, result]);
@@ -107,7 +107,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 
 	const handleRemoveUser = async (uid) => {
 		try {
-			const result = await removeUserFromProject(pid, uid, getCookie("stytch_session_jwt"));
+			const result = await removeUserFromProject(pid, uid, getCookie("x_d_jwt"));
 			if (result) {
 				setUserList(prevList => prevList.filter(user => user.uid !== uid));
 			}
@@ -125,7 +125,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 		}
 
 		try {
-			const result = await updateProjectUserRole(pid, uid, newRole, getCookie("stytch_session_jwt"));
+			const result = await updateProjectUserRole(pid, uid, newRole, getCookie("x_d_jwt"));
 			if (result) {
 				setUserList(prevList => prevList.map(user =>
 					user.uid === uid ? {...user, role: newRole} : user
@@ -331,18 +331,8 @@ const UserRolesTable = ({userList, userRoles, currentProject, handleRoleChange, 
 );
 
 export async function getServerSideProps({req, query}) {
-	const {session} = await authStytchRequest(req);
-	if (!session) {
-		return {
-			redirect: {
-				destination: "/login",
-				permanent: false,
-			},
-		};
-	}
-
-	const sessionJWT = req.cookies["stytch_session_jwt"];
-	const {userProfile, roles} = await getUserProfile(session.user_id, sessionJWT);
+	const sessionJWT = req.cookies["x_d_jwt"];
+    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

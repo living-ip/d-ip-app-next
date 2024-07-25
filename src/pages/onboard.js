@@ -21,13 +21,8 @@ export const getServerSideProps = async ({req, query}) => {
 		},
 	};
 	try {
-		// Authenticate the session JWT. If an error is thrown the session authentication has failed.
-		const {session} = await authStytchRequest(req);
-		if (!session) {
-			return noAuthResponse;
-		}
 		const sessionJWT = req.cookies["stytch_session_jwt"];
-		const {userProfile} = await getUserProfile(session.user_id, sessionJWT);
+		const {userProfile} = await getUserProfile("TODO", sessionJWT);
 		if (userProfile) {
 			return {
 				redirect: {

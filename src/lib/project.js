@@ -8,7 +8,7 @@ export async function getProjects(jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, []);
@@ -24,7 +24,7 @@ export async function createProject(projectDetails, jwt) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       ...projectDetails,
@@ -43,7 +43,7 @@ export async function getProject(projectId, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, undefined);
@@ -59,7 +59,7 @@ export async function updateProject(projectId, projectDetails, jwt) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       ...projectDetails,
@@ -78,7 +78,7 @@ export async function deleteProject(projectId, jwt) {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, {});
@@ -94,7 +94,7 @@ export async function getProjectDocuments(projectId, jwt) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
   });
   const response = await doApiCall(func, []);
@@ -110,7 +110,7 @@ export async function createProjectDocument(projectId, documentDetails, jwt) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-lip-jwt": jwt,
+      "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify(changeKeys.snakeCase({
       ...documentDetails,
