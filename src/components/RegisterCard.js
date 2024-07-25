@@ -32,7 +32,7 @@ export function RegisterCard() {
       name
     }, getCookie("x_d_jwt"));
 		console.log('success', response)
-		await router.push('/onboard')
+		await router.push('/projects')
 	}
 
 	return (
