@@ -76,13 +76,14 @@ export default function Projects({projects}) {
 
 export const getServerSideProps = async ({req}) => {
 	const dynamicAuthToken = req.cookies["x_d_jwt"];
-	let user = {user: {}, userProfile: {}}
+	let user = {user: {}, userProfile: {}, roles: []}
 	let projects
 	if (dynamicAuthToken) {
 		[user, projects] = await Promise.all([
 			getUserProfile("TODO", dynamicAuthToken),
 			getProjects(dynamicAuthToken),
 		]);
+		const {userProfile} = user;
 		if (!userProfile) {
 			return {
 				redirect: {
