@@ -6,7 +6,7 @@ import {SolanaWalletConnectors} from "@dynamic-labs/solana";
 import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
 import {Toaster} from "@/components/ui/toaster";
-import {setCookie} from "cookies-next";
+import {deleteCookie, setCookie} from "cookies-next";
 
 const stytch = createStytchUIClient(
 	process.env.STYTCH_PUBLIC_TOKEN ||
@@ -30,8 +30,11 @@ export default function App({Component, pageProps}) {
 							const authToken = getAuthToken();
 							console.log('authToken', authToken);
 							setCookie( 'x_d_jwt', authToken, {
-								maxAge: 60 * 60 * 24 * 7,
+								maxAge: 60 * 60 * 24 * 14,
 							});
+						},
+						onLogout: () => {
+							deleteCookie('x_d_jwt');
 						},
 					}
 				}}>
