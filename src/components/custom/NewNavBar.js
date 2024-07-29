@@ -6,14 +6,13 @@ import {useStore} from "@/lib/store";
 import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
-import {useStytch, useStytchUser} from "@stytch/nextjs";
 import {useEffect, useState} from "react";
 import {DynamicUserProfile, useDynamicContext} from "@dynamic-labs/sdk-react-core";
 
 export function NewNavBar() {
 	const router = useRouter();
 	const [userRoles, currentProject, userProfile] = useStore((state) => [state.userRoles, state.currentProject, state.userProfile]);
-	const {isAuthenticated, handleLogOut} = useDynamicContext();
+	const {isAuthenticated, handleLogOut, setShowAuthFlow} = useDynamicContext();
 	const [isMobile, setIsMobile] = useState(false);
 
 	const initials = userProfile?.name?.split(' ').map((n) => n[0]).join('') || "LIP";
@@ -73,39 +72,47 @@ export function NewNavBar() {
 									</Button>
 								</NavigationMenuItem>
 							))}
-							<NavigationMenuItem>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button variant="ghost" className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black">
-											<Avatar className="w-8 h-8 mr-2">
-												<AvatarImage
-													src={userProfile?.image_uri || "https://storage.googleapis.com/syb_us_cdn/cyber_future_da.png"}
-													alt={initials}
-												/>
-											</Avatar>
-											{userProfile?.name}
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent>
-										{isMobile && navItems.map((item, index) => (
-											<DropdownMenuItem key={index} onSelect={item.onClick}>
-												{item.label}
-											</DropdownMenuItem>
-										))}
-										<DropdownMenuItem onSelect={() => {
-										}}>
-											<ConnectWalletButton/>
-										</DropdownMenuItem>
-										<DropdownMenuItem
-											onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
-										{isAdmin && <DropdownMenuItem
-											onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>}
-										<DropdownMenuItem onSelect={() => {
-											handleLogOut().then(r => router.push('/'));
-										}}>Log Out</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-							</NavigationMenuItem>
+							{
+								isAuthenticated ? (
+									<NavigationMenuItem>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button variant="ghost"
+												        className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black">
+													<Avatar className="w-8 h-8 mr-2">
+														<AvatarImage
+															src={userProfile?.image_uri || "https://storage.googleapis.com/syb_us_cdn/cyber_future_da.png"}
+															alt={initials}
+														/>
+													</Avatar>
+													{userProfile?.name}
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent>
+												{isMobile && navItems.map((item, index) => (
+													<DropdownMenuItem key={index} onSelect={item.onClick}>
+														{item.label}
+													</DropdownMenuItem>
+												))}
+												<DropdownMenuItem onSelect={() => {
+												}}>
+													<ConnectWalletButton/>
+												</DropdownMenuItem>
+												<DropdownMenuItem
+													onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
+												{isAdmin && <DropdownMenuItem
+													onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>}
+												<DropdownMenuItem onSelect={() => {
+													handleLogOut().then(r => router.push('/'));
+												}}>Log Out</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									</NavigationMenuItem>
+								) : (
+									<Button onClick={() => {setShowAuthFlow(true)}}>Log In</Button>
+								)
+							}
+
 						</NavigationMenuList>
 					</NavigationMenu>
 				)}

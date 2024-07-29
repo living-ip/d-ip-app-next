@@ -116,7 +116,9 @@ export default function Home() {
 
 					) : (
 						<div className={"pt-4"}>
-							<DynamicWidget/>
+							<Link href={"/projects"}>
+								<Button>Discover Projects</Button>
+							</Link>
 						</div>
 					)
 				}
