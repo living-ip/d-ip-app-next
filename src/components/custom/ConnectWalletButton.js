@@ -3,21 +3,26 @@ import * as React from "react";
 import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
 
 export default function ConnectWalletButton({}) {
-	const {isAuthenticated, setShowAuthFlow} = useDynamicContext()
+	const {isAuthenticated, setShowAuthFlow, setShowDynamicUserProfile} = useDynamicContext()
 
 	if (isAuthenticated) {
 		return (
-			// TODO return little user profile thing
-			<div/>
+			<div
+			        onClick={(e) => {
+				        e.preventDefault();
+				        setShowDynamicUserProfile(true)
+			        }}>
+				Open Wallet
+			</div>
 		)
 	}
 	return (
-		<Button variant="outline"
+		<div
 		        onClick={(e) => {
 			        e.preventDefault();
 			        setShowAuthFlow(true)
 		        }}>
 			Connect Wallet
-		</Button>
+		</div>
 	)
 }

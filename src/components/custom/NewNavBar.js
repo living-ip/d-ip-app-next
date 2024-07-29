@@ -8,12 +8,11 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {useStytch, useStytchUser} from "@stytch/nextjs";
 import {useEffect, useState} from "react";
-import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
+import {DynamicUserProfile, useDynamicContext} from "@dynamic-labs/sdk-react-core";
 
 export function NewNavBar() {
 	const router = useRouter();
 	const [userRoles, currentProject, userProfile] = useStore((state) => [state.userRoles, state.currentProject, state.userProfile]);
-	const stytch = useStytch();
 	const {isAuthenticated, handleLogOut} = useDynamicContext();
 	const [isMobile, setIsMobile] = useState(false);
 
@@ -48,68 +47,70 @@ export function NewNavBar() {
 	];
 
 	return (
-		<div className="flex items-center justify-between w-full px-4 py-3 lg:px-6">
-			<Image
-				src="/Logo-Design-Full-Color-Black.svg"
-				alt="Company Logo"
-				className="w-[110px] h-auto cursor-pointer"
-				width={110}
-				height={24}
-				onClick={homeHandler}
-				priority
-			/>
-			{router.pathname !== '/onboard' && (
-				<NavigationMenu className="flex-grow justify-end">
-					<NavigationMenuList className="flex items-center gap-2 sm:gap-4">
-						{!isMobile && navItems.map((item, index) => (
-							<NavigationMenuItem key={index}>
-								<Button
-									className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black"
-									variant="ghost"
-									onClick={item.onClick}
-								>
-									{item.label}
-								</Button>
-							</NavigationMenuItem>
-						))}
-						<NavigationMenuItem>
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button variant="ghost" className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black">
-										<Avatar className="w-8 h-8 mr-2">
-											<AvatarImage
-												src={userProfile?.image_uri || "https://storage.googleapis.com/syb_us_cdn/cyber_future_da.png"}
-												alt={initials}
-											/>
-										</Avatar>
-										{userProfile?.name}
+		<>
+
+			<div className="flex items-center justify-between w-full px-4 py-3 lg:px-6">
+				<Image
+					src="/Logo-Design-Full-Color-Black.svg"
+					alt="Company Logo"
+					className="w-[110px] h-auto cursor-pointer"
+					width={110}
+					height={24}
+					onClick={homeHandler}
+					priority
+				/>
+				{router.pathname !== '/onboard' && (
+					<NavigationMenu className="flex-grow justify-end">
+						<NavigationMenuList className="flex items-center gap-2 sm:gap-4">
+							{!isMobile && navItems.map((item, index) => (
+								<NavigationMenuItem key={index}>
+									<Button
+										className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black"
+										variant="ghost"
+										onClick={item.onClick}
+									>
+										{item.label}
 									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent>
-									{isMobile && navItems.map((item, index) => (
-										<DropdownMenuItem key={index} onSelect={item.onClick}>
-											{item.label}
-										</DropdownMenuItem>
-									))}
-									{isMobile && (
+								</NavigationMenuItem>
+							))}
+							<NavigationMenuItem>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button variant="ghost" className="bg-[#E1E5DE] hover:bg-[#D1D5CE] text-black">
+											<Avatar className="w-8 h-8 mr-2">
+												<AvatarImage
+													src={userProfile?.image_uri || "https://storage.googleapis.com/syb_us_cdn/cyber_future_da.png"}
+													alt={initials}
+												/>
+											</Avatar>
+											{userProfile?.name}
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent>
+										{isMobile && navItems.map((item, index) => (
+											<DropdownMenuItem key={index} onSelect={item.onClick}>
+												{item.label}
+											</DropdownMenuItem>
+										))}
 										<DropdownMenuItem onSelect={() => {
 										}}>
 											<ConnectWalletButton/>
 										</DropdownMenuItem>
-									)}
-									<DropdownMenuItem
-										onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
-									{isAdmin && <DropdownMenuItem
-										onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>}
-									<DropdownMenuItem onSelect={() => {
-										handleLogOut().then(r => router.push('/'));
-									}}>Log Out</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</NavigationMenuItem>
-					</NavigationMenuList>
-				</NavigationMenu>
-			)}
-		</div>
+										<DropdownMenuItem
+											onSelect={() => router.push('/profile')}>Profile</DropdownMenuItem>
+										{isAdmin && <DropdownMenuItem
+											onSelect={() => router.push('/admin/')}>Admin</DropdownMenuItem>}
+										<DropdownMenuItem onSelect={() => {
+											handleLogOut().then(r => router.push('/'));
+										}}>Log Out</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</NavigationMenuItem>
+						</NavigationMenuList>
+					</NavigationMenu>
+				)}
+			</div>
+			<DynamicUserProfile/>
+		</>
 	);
 }
