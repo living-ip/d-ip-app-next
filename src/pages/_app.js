@@ -1,13 +1,13 @@
 import '@/styles/globals.css'
 import {createStytchUIClient} from '@stytch/nextjs/ui'
 import {StytchProvider} from '@stytch/nextjs'
-import {DynamicContextProvider, getAuthToken} from "@dynamic-labs/sdk-react-core";
+import {DynamicContextProvider, getAuthToken, useDynamicContext} from "@dynamic-labs/sdk-react-core";
 import {SolanaWalletConnectors} from "@dynamic-labs/solana";
 import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
 import {Toaster} from "@/components/ui/toaster";
 import {deleteCookie, setCookie} from "cookies-next";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import { Analytics } from "@vercel/analytics/react"
 
 const stytch = createStytchUIClient(
@@ -16,29 +16,39 @@ const stytch = createStytchUIClient(
 )
 
 export default function App({Component, pageProps}) {
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+
 	const handleAuthSuccess = () => {
-		const authToken = getAuthToken();
-		console.log('authToken', authToken);
-		if (authToken) {
-			setCookie('x_d_jwt', authToken, {
-				maxAge: 60 * 60 * 24 * 14, // 14 days
-			});
-			console.log('Cookie set:', document.cookie);
-		} else {
-			console.error('Auth token is undefined');
-		}
+		setIsAuthenticated(true);
 	};
 
 	const handleLogout = () => {
 		deleteCookie('x_d_jwt', {path: '/'});
+		setIsAuthenticated(false);
 	};
 
 	useEffect(() => {
-		const authToken = getAuthToken()
-		if (authToken) {
-			handleAuthSuccess()
+		const setAuthCookie = () => {
+			const authToken = getAuthToken();
+			console.log('authToken', authToken);
+			if (authToken) {
+				try {
+					setCookie('x_d_jwt', authToken, {
+						maxAge: 60 * 60 * 24 * 14, // 14 days
+					});
+					console.log('Cookie set:', document.cookie);
+				} catch (error) {
+					console.error('Error setting cookie:', error);
+				}
+			} else {
+				console.error('Auth token is undefined');
+			}
+		};
+
+		if (isAuthenticated) {
+			setAuthCookie();
 		}
-	}, []);
+	}, [isAuthenticated]);
 
 	return (
 		<>
