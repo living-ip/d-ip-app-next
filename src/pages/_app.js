@@ -31,6 +31,7 @@ export default function App({ Component, pageProps }) {
 
   const setAuthCookie = useCallback(async (token) => {
     try {
+      console.log('Setting auth cookie with token:', token);
       const response = await fetch('/api/set-auth-cookie', {
         method: 'POST',
         headers: {
@@ -40,8 +41,12 @@ export default function App({ Component, pageProps }) {
       });
       if (response.ok) {
         console.log('Cookie set successfully');
+        const responseData = await response.json();
+        console.log('Server response:', responseData);
       } else {
-        console.error('Failed to set cookie');
+        console.error('Failed to set cookie. Status:', response.status);
+        const errorData = await response.text();
+        console.error('Error details:', errorData);
       }
     } catch (error) {
       console.error('Error setting cookie:', error);
@@ -51,6 +56,7 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     if (isAuthenticated) {
       const authToken = getAuthToken();
+      console.log('Auth token:', authToken);
       if (authToken) {
         setAuthCookie(authToken);
       } else {
@@ -58,6 +64,16 @@ export default function App({ Component, pageProps }) {
       }
     }
   }, [isAuthenticated, setAuthCookie]);
+
+  useEffect(() => {
+    const checkCookie = () => {
+      const cookies = document.cookie.split(';');
+      const hasAuthCookie = cookies.some(cookie => cookie.trim().startsWith('x_d_jwt='));
+      console.log('Auth cookie present:', hasAuthCookie);
+    };
+
+    checkCookie();
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const checkInitialAuth = () => {
