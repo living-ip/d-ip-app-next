@@ -38,7 +38,7 @@ export default function App({ Component, pageProps }) {
       <DynamicContextProvider
         theme="light"
         settings={{
-          environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID,
+          environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
           walletConnectors: [SolanaWalletConnectors],
           eventsCallbacks: {
             onAuthSuccess: handleAuthSuccess,
