@@ -8,6 +8,7 @@ import StoreProvider from "@/lib/storeProvider";
 import {Toaster} from "@/components/ui/toaster";
 import {deleteCookie, setCookie} from "cookies-next";
 import {useEffect} from "react";
+import { Analytics } from "@vercel/analytics/react"
 
 const stytch = createStytchUIClient(
 	process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN ||
@@ -59,6 +60,7 @@ export default function App({Component, pageProps}) {
 				<StytchProvider stytch={stytch}>
 					<StoreProvider {...pageProps.initialZustandState}>
 						<Component {...pageProps} />
+						<Analytics/>
 					</StoreProvider>
 				</StytchProvider>
 			</DynamicContextProvider>
