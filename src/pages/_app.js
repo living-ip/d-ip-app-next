@@ -24,10 +24,9 @@ export default function App({Component, pageProps}) {
 		console.log('authToken:', authToken);
 		if (authToken) {
 			try {
-				setCookie('x_d_jwt', authToken, {
-					maxAge: 60 * 60 * 24 * 14, // 14 days
-					path: '/',
-				});
+				const expirationDate = new Date();
+				expirationDate.setDate(expirationDate.getDate() + 14); // 14 days from now
+				document.cookie = `x_d_jwt=${authToken}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Strict; Secure`;
 				console.log('Cookie set attempt completed');
 				console.log('Current cookies:', document.cookie);
 			} catch (error) {
