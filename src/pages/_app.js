@@ -7,6 +7,7 @@ import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
 import {Toaster} from "@/components/ui/toaster";
 import {deleteCookie, setCookie} from "cookies-next";
+import {useEffect} from "react";
 
 const stytch = createStytchUIClient(
 	process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN ||
@@ -20,9 +21,6 @@ export default function App({Component, pageProps}) {
 		if (authToken) {
 			setCookie('x_d_jwt', authToken, {
 				maxAge: 60 * 60 * 24 * 14, // 14 days
-				path: '/',
-				sameSite: 'strict',
-				secure: process.env.NODE_ENV === 'production'
 			});
 			console.log('Cookie set:', document.cookie);
 		} else {
@@ -33,6 +31,13 @@ export default function App({Component, pageProps}) {
 	const handleLogout = () => {
 		deleteCookie('x_d_jwt', {path: '/'});
 	};
+
+	useEffect(() => {
+		const authToken = getAuthToken()
+		if (authToken) {
+			handleAuthSuccess()
+		}
+	}, []);
 
 	return (
 		<>
