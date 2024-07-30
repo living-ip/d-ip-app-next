@@ -19,10 +19,7 @@ export default function App({Component, pageProps}) {
 		console.log('authToken', authToken);
 		setCookie('x_d_jwt', authToken, {
 			maxAge: 60 * 60 * 24 * 14, // 14 days
-			path: '/',
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'strict',
-			httpOnly: true, // Add this for better security
+			path: '/'
 		});
 	};
 
@@ -37,7 +34,7 @@ export default function App({Component, pageProps}) {
 				<link rel="icon" href="https://storage.googleapis.com/syb_us_cdn/sibylline_favicon.png"/>
 			</Head>
 			<DynamicContextProvider
-				theme="light"
+				theme="auto"
 				settings={{
 					environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
 					walletConnectors: [SolanaWalletConnectors],
