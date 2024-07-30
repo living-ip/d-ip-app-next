@@ -8,7 +8,7 @@ import StoreProvider from "@/lib/storeProvider";
 import {Toaster} from "@/components/ui/toaster";
 import {deleteCookie, setCookie} from "cookies-next";
 import {useEffect, useState, useCallback} from "react";
-import { Analytics } from "@vercel/analytics/react"
+import {Analytics} from "@vercel/analytics/react"
 
 const stytch = createStytchUIClient(
 	process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN ||
@@ -18,30 +18,10 @@ const stytch = createStytchUIClient(
 export default function App({Component, pageProps}) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-	const setAuthCookie = useCallback(() => {
-		console.log('setAuthCookie called');
-		const authToken = getAuthToken();
-		console.log('authToken:', authToken);
-		if (authToken) {
-			try {
-				const expirationDate = new Date();
-				expirationDate.setDate(expirationDate.getDate() + 14); // 14 days from now
-				document.cookie = `x_d_jwt=${authToken}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Strict; Secure`;
-				console.log('Cookie set attempt completed');
-				console.log('Current cookies:', document.cookie);
-			} catch (error) {
-				console.error('Error setting cookie:', error);
-			}
-		} else {
-			console.error('Auth token is undefined');
-		}
-	}, []);
-
 	const handleAuthSuccess = useCallback(() => {
 		console.log('handleAuthSuccess called');
 		setIsAuthenticated(true);
-		setAuthCookie();
-	}, [setAuthCookie]);
+	}, []);
 
 	const handleLogout = useCallback(() => {
 		console.log('handleLogout called');
@@ -52,9 +32,25 @@ export default function App({Component, pageProps}) {
 	useEffect(() => {
 		console.log('useEffect running, isAuthenticated:', isAuthenticated);
 		if (isAuthenticated) {
-			setAuthCookie();
+			console.log('setAuthCookie called');
+			const authToken = getAuthToken();
+			console.log('authToken:', authToken);
+			if (authToken) {
+				try {
+					console.log('document', document)
+					const expirationDate = new Date();
+					expirationDate.setDate(expirationDate.getDate() + 14); // 14 days from now
+					document.cookie = `x_d_jwt=${authToken}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Strict; Secure`;
+					console.log('Cookie set attempt completed');
+					console.log('Current cookies:', document.cookie);
+				} catch (error) {
+					console.error('Error setting cookie:', error);
+				}
+			} else {
+				console.error('Auth token is undefined');
+			}
 		}
-	}, [isAuthenticated, setAuthCookie]);
+	}, [isAuthenticated]);
 
 	useEffect(() => {
 		const checkInitialAuth = () => {
@@ -62,11 +58,10 @@ export default function App({Component, pageProps}) {
 			if (token) {
 				console.log('Initial auth token found');
 				setIsAuthenticated(true);
-				setAuthCookie();
 			}
 		};
 		checkInitialAuth();
-	}, [setAuthCookie]);
+	}, []);
 
 	return (
 		<>
