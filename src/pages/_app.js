@@ -17,10 +17,17 @@ export default function App({Component, pageProps}) {
 	const handleAuthSuccess = () => {
 		const authToken = getAuthToken();
 		console.log('authToken', authToken);
-		setCookie('x_d_jwt', authToken, {
-			maxAge: 60 * 60 * 24 * 14, // 14 days
-			path: '/'
-		});
+		if (authToken) {
+			setCookie('x_d_jwt', authToken, {
+				maxAge: 60 * 60 * 24 * 14, // 14 days
+				path: '/',
+				sameSite: 'strict',
+				secure: process.env.NODE_ENV === 'production'
+			});
+			console.log('Cookie set:', document.cookie);
+		} else {
+			console.error('Auth token is undefined');
+		}
 	};
 
 	const handleLogout = () => {
