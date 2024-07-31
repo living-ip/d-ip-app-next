@@ -35,3 +35,6 @@ yarn-error.log*
 next-env.d.ts
 
 .idea
+/.aider.chat.history.md
+/.aider.input.history
+/.aider.tags.cache.v3/

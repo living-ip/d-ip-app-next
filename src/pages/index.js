@@ -50,16 +50,7 @@ const socialIcons = [
 
 export default function Home() {
 	const {isAuthenticated} = useDynamicContext();
-	const router = useRouter();
-
-	const [auth, setAuth] = useState(false);
-
-	useEffect(() => {
-		setAuth(isAuthenticated);
-		if (isAuthenticated) {
-			router.push("/projects");
-		}
-	}, [isAuthenticated, router]);
+	const [auth, setAuth] = useState(isAuthenticated);
 
 	return (
 		<div className="bg-gradient-to-b from-[#002500] to-[#245D00]">
