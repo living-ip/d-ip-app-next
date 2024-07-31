@@ -1,70 +1,116 @@
 import '@/styles/globals.css'
-import {createStytchUIClient} from '@stytch/nextjs/ui'
-import {StytchProvider} from '@stytch/nextjs'
-import {DynamicContextProvider, getAuthToken} from "@dynamic-labs/sdk-react-core";
-import {SolanaWalletConnectors} from "@dynamic-labs/solana";
+import { createStytchUIClient } from '@stytch/nextjs/ui'
+import { StytchProvider } from '@stytch/nextjs'
+import { DynamicContextProvider, getAuthToken } from "@dynamic-labs/sdk-react-core";
+import { SolanaWalletConnectors } from "@dynamic-labs/solana";
 import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
-import {Toaster} from "@/components/ui/toaster";
-import {deleteCookie, setCookie} from "cookies-next";
-import {useEffect} from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { deleteCookie } from "cookies-next";
+import { useEffect, useState, useCallback } from "react";
 import { Analytics } from "@vercel/analytics/react"
 
 const stytch = createStytchUIClient(
-	process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN ||
-	'public-token-test-0d6d430c-8503-41d0-b4bb-97b6a448f6ac'
+  process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN ||
+  'public-token-test-0d6d430c-8503-41d0-b4bb-97b6a448f6ac'
 )
 
-export default function App({Component, pageProps}) {
-	const handleAuthSuccess = () => {
-		const authToken = getAuthToken();
-		console.log('authToken', authToken);
-		if (authToken) {
-			setCookie('x_d_jwt', authToken, {
-				maxAge: 60 * 60 * 24 * 14, // 14 days
-			});
-			console.log('Cookie set:', document.cookie);
-		} else {
-			console.error('Auth token is undefined');
-		}
-	};
+export default function App({ Component, pageProps }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-	const handleLogout = () => {
-		deleteCookie('x_d_jwt', {path: '/'});
-	};
+  const handleAuthSuccess = useCallback(() => {
+    console.log('handleAuthSuccess called');
+    setIsAuthenticated(true);
+  }, []);
 
-	useEffect(() => {
-		const authToken = getAuthToken()
-		if (authToken) {
-			handleAuthSuccess()
-		}
-	}, []);
+  const handleLogout = useCallback(() => {
+    console.log('handleLogout called');
+    deleteCookie('x_d_jwt', { path: '/' });
+    setIsAuthenticated(false);
+  }, []);
 
-	return (
-		<>
-			<Head>
-				<title>Living IP</title>
-				<link rel="icon" href="https://storage.googleapis.com/syb_us_cdn/sibylline_favicon.png"/>
-			</Head>
-			<DynamicContextProvider
-				theme="auto"
-				settings={{
-					environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
-					walletConnectors: [SolanaWalletConnectors],
-					eventsCallbacks: {
-						onAuthSuccess: handleAuthSuccess,
-						onLogout: handleLogout,
-					}
-				}}
-			>
-				<StytchProvider stytch={stytch}>
-					<StoreProvider {...pageProps.initialZustandState}>
-						<Component {...pageProps} />
-						<Analytics/>
-					</StoreProvider>
-				</StytchProvider>
-			</DynamicContextProvider>
-			<Toaster/>
-		</>
-	)
+  const setAuthCookie = useCallback(async (token) => {
+    try {
+      console.log('Setting auth cookie with token:', token);
+      const response = await fetch('/api/set-auth-cookie', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+      if (response.ok) {
+        console.log('Cookie set successfully');
+        const responseData = await response.json();
+        console.log('Server response:', responseData);
+      } else {
+        console.error('Failed to set cookie. Status:', response.status);
+        const errorData = await response.text();
+        console.error('Error details:', errorData);
+      }
+    } catch (error) {
+      console.error('Error setting cookie:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const authToken = getAuthToken();
+      console.log('Auth token:', authToken);
+      if (authToken) {
+        setAuthCookie(authToken);
+      } else {
+        console.error('Auth token is undefined');
+      }
+    }
+  }, [isAuthenticated, setAuthCookie]);
+
+  useEffect(() => {
+    const checkCookie = () => {
+      const cookies = document.cookie.split(';');
+      const hasAuthCookie = cookies.some(cookie => cookie.trim().startsWith('x_d_jwt='));
+      console.log('Auth cookie present:', hasAuthCookie);
+    };
+
+    checkCookie();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    const checkInitialAuth = () => {
+      const token = getAuthToken();
+      if (token) {
+        console.log('Initial auth token found');
+        setIsAuthenticated(true);
+      }
+    };
+    checkInitialAuth();
+  }, []);
+
+  return (
+    <>
+      <Head>
+        <title>Living IP</title>
+        <link rel="icon" href="https://storage.googleapis.com/syb_us_cdn/sibylline_favicon.png" />
+      </Head>
+      <DynamicContextProvider
+        theme="auto"
+        settings={{
+          environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
+          walletConnectors: [SolanaWalletConnectors],
+          eventsCallbacks: {
+            onAuthSuccess: handleAuthSuccess,
+            onLogout: handleLogout,
+          }
+        }}
+      >
+        <StytchProvider stytch={stytch}>
+          <StoreProvider {...pageProps.initialZustandState}>
+            <Component {...pageProps} />
+            <Analytics />
+          </StoreProvider>
+        </StytchProvider>
+      </DynamicContextProvider>
+      <Toaster />
+    </>
+  )
 }
