@@ -59,7 +59,6 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     if (isAuthenticated) {
       const authToken = getAuthToken();
-      console.log('Auth token:', authToken);
       if (authToken) {
         setAuthCookie(authToken);
       } else {
