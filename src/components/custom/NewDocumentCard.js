@@ -14,6 +14,7 @@ import {useState} from "react";
 import {fileToBase64} from "@/lib/utils";
 import {createProjectDocument} from "@/lib/project";
 import {getCookie} from "cookies-next";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 
 export function NewDocumentCard({project}) {
@@ -34,7 +35,7 @@ export function NewDocumentCard({project}) {
     }
 
     try {
-      const response = await createProjectDocument(project.pid, data, getCookie("x_d_jwt"));
+      const response = await createProjectDocument(project.pid, data, getAuthToken());
       console.log("Response: ", response);
       const documentId = response.did;
       setDocumentId(documentId);

@@ -3,6 +3,7 @@ import {IoCheckmark, IoClose} from "react-icons/io5";
 import {voteOnChange} from "@/lib/change";
 import {getCookie} from "cookies-next";
 import {useState} from "react";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export function VotingForm({change, userVote, setUserVote}) {
 	const [changeVotes, setChangeVotes] = useState(userVote !== (1 || -1));
@@ -50,7 +51,7 @@ export function VotingForm({change, userVote, setUserVote}) {
 					        className="justify-center items-center mt-4 disabled:bg-[#E8ECE6] disabled:text-[#B0B0B0]"
 					        onClick={() => {
 						        console.log("vote submitted: ", userVote)
-						        voteOnChange(change.cid, {vote: userVote}, getCookie("x_d_jwt")).then(setChangeVotes(false))
+						        voteOnChange(change.cid, {vote: userVote}, getAuthToken()).then(setChangeVotes(false))
 					        }}>
 						Vote
 					</Button>

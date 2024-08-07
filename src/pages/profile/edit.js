@@ -12,6 +12,7 @@ import {getUserProfile, getUserRoles, updateUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
 import {getCookie} from "cookies-next";
 import {Input} from "@/components/ui/input";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export default function EditProfile() {
 	const router = useRouter();
@@ -50,7 +51,7 @@ export default function EditProfile() {
 				content: await fileToBase64(file),
 			};
 		}
-		await updateUserProfile(userProfile.uid, userDetails, getCookie("x_d_jwt"));
+		await updateUserProfile(userProfile.uid, userDetails, getAuthToken());
 		console.log("Profile saved successfully");
 		await router.push("/profile")
 	}

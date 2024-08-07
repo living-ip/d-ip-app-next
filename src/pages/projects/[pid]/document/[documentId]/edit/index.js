@@ -17,6 +17,7 @@ import {Textarea} from "@/components/ui/textarea";
 import {DocumentEditCard} from "@/components/custom/DocumentEditCard";
 import {Loader2} from "lucide-react";
 import {IoArrowBackOutline} from "react-icons/io5";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 
 export default function Index({project, document, changes}) {
@@ -40,7 +41,7 @@ export default function Index({project, document, changes}) {
 				name: name,
 				description: description,
 			},
-			getCookie("x_d_jwt")
+			getAuthToken()
 		);
 		await router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/edit/${change.cid}`);
 		setLoading(false)

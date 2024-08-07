@@ -8,6 +8,7 @@ import {getProject, updateProject} from "@/lib/project";
 import {getCookie} from "cookies-next";
 import {initializeStore} from "@/lib/store";
 import {NewLayout} from "@/components/NewLayout";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 
 export default function EditProject({project}) {
@@ -26,7 +27,7 @@ export default function EditProject({project}) {
 			delete data.image;
 		}
 		try {
-			const response = await updateProject(project.pid, data, getCookie("x_d_jwt"));
+			const response = await updateProject(project.pid, data, getAuthToken());
 			console.log(response);
 			await router.push(`/projects/${encodeURI(project.pid)}`)
 		} catch (e) {

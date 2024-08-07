@@ -6,6 +6,7 @@ import {getCookie} from "cookies-next";
 import {createProject} from "@/lib/project";
 import {NewLayout} from "@/components/NewLayout";
 import {useToast} from "@/components/ui/use-toast";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 
 export default function CreateNewProject() {
@@ -21,7 +22,7 @@ export default function CreateNewProject() {
 		};
 		console.log(data.image);
 		try {
-			const response = await createProject(data, getCookie("x_d_jwt"));
+			const response = await createProject(data, getAuthToken());
 			console.log(response);
 			if (response.pid) {
 				toast({

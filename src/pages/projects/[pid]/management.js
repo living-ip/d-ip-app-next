@@ -21,6 +21,7 @@ import {authStytchRequest} from "@/lib/stytch";
 import {initializeStore, useStore} from "@/lib/store";
 import {getUserProfile} from "@/lib/user";
 import {getProjectSettings, updateProjectSettings} from "@/lib/settings";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 const TIMEFRAMES = [
 	{label: "1 hour", value: 1 * 60 * 60 * 1000},
@@ -57,7 +58,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 	const handleNotificationsToggle = async (enabled) => {
 		setNotificationsEnabled(enabled);
 		try {
-			await updateProjectSettings(pid, {notifications: enabled}, getCookie("x_d_jwt"));
+			await updateProjectSettings(pid, {notifications: enabled}, getAuthToken());
 		} catch (error) {
 			console.error("Failed to update notification settings:", error);
 			// TODO: Add user-facing error message
@@ -81,7 +82,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			end: rule.end,
 			time: rule.timeframe
 		}));
-		await updateChangesRules(pid, changeRulesData, getCookie("x_d_jwt"));
+		await updateChangesRules(pid, changeRulesData, getAuthToken());
 	};
 
 	const saveVotingRuleChanges = async () => {
@@ -89,12 +90,12 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			min_votes_required: votingSettings.minimumVotes,
 			min_votes_percentage: votingSettings.positiveVotesPercentage / 100
 		};
-		await updateVotingRules(pid, votingRulesData, getCookie("x_d_jwt"));
+		await updateVotingRules(pid, votingRulesData, getAuthToken());
 	};
 
 	const inviteUserToProject = async () => {
 		try {
-			const result = await addUserToProject(pid, email, getCookie("x_d_jwt"));
+			const result = await addUserToProject(pid, email, getAuthToken());
 			if (result) {
 				setEmail("");
 				setUserList(prevList => [...prevList, result]);
@@ -107,7 +108,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 
 	const handleRemoveUser = async (uid) => {
 		try {
-			const result = await removeUserFromProject(pid, uid, getCookie("x_d_jwt"));
+			const result = await removeUserFromProject(pid, uid, getAuthToken());
 			if (result) {
 				setUserList(prevList => prevList.filter(user => user.uid !== uid));
 			}
@@ -125,7 +126,7 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 		}
 
 		try {
-			const result = await updateProjectUserRole(pid, uid, newRole, getCookie("x_d_jwt"));
+			const result = await updateProjectUserRole(pid, uid, newRole, getAuthToken());
 			if (result) {
 				setUserList(prevList => prevList.map(user =>
 					user.uid === uid ? {...user, role: newRole} : user

@@ -19,6 +19,7 @@ import {getCookie} from "cookies-next";
 import {initializeStore} from "@/lib/store";
 import {NewLayout} from "@/components/NewLayout";
 import {useToast} from "@/components/ui/use-toast";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export default function CreateNewDocument({project}) {
 	const router = useRouter();
@@ -40,7 +41,7 @@ export default function CreateNewDocument({project}) {
 		}
 
 		try {
-			const response = await createProjectDocument(project.pid, data, getCookie("x_d_jwt"));
+			const response = await createProjectDocument(project.pid, data, getAuthToken());
 			console.log("Response: ", response);
 			if (response.did) {
 				setNewDid(response.did);

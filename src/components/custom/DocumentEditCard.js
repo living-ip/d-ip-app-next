@@ -6,6 +6,7 @@ import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
 import {getCookie} from "cookies-next";
 import {deleteChange, publishChange} from "@/lib/change";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export function DocumentEditCard({project, document, change}) {
 	const router = useRouter();
@@ -38,7 +39,7 @@ export function DocumentEditCard({project, document, change}) {
 						<Button variant="ghost">
 							<PiTrashSimple className="w-4 h-4 shrink-0 self-stretch my-auto aspect-square"
 							               onClick={() => {
-								               handleDeleteChange(change.cid, getCookie("x_d_jwt"));
+								               handleDeleteChange(change.cid, getAuthToken());
 							               }}
 							/>
 						</Button>
@@ -53,7 +54,7 @@ export function DocumentEditCard({project, document, change}) {
 							</Button>
 							<Button variant="ghost" className="justify-center px-3 py-2 rounded bg-[#E8ECE6]"
 							        onClick={async () => {
-								        await publishChange(change.cid, getCookie("x_d_jwt"));
+								        await publishChange(change.cid, getAuthToken());
 								        await router.push(`/projects/${encodeURI(project.pid)}/document/${encodeURIComponent(document.did)}/vote`);
 							        }}>
 								Publish
