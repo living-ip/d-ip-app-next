@@ -145,3 +145,37 @@ export async function updateVotingRules(project_id, updateVotingRules, jwt) {
   }
   return response;
 }
+
+
+export async function getProjectInvites(project_id, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${project_id}/admin/invites`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    }
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+
+export async function getProjectAccessRequests(project_id, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${project_id}/access-request`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    }
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}

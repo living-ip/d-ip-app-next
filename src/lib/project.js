@@ -124,7 +124,7 @@ export async function createProjectDocument(projectId, documentDetails, jwt) {
 }
 
 export async function requestProjectAccess(projectId, jwt) {
-  const url = new URL(`${LIP_API_BASE}/project/${projectId}/users`);
+  const url = new URL(`${LIP_API_BASE}/project/${projectId}/access-request`);
   const func = () => fetch(url, {
     method: "POST",
     headers: {
