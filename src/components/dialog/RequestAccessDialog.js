@@ -14,6 +14,8 @@ import {
 import {Button} from "@/components/ui/button"
 import {useToast} from "@/components/ui/use-toast";
 import {useState} from "react";
+import {requestProjectAccess} from "@/lib/project";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export default function RequestAccessDialog({children, project}) {
 
@@ -22,11 +24,20 @@ export default function RequestAccessDialog({children, project}) {
 
 	const handleRequestAccess = (e) => {
 		e.preventDefault();
-		// TODO impl handler
-		toast({
-			title: "Access requested",
-			description: "An admin has been notified and will review your request soon.",
-		})
+		requestProjectAccess(project.pid, getAuthToken()).then((r) => {
+			console.log(r);
+			if (r.request) {
+				toast({
+					title: "Access requested",
+					description: "An admin has been notified and will review your request soon.",
+				})
+			} else {
+				toast({
+					title: "Error",
+					description: "There was an issue requesting access to this project. Please try again later.",
+				})
+			}
+		});
 		setOpen(false);
 	}
 

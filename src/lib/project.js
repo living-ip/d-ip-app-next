@@ -122,3 +122,19 @@ export async function createProjectDocument(projectId, documentDetails, jwt) {
   }
   return response;
 }
+
+export async function requestProjectAccess(projectId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${projectId}/users`);
+  const func = () => fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
