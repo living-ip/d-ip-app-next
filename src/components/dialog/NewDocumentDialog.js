@@ -1,5 +1,5 @@
 import {Dialog, DialogContent, DialogTrigger} from "@/components/ui/dialog";
-import {NewDocumentCard} from "@/components/custom/NewDocumentCard";
+import {NewDocumentCard} from "@/components/cards/NewDocumentCard";
 
 
 export function NewDocumentDialog({children, project}) {

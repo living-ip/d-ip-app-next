@@ -1,4 +1,4 @@
-import {VoteItem} from "@/components/custom/VoteItem";
+import {VoteItem} from "@/components/vote/VoteItem";
 import * as React from "react";
 
 

@@ -8,12 +8,12 @@ import { getProject } from "@/lib/project";
 import { getDocument } from "@/lib/document";
 import { getUserProfile } from "@/lib/user";
 import { NewLayout } from "@/components/NewLayout";
-import { VotingForm } from "@/components/custom/VotingForm";
-import { VotePageBadge } from "@/components/custom/VotePageBadge";
-import { ResultsCard } from "@/components/custom/ResultsCard";
-import { AwaitResults } from "@/components/custom/AwaitResults";
+import { VotingForm } from "@/components/vote/VotingForm";
+import { VotePageBadge } from "@/components/badge/VotePageBadge";
+import { ResultsCard } from "@/components/cards/ResultsCard";
+import { AwaitResults } from "@/components/vote/AwaitResults";
 import { Button } from "@/components/ui/button";
-import VoteTimeRemainingBadge from "@/components/custom/VoteTimeRemainingBadge";
+import VoteTimeRemainingBadge from "@/components/badge/VoteTimeRemainingBadge";
 
 const DiffLine = ({ type, content }) => {
   const bgColor = type === 'insert' ? 'bg-green-100' : type === 'delete' ? 'bg-red-100' : 'bg-gray-100';

@@ -1,4 +1,3 @@
-import {authStytchRequest} from "@/lib/stytch";
 import "@mdxeditor/editor/style.css";
 import Editor from "@/components/edit/Editor";
 import {useState} from "react";
@@ -6,11 +5,9 @@ import {useRouter} from "next/router";
 import {getChange, publishChange, updateChange} from "@/lib/change";
 import {getProject} from "@/lib/project";
 import {getDocument} from "@/lib/document";
-import {getCookie} from "cookies-next";
 import {EditChangeLayout} from "@/components/EditChangeLayout";
 import {FiEdit3} from "react-icons/fi";
 import {useToast} from "@/components/ui/use-toast";
-import {getUserProfile} from "@/lib/user";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export default function Index({project, document, change}) {

@@ -1,4 +1,4 @@
-import {RegisterCard} from "@/components/RegisterCard";
+import {RegisterCard} from "@/components/cards/RegisterCard";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/user";
 import {NewLayout} from "@/components/NewLayout";

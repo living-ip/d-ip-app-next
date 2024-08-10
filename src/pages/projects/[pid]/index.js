@@ -5,7 +5,7 @@ import { getUserProfile, getUserRoles } from "@/lib/user";
 import { getProject, getProjectDocuments } from "@/lib/project";
 import { initializeStore, useStore } from "@/lib/store";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { DocumentCard } from "@/components/custom/DocumentCard";
+import { DocumentCard } from "@/components/cards/DocumentCard";
 import { NewLayout } from "@/components/NewLayout";
 
 const ProjectHeader = ({ projectName, contributorCount }) => {

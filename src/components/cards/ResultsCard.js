@@ -1,6 +1,6 @@
 import Image from "next/image";
 import {Progress} from "@/components/ui/progress";
-import {ResultsBadge} from "@/components/custom/ResultsBadge";
+import {ResultsBadge} from "@/components/badge/ResultsBadge";
 
 export function ResultsCard({change, changeVotes}) {
 

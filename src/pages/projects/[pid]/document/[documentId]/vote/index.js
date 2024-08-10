@@ -4,7 +4,7 @@ import {getProject} from "@/lib/project";
 import {getDocument, getDocumentChanges} from "@/lib/document";
 import {getChangeVotes} from "@/lib/change";
 import {NewLayout} from "@/components/NewLayout";
-import {ChangeCard} from "@/components/custom/ChangeCard";
+import {ChangeCard} from "@/components/cards/ChangeCard";
 import {initializeStore} from "@/lib/store";
 import {getUserProfile} from "@/lib/user";
 import {Button} from "@/components/ui/button";

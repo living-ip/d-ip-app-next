@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ProfileCard} from "@/components/custom/ProfileCard";
+import {ProfileCard} from "@/components/cards/ProfileCard";
 import {NewLayout} from "@/components/NewLayout";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/user";

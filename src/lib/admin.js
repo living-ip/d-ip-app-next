@@ -20,7 +20,7 @@ export async function getProjectUsers(project_id, jwt) {
 }
 
 
-export async function addUserToProject(project_id, email, jwt) {
+export async function addUserToProject(project_id, data, jwt) {
   const url = new URL(`${LIP_API_BASE}/project/${project_id}/admin/users`);
   const func = () => fetch(url, {
     method: "POST",
@@ -28,9 +28,7 @@ export async function addUserToProject(project_id, email, jwt) {
       "Content-Type": "application/json",
       "x-lip-d-jwt": jwt,
     },
-    body: JSON.stringify(changeKeys.snakeCase({
-      email: email,
-    })),
+    body: JSON.stringify(changeKeys.snakeCase(data)),
   });
   const response = await doApiCall(func, undefined);
   if (response instanceof Response) {

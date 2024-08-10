@@ -2,7 +2,7 @@ import Image from "next/image";
 import * as React from "react";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
-import {LogInDialog} from "@/components/custom/LogInDialog";
+import {LogInDialog} from "@/components/dialog/LogInDialog";
 import {useStytchUser} from "@stytch/nextjs";
 import Link from "next/link"
 import {DynamicWidget, useDynamicContext} from "@dynamic-labs/sdk-react-core";

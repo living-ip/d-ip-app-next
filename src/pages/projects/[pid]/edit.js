@@ -1,5 +1,5 @@
 import {Card, CardContent} from "@/components/ui/card";
-import CreateEditForm from "@/components/CreateEditForm";
+import CreateEditForm from "@/components/form/CreateEditForm";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
 import {authStytchRequest} from "@/lib/stytch";

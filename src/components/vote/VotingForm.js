@@ -1,7 +1,6 @@
 import {Button} from "@/components/ui/button";
 import {IoCheckmark, IoClose} from "react-icons/io5";
 import {voteOnChange} from "@/lib/change";
-import {getCookie} from "cookies-next";
 import {useState} from "react";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 

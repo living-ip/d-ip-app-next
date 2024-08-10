@@ -1,6 +1,6 @@
-import {VotingNotEndedCard} from "@/components/custom/VotingNotEndedCard";
-import {ResultsCard} from "@/components/custom/ResultsCard";
-import {VotingForm} from "@/components/custom/VotingForm";
+import {VotingNotEndedCard} from "@/components/cards/VotingNotEndedCard";
+import {ResultsCard} from "@/components/cards/ResultsCard";
+import {VotingForm} from "@/components/vote/VotingForm";
 import {useState} from "react";
 import {useStore} from "@/lib/store";
 

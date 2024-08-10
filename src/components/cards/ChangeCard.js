@@ -1,8 +1,8 @@
 import {Card} from "@/components/ui/card";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {ChangeResultBadge} from "@/components/custom/ChangeResultBadge";
+import {ChangeResultBadge} from "@/components/badge/ChangeResultBadge";
 import {useStore} from "@/lib/store";
-import VoteTimeRemainingBadge from "@/components/custom/VoteTimeRemainingBadge";
+import VoteTimeRemainingBadge from "@/components/badge/VoteTimeRemainingBadge";
 
 export function ChangeCard({change, onClick}) {
 	const [userProfile] = useStore((state) => [state.userProfile]);

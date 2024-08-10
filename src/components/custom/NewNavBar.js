@@ -3,7 +3,7 @@ import {useRouter} from "next/router";
 import {NavigationMenu, NavigationMenuItem, NavigationMenuList} from "@/components/ui/navigation-menu";
 import {Button} from "@/components/ui/button";
 import {useStore} from "@/lib/store";
-import ConnectWalletButton from "@/components/custom/ConnectWalletButton";
+import ConnectWalletButton from "@/components/button/ConnectWalletButton";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {useEffect, useState} from "react";
@@ -35,7 +35,7 @@ export function NewNavBar() {
 	}, []);
 
 	const navItems = [
-		...(canAccessAdminPanel ? [{
+		...((canAccessAdminPanel && router.query.pid) ? [{
 			label: "Management",
 			onClick: () => router.push(`/projects/${currentProject}/management`),
 		}] : []),

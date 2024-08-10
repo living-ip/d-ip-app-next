@@ -1,5 +1,5 @@
 import {Card, CardContent} from "@/components/ui/card";
-import CreationForm from "@/components/CreationForm";
+import CreationForm from "@/components/form/CreationForm";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
 import {getCookie} from "cookies-next";

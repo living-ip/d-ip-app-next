@@ -6,7 +6,7 @@ import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {NewLayout} from "@/components/NewLayout";
-import {Switch} from "@/components/ui/switch"; // Add this import
+import {Switch} from "@/components/ui/switch";
 import {
 	addUserToProject,
 	getChangesRules,
@@ -22,6 +22,8 @@ import {initializeStore, useStore} from "@/lib/store";
 import {getUserProfile} from "@/lib/user";
 import {getProjectSettings, updateProjectSettings} from "@/lib/settings";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
+import {useToast} from "@/components/ui/use-toast";
+
 
 const TIMEFRAMES = [
 	{label: "1 hour", value: 1 * 60 * 60 * 1000},
@@ -36,10 +38,12 @@ const TIMEFRAMES = [
 const ROLES = ["project_manager", "moderator", "editor", "voter", "viewer"];
 
 export default function ManagementPanel({pid, changesRules, votingRules, initialUserList, initialNotifications}) {
+	const {toast} = useToast();
 	const router = useRouter();
 	const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
 	const [userList, setUserList] = useState(initialUserList);
 	const [email, setEmail] = useState('');
+	const [newUserRole, setNewUserRole] = useState('viewer');
 	const [notificationsEnabled, setNotificationsEnabled] = useState(initialNotifications);
 
 	const [rules, setRules] = useState(changesRules.map((rule, index) => ({
@@ -95,14 +99,25 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 
 	const inviteUserToProject = async () => {
 		try {
-			const result = await addUserToProject(pid, email, getAuthToken());
+			const result = await addUserToProject(pid, {
+				email,
+				role: newUserRole
+			}, getAuthToken());
 			if (result) {
 				setEmail("");
+				setNewUserRole("viewer");
 				setUserList(prevList => [...prevList, result]);
 			}
+			toast({
+				title: "User Invited",
+				description: "They'll receive an invite in their email shortly."
+			})
 		} catch (error) {
 			console.error("Failed to invite user:", error);
-			// TODO: Add user-facing error message
+			toast({
+				title: "Failed to add user",
+				description: "An error occurred while adding the user. Please try again later."
+			})
 		}
 	};
 
@@ -112,9 +127,16 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			if (result) {
 				setUserList(prevList => prevList.filter(user => user.uid !== uid));
 			}
+			toast({
+				title: "User Removed",
+				description: "All access removed. They can no longer access the project."
+			})
 		} catch (error) {
 			console.error("Failed to remove user:", error);
-			// TODO: Add user-facing error message
+			toast({
+				title: "Failed to remove user",
+				description: "An error occurred while removing the user. Please try again later."
+			})
 		}
 	};
 
@@ -124,7 +146,6 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			console.log("Cannot change role of admin user");
 			return;
 		}
-
 		try {
 			const result = await updateProjectUserRole(pid, uid, newRole, getAuthToken());
 			if (result) {
@@ -132,9 +153,15 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 					user.uid === uid ? {...user, role: newRole} : user
 				));
 			}
+			toast({
+				title: "User Updated",
+			})
 		} catch (error) {
 			console.error("Failed to update user role:", error);
-			// TODO: Add user-facing error message
+			toast({
+				title: "Failed to update user role",
+				description: "An error occurred while updating the user. Please try again later."
+			})
 		}
 	};
 
@@ -187,7 +214,21 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
+							className="flex-grow"
 						/>
+						<Select
+							value={newUserRole}
+							onValueChange={setNewUserRole}
+						>
+							<SelectTrigger className="w-[180px]">
+								<SelectValue placeholder="Select role" />
+							</SelectTrigger>
+							<SelectContent>
+								{ROLES.map(role => (
+									<SelectItem key={role} value={role}>{role}</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
 						<Button onClick={inviteUserToProject}>Add User</Button>
 					</div>
 				</Section>

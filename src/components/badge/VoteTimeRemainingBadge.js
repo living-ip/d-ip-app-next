@@ -1,4 +1,4 @@
-import {VotePageBadge} from "@/components/custom/VotePageBadge";
+import {VotePageBadge} from "@/components/badge/VotePageBadge";
 
 export default function VoteTimeRemainingBadge({change}){
 
