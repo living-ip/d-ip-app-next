@@ -9,8 +9,10 @@ import {createUserProfile} from '@/lib/user'
 import {Avatar, AvatarImage} from '@/components/ui/avatar'
 import {AiOutlineCamera} from 'react-icons/ai'
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
+import {useToast} from "@/components/ui/use-toast";
 
 export function RegisterCard() {
+	const {toast} = useToast()
 	const [name, setName] = useState('')
 	const [avatar, setAvatar] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
@@ -39,7 +41,6 @@ export function RegisterCard() {
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 		setIsLoading(true)
-
 		try {
 			const userDetails = {name}
 			if (avatar) {
@@ -48,13 +49,16 @@ export function RegisterCard() {
 					content: await fileToBase64(avatar.file),
 				}
 			}
-
 			const response = await createUserProfile(userDetails, getAuthToken())
 			console.log('Profile created successfully', response)
 			await router.push('/projects')
 		} catch (error) {
 			console.error('Error creating profile:', error)
-			// TODO: Add error handling UI
+			toast({
+				title: 'Error creating profile',
+				description: 'An error occurred while creating your profile. Please try again.',
+				status: 'error',
+			})
 		} finally {
 			setIsLoading(false)
 		}

@@ -106,7 +106,6 @@ export default function ManagementPanel({pid, changesRules, votingRules, initial
 			if (result) {
 				setEmail("");
 				setNewUserRole("viewer");
-				setUserList(prevList => [...prevList, result]);
 			}
 			toast({
 				title: "User Invited",
