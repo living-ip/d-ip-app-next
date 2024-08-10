@@ -179,3 +179,38 @@ export async function getProjectAccessRequests(project_id, jwt) {
   }
   return response;
 }
+
+export async function rejectAccessRequest(project_id, request_id, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${project_id}/access-request/${request_id}`);
+  const func = () => fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, undefined);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+export async function acceptAccessRequest(project_id, request_id, role, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${project_id}/access-request/${request_id}`);
+  const func = () => fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+    body: JSON.stringify(changeKeys.snakeCase({
+      role: role,
+    })),
+  });
+  const response = await doApiCall(func, undefined);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
