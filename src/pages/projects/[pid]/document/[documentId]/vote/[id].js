@@ -74,7 +74,7 @@ export default function Index({ project, document, change, changeVotes, userVote
             <Button
               variant="outline"
               className="p-2.5 rounded-sm border border-gray-200"
-              onClick={() => router.back()}
+              onClick={() => router.push(`/projects/${router.query.pid}/document/${router.query.documentId}`)}
             >
               <IoArrowBackOutline className="w-4 h-4" />
             </Button>

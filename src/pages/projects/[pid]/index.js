@@ -14,7 +14,7 @@ const ProjectHeader = ({ projectName, contributorCount }) => {
   return (
     <div className="flex gap-3 items-center">
       <Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid">
-        <IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.back()} />
+        <IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.push(`/projects`)} />
       </Button>
       <h1 className="text-3xl leading-9 text-neutral-950">{projectName}</h1>
       {/*TODO: Ben - uncomment when contributorCount is returned*/}

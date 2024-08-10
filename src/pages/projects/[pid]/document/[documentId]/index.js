@@ -25,7 +25,7 @@ const Contributor = ({ src, name }) => (
 export default function Index({ project, document }) {
   const router = useRouter();
 
-  const handleBack = () => router.back();
+  const handleBack = () => router.push(`/projects/${encodeURIComponent(project.pid)}`)
   const handleVote = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/vote`);
   const handleEdit = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/edit`);
 

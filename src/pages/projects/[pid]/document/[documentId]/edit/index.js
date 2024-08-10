@@ -1,13 +1,11 @@
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/router";
-import {authStytchRequest} from "@/lib/stytch";
 import {useState} from "react";
 import {Dialog, DialogContent, DialogTrigger,} from "@/components/ui/dialog";
 import {createDocumentChange, getDocument, getDocumentChanges} from "@/lib/document";
 import {convertNameToGithubRepo} from "@/lib/utils";
 import {getProject} from "@/lib/project";
-import {getCookie} from "cookies-next";
-import {getUserProfile, getUserRoles} from "@/lib/user";
+import {getUserProfile} from "@/lib/user";
 import {initializeStore, useStore} from "@/lib/store";
 import {NewLayout} from "@/components/NewLayout";
 import {TbArrowsSort} from "react-icons/tb";
@@ -55,7 +53,8 @@ export default function Index({project, document, changes}) {
 					<div className="flex flex-col">
 						<div className="flex gap-3 max-md:flex-wrap">
 							<Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid">
-								<IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.back()}/>
+								<IoArrowBackOutline className="w-4 h-4 cursor-pointer"
+								                    onClick={() => router.push(`/projects/${router.query.pid}/document/${router.query.documentId}`)}/>
 							</Button>
 							<h1 className="text-3xl leading-9 text-neutral-950">
 								{document.name}
@@ -176,34 +175,34 @@ export default function Index({project, document, changes}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
-    const {pid, documentId} = query;
+	const {pid, documentId} = query;
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
+	const {userProfile, roles} = await getUserProfile("TODO", sessionJWT);
 
-    const [project, document, userChangesRaw] = await Promise.all([
-        getProject(pid, sessionJWT),
-        getDocument(documentId, sessionJWT),
-        getDocumentChanges(documentId, {"user_id": userProfile.uid}, sessionJWT)
-    ]);
+	const [project, document, userChangesRaw] = await Promise.all([
+		getProject(pid, sessionJWT),
+		getDocument(documentId, sessionJWT),
+		getDocumentChanges(documentId, {"user_id": userProfile.uid}, sessionJWT)
+	]);
 
-    const orderedChanges = userChangesRaw.sort((a, b) => {
-        return new Date(b.updatedAt) - new Date(a.updatedAt);
-    });
+	const orderedChanges = userChangesRaw.sort((a, b) => {
+		return new Date(b.updatedAt) - new Date(a.updatedAt);
+	});
 
-    const zustandServerStore = initializeStore({
-        userRoles: roles,
-        currentProject: pid,
-        user: userProfile,
-    });
+	const zustandServerStore = initializeStore({
+		userRoles: roles,
+		currentProject: pid,
+		user: userProfile,
+	});
 
-    return {
-        props: {
-            project: project,
-            document: document,
-            changes: orderedChanges,
-            initialZustandState: JSON.parse(
-                JSON.stringify(zustandServerStore.getState())
-            ),
-        },
-    };
+	return {
+		props: {
+			project: project,
+			document: document,
+			changes: orderedChanges,
+			initialZustandState: JSON.parse(
+				JSON.stringify(zustandServerStore.getState())
+			),
+		},
+	};
 };
