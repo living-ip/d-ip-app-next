@@ -30,17 +30,17 @@ const ProjectDescription = ({ description }) => (
   <p className="mt-3 text-base leading-6 text-white max-md:max-w-full">{description}</p>
 );
 
-const ProjectPage = ({ project, documents }) => {
-  if (!project || !documents) {
-    console.error('Missing required props: project or documents');
-    return null;
-  }
-
+const ProjectPage = ({ project, documents, creations }) => {
   const router = useRouter();
   const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
     state.userRoles,
     state.setInvalidPermissionsDialogOpen
   ]);
+
+  if (!project || !documents) {
+    console.error('Missing required props: project or documents');
+    return null;
+  }
 
   const handleCreateNewDocument = () => {
     if (!userRoles.find((role) => role.project === project.pid && role.role.create_document)) {
@@ -75,25 +75,41 @@ const ProjectPage = ({ project, documents }) => {
               <Button variant="outline" disabled={true} className="bg-white text-black">
                 Log History
               </Button>
-              <Button onClick={handleCreateNewDocument} className="bg-white text-black">
+              <Button onClick={handleCreateNewDocument}>
                 Create New Document
               </Button>
             </div>
           </div>
         </section>
-        <article className="mt-6 max-md:max-w-full">
-          <div className="flex flex-col w-full">
-            <h2 className="text-xl leading-7 text-neutral-950 mb-4">Documents</h2>
-            <div className="flex flex-col gap-4">
-              {documents.map((document, index) => (
-                <DocumentCard
-                  key={document.did || index}
-                  name={document.name}
-                  description={document.description}
-                  lastEditDate={document.last_edit || document.created_at}
-                  onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}
-                />
-              ))}
+        <article className="mt-6 max-md:max-w-full p-4">
+          <div className={"flex"}>
+            <div className="flex flex-col w-full">
+              <h2 className="text-xl leading-7 text-neutral-950 mb-4">Documents</h2>
+              <div className="flex flex-col gap-4">
+                {documents.map((document, index) => (
+                    <DocumentCard
+                        key={document.did || index}
+                        name={document.name}
+                        description={document.description}
+                        lastEditDate={document.last_edit || document.created_at}
+                        onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}
+                    />
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col w-full">
+              <h2 className="text-xl leading-7 text-neutral-950 mb-4">Creations</h2>
+              <div className="flex flex-col gap-4">
+                {creations.map((creation, index) => (
+                    <DocumentCard
+                        key={creation.did || index}
+                        name={creation.name}
+                        description={creation.description}
+                        lastEditDate={creation.last_edit || creation.created_at}
+                        onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${creation.did}`)}
+                    />
+                ))}
+              </div>
             </div>
           </div>
         </article>
@@ -136,6 +152,7 @@ export const getServerSideProps = async ({ req, query }) => {
     props: {
       project: project,
       documents: documents,
+      creations: [],  // TODO implement backend.
       initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
     },
   };
