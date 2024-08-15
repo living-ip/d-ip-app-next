@@ -82,8 +82,8 @@ const ProjectPage = ({ project, documents, creations }) => {
           </div>
         </section>
         <article className="mt-6 max-md:max-w-full p-4">
-          <div className={"flex"}>
-            <div className="flex flex-col w-full">
+          <div className="flex flex-row max-md:flex-col gap-4">
+            <div className="flex flex-col w-2/3 max-md:w-full">
               <h2 className="text-xl leading-7 text-neutral-950 mb-4">Documents</h2>
               <div className="flex flex-col gap-4">
                 {documents.map((document, index) => (
@@ -97,7 +97,7 @@ const ProjectPage = ({ project, documents, creations }) => {
                 ))}
               </div>
             </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-1/3 max-md:w-full">
               <h2 className="text-xl leading-7 text-neutral-950 mb-4">Creations</h2>
               <div className="flex flex-col gap-4">
                 {creations.map((creation, index) => (
