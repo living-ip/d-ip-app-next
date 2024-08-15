@@ -184,7 +184,11 @@ export const getServerSideProps = async ({ req, query }) => {
     props: {
       project: project,
       documents: documents,
-      creations: [],  // TODO implement backend.
+      creations: [{
+        title: "Creation contest 1",
+        description: "This is a description for creation contest 1",
+        media_uri: "https://storage.googleapis.com/livingip-cdn/fa6bc265-fc63-43eb-836e-e3d7921df503-mr_bush.png"
+      }],  // TODO implement backend.
       initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
     },
   };
