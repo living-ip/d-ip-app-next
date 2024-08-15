@@ -5,6 +5,7 @@ import { getProject, getProjectDocuments } from "@/lib/project";
 import { initializeStore, useStore } from "@/lib/store";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { DocumentCard } from "@/components/cards/DocumentCard";
+import { CreationCard } from "@/components/cards/CreationCard";
 import { NewLayout } from "@/components/NewLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -100,14 +101,12 @@ const ProjectPage = ({ project, documents, creations }) => {
             </div>
             <div className="flex flex-col w-1/3">
               <h2 className="text-xl leading-7 text-neutral-950 mb-4">Creations</h2>
-              <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {creations.map((creation, index) => (
-                  <DocumentCard
+                  <CreationCard
                     key={creation.did || index}
-                    name={creation.name}
-                    description={creation.description}
-                    lastEditDate={creation.last_edit || creation.created_at}
-                    onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${creation.did}`)}
+                    creation={creation}
+                    projectId={project.pid}
                   />
                 ))}
               </div>
@@ -133,14 +132,12 @@ const ProjectPage = ({ project, documents, creations }) => {
                 </div>
               </TabsContent>
               <TabsContent value="creations">
-                <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {creations.map((creation, index) => (
-                    <DocumentCard
+                    <CreationCard
                       key={creation.did || index}
-                      name={creation.name}
-                      description={creation.description}
-                      lastEditDate={creation.last_edit || creation.created_at}
-                      onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${creation.did}`)}
+                      creation={creation}
+                      projectId={project.pid}
                     />
                   ))}
                 </div>
