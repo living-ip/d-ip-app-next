@@ -66,8 +66,8 @@ const ProjectPage = ({ project, documents, creations }) => {
             position: 'relative',
           }}
         >
-          <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="relative z-10 flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full">
+          <div className="absolute inset-0 bg-black opacity-50 rounded-t-3xl"></div>
+          <div className="relative z-10 flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full rounded-t-3xl">
             <div className="flex flex-col w-[73%] max-md:w-full">
               <ProjectHeader projectName={project.name} contributorCount={contributorCount} />
               <ProjectDescription description={project.description} />
