@@ -34,7 +34,7 @@ export function CreationCard({ creation, projectId }) {
         </div>
         <div className="flex flex-col p-4">
           <h3 className="mb-2 text-lg font-medium leading-7 text-neutral-950 line-clamp-1">
-            {creation.name}
+            {creation.title}
           </h3>
           <p className="text-sm leading-5 text-neutral-600 line-clamp-3 max-h-[60px] overflow-hidden">
             {creation.description}
