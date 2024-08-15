@@ -27,7 +27,7 @@ const ProjectDescription = ({ description }) => (
   <p className="mt-3 text-base leading-6 text-white max-md:max-w-full">{description}</p>
 );
 
-const DocumentCards = ({ project, documents }) => {
+const ProjectPage = ({ project, documents }) => {
   // Add prop type checking
   if (!project || !documents) {
     console.error('Missing required props: project or documents');
@@ -98,7 +98,7 @@ const DocumentCards = ({ project, documents }) => {
   );
 };
 
-export default DocumentCards;
+export default ProjectPage;
 
 export const getServerSideProps = async ({ req, query }) => {
   const sessionJWT = req.cookies["x_d_jwt"];
