@@ -59,24 +59,24 @@ export function CreationCard({ creation, projectId }) {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{creation.title}</DialogTitle>
-          </DialogHeader>
-          <div className="w-full h-64 relative mb-4">
+        <DialogContent className="max-w-4xl">
+          <div className="w-full h-80 relative -mt-6 -mx-6 mb-6">
             <Image
-              className="object-cover object-center rounded-lg"
+              className="object-cover object-center"
               src={creation.media_uri || "/default-creation-image.jpg"}
               alt={creation.title}
               fill
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 768px) 100vw, 66vw"
             />
           </div>
-          <DialogDescription>
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{creation.title}</DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-base mt-4">
             {creation.description}
           </DialogDescription>
-          <div className="mt-4 flex justify-end">
-            <Button onClick={submitUserCreation}>Submit Creation</Button>
+          <div className="mt-6 flex justify-end">
+            <Button onClick={submitUserCreation} size="lg">Submit Creation</Button>
           </div>
         </DialogContent>
       </Dialog>
