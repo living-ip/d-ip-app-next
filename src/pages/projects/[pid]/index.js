@@ -13,10 +13,10 @@ const ProjectHeader = ({ projectName, contributorCount }) => {
 
   return (
     <div className="flex gap-3 items-center">
-      <Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid">
-        <IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.push(`/projects`)} />
+      <Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid bg-white">
+        <IoArrowBackOutline className="w-4 h-4 cursor-pointer text-black" onClick={() => router.push(`/projects`)} />
       </Button>
-      <h1 className="text-3xl leading-9 text-neutral-950">{projectName}</h1>
+      <h1 className="text-3xl leading-9 text-white">{projectName}</h1>
       {/*TODO: Ben - uncomment when contributorCount is returned*/}
       {/*<ContributorBadge contributorCount={contributorCount}/>*/}
     </div>
@@ -24,7 +24,7 @@ const ProjectHeader = ({ projectName, contributorCount }) => {
 }
 
 const ProjectDescription = ({ description }) => (
-  <p className="mt-3 text-base leading-6 text-neutral-600 max-md:max-w-full">{description}</p>
+  <p className="mt-3 text-base leading-6 text-white max-md:max-w-full">{description}</p>
 );
 
 const DocumentCards = ({ project, documents }) => {
@@ -47,17 +47,27 @@ const DocumentCards = ({ project, documents }) => {
 
   return (
     <NewLayout>
-      <main className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
-        <section className="flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full">
+      <main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
+        <section 
+          className="flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full px-20 py-8 max-md:px-5"
+          style={{
+            backgroundImage: `url(${project.image_uri})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            position: 'relative',
+          }}
+        >
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="relative z-10 flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full">
           <div className="flex flex-col w-[73%] max-md:w-full">
             <ProjectHeader projectName={project.name} contributorCount={contributorCount} />
             <ProjectDescription description={project.description} />
           </div>
           <div className="flex justify-end items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
-            <Button variant="outline" disabled={true}>
+            <Button variant="outline" disabled={true} className="bg-white text-black">
               Log History
             </Button>
-            <Button onClick={handleCreateNewDocument}>
+            <Button onClick={handleCreateNewDocument} className="bg-white text-black">
               Create New Document
             </Button>
           </div>
