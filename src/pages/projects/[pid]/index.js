@@ -28,6 +28,11 @@ const ProjectDescription = ({ description }) => (
 );
 
 const DocumentCards = ({ project, documents }) => {
+  // Add prop type checking
+  if (!project || !documents) {
+    console.error('Missing required props: project or documents');
+    return null;
+  }
   const router = useRouter();
   const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
     state.userRoles,
