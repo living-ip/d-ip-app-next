@@ -26,7 +26,7 @@ export function CreationCard({ creation, projectId }) {
         <div className="w-full h-48 relative">
           <Image
             className="object-cover object-center"
-            src={creation.image_uri || "/default-creation-image.jpg"}
+            src={creation.media_uri || "/default-creation-image.jpg"}
             alt={creation.name}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
