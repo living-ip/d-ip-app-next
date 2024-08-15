@@ -20,9 +20,9 @@ export function CreationCard({ creation, projectId }) {
   return (
     <div
       onClick={goToCreation}
-      className="flex flex-col w-full h-[360px] cursor-pointer"
+      className="flex flex-col w-full cursor-pointer"
     >
-      <div className="flex flex-col w-full h-full rounded-xl border border-gray-200 border-solid overflow-hidden">
+      <div className="flex flex-col w-full rounded-xl border border-gray-200 border-solid overflow-hidden">
         <div className="w-full h-48 relative">
           <Image
             className="object-cover object-center"
@@ -32,11 +32,11 @@ export function CreationCard({ creation, projectId }) {
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         </div>
-        <div className="flex flex-col p-4 h-[168px]">
+        <div className="flex flex-col p-4">
           <h3 className="mb-2 text-lg font-medium leading-7 text-neutral-950 line-clamp-1">
             {creation.name}
           </h3>
-          <p className="text-sm leading-5 text-neutral-600 line-clamp-4">
+          <p className="text-sm leading-5 text-neutral-600 line-clamp-3 max-h-[60px] overflow-hidden">
             {creation.description}
           </p>
         </div>
