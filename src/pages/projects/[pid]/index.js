@@ -58,7 +58,7 @@ const ProjectPage = ({ project, documents, creations }) => {
     <NewLayout>
       <main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
         <section
-          className="flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full px-20 py-8 max-md:px-5"
+          className="flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full px-20 py-8 max-md:px-5 rounded-t-3xl"
           style={{
             backgroundImage: `url(${project.image_uri})`,
             backgroundSize: 'cover',
