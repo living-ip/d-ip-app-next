@@ -33,7 +33,6 @@ export default function App({ Component, pageProps }) {
 
   const setAuthCookie = useCallback(async (token) => {
     try {
-      console.log('Setting auth cookie with token:', token);
       const response = await fetch('/api/set-auth-cookie', {
         method: 'POST',
         headers: {

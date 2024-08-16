@@ -13,15 +13,20 @@ export function NewNavBar() {
 	const router = useRouter();
 	const [userRoles, currentProject, userProfile] = useStore((state) => [state.userRoles, state.currentProject, state.userProfile]);
 	const {isAuthenticated, handleLogOut, setShowAuthFlow} = useDynamicContext();
+	const [auth, setAuth] = useState(isAuthenticated);
 	const [isMobile, setIsMobile] = useState(false);
 
 	const initials = userProfile?.name?.split(' ').map((n) => n[0]).join('') || "LIP";
 
-	const homeHandler = () => router.push(isAuthenticated ? "/projects" : "/");
+	const homeHandler = () => router.push(auth ? "/projects" : "/");
 
 	const isAdmin = userProfile?.email === "dan@sibylline.xyz" || userProfile?.email === "m3taversal@gmail.com";
 
 	const canAccessAdminPanel = userRoles.some((role) => role.project === currentProject && role.role.access_admin_panel);
+
+	useEffect(() => {
+		setAuth(isAuthenticated);
+	}, [isAuthenticated]);
 
 	useEffect(() => {
 		const checkScreenSize = () => {
@@ -73,7 +78,7 @@ export function NewNavBar() {
 								</NavigationMenuItem>
 							))}
 							{
-								isAuthenticated ? (
+								auth ? (
 									<NavigationMenuItem>
 										<DropdownMenu>
 											<DropdownMenuTrigger asChild>
@@ -109,7 +114,9 @@ export function NewNavBar() {
 										</DropdownMenu>
 									</NavigationMenuItem>
 								) : (
-									<Button onClick={() => {setShowAuthFlow(true)}}>Log In</Button>
+									<Button onClick={() => {
+										setShowAuthFlow(true)
+									}}>Log In</Button>
 								)
 							}
 

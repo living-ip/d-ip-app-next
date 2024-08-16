@@ -77,7 +77,7 @@ export function CreationCard({ creation, projectId }) {
               {creation.description}
             </DialogDescription>
             <div className="mt-6 flex justify-end">
-              <Button onClick={submitUserCreation} size="lg">Submit Creation</Button>
+              <Button onClick={submitUserCreation} size="lg">Submit Yours</Button>
             </div>
           </div>
         </DialogContent>
