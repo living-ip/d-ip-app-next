@@ -4,12 +4,17 @@ import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useCallback, useEffect } from "react";
 import { debounce } from "lodash";
+import {updateSubmissionContent} from "@/lib/creations";
+import {useRouter} from "next/router";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core"
 
-export default function Editor({ creation }) {
+export default function Editor({ creation, content }) {
+	const router = useRouter()
+
 	let blocks;
-	if (creation.content) {
+	if (content) {
 		try {
-			blocks = JSON.parse(creation.content);
+			blocks = JSON.parse(content)
 		} catch (error) {
 			console.error("Failed to parse note content:", error);
 		}
@@ -22,7 +27,7 @@ export default function Editor({ creation }) {
 	const saveNote = useCallback(
 		debounce(async (content) => {
 			try {
-				// await updateNote(note.rid, { content });
+				await updateSubmissionContent(router.query.pid, router.query.creid, creation.ucid, content, getAuthToken());
 				console.log("Note saved:", content);
 			} catch (error) {
 				console.error("Failed to save note:", error);

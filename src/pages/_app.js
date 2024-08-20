@@ -47,7 +47,6 @@ export default function App({ Component, pageProps }) {
         console.log('Cookie set successfully');
         const responseData = await response.json();
         console.log('Server response:', responseData);
-        router.push("/projects")
       } else {
         console.error('Failed to set cookie. Status:', response.status);
         const errorData = await response.text();

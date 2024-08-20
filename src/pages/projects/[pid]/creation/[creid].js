@@ -1,12 +1,11 @@
 import {useRouter} from "next/router";
 import {Button} from "@/components/ui/button";
 import {getUserProfile} from "@/lib/user";
-import {getProject, getProjectDocuments} from "@/lib/project";
+import {getProject} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {IoArrowBackOutline} from "react-icons/io5";
 import {NewLayout} from "@/components/NewLayout";
-import {getProjectCreation, getProjectCreations} from "@/lib/creations";
-import {Card, CardDescription, CardHeader} from "@/components/ui/card";
+import {createSubmission, getProjectCreation, getUserSubmission} from "@/lib/creations";
 import dynamic from "next/dynamic";
 
 const Editor = dynamic(() => import("@/components/editor/Editor"), {ssr: false});
@@ -28,13 +27,7 @@ const CreationRequestHeader = ({creationRequest}) => {
 	);
 };
 
-const CreationRequestPage = ({creationRequest}) => {
-	const router = useRouter();
-	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
-		state.userRoles,
-		state.setInvalidPermissionsDialogOpen
-	]);
-
+const CreationRequestPage = ({creationRequest, submission, content}) => {
 	return (
 		<NewLayout>
 			<main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
@@ -59,7 +52,7 @@ const CreationRequestPage = ({creationRequest}) => {
 				<article className="mt-6 max-md:max-w-full p-4">
 					<div className="flex flex-row gap-4">
 						<div className="flex flex-col w-full">
-							<Editor creation={{}}/>
+							<Editor creation={submission} content={content}/>
 						</div>
 					</div>
 				</article>
@@ -92,18 +85,35 @@ export const getServerSideProps = async ({req, query}) => {
 			},
 		};
 	}
-	const [creation] = await Promise.all([
-		getProjectCreation(project.pid, creid)
+	let [creation, submission] = await Promise.all([
+		getProjectCreation(project.pid, creid),
+		getUserSubmission(project.pid, creid, sessionJWT),
 	])
 	const zustandServerStore = initializeStore({
 		userProfile,
 		userRoles: roles,
 		currentProject: pid,
 	});
-	return {
-		props: {
-			creationRequest: creation.creation,
-			initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
-		},
-	};
+	if (submission.submission) {
+		const bucketData = await fetch(submission.submission.uri);
+		const content = await bucketData.text();
+		return {
+			props: {
+				creationRequest: creation.creation,
+				submission: submission.submission || {},
+				content: content || "",
+				initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
+			},
+		};
+	} else {
+		submission = await createSubmission(project.pid, creid, sessionJWT);
+		return {
+			props: {
+				creationRequest: creation.creation,
+				submission: submission.submission || {},
+				content: "",
+				initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
+			},
+		};
+	}
 };
