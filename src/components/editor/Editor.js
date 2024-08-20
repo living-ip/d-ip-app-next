@@ -4,12 +4,17 @@ import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useCallback, useEffect } from "react";
 import { debounce } from "lodash";
-import {updateSubmissionContent} from "@/lib/creations";
+import {updateSubmissionContent, uploadEditorDoc} from "@/lib/creations";
 import {useRouter} from "next/router";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core"
 
 export default function Editor({ creation, content }) {
 	const router = useRouter()
+
+	const uploadFileHandler = async (file) => {
+		const r = await uploadEditorDoc(router.query.pid, router.query.creid, creation.ucid, file, getAuthToken());
+		return r.uri || "";
+	}
 
 	let blocks;
 	if (content) {
@@ -21,7 +26,7 @@ export default function Editor({ creation, content }) {
 	}
 	const editor = useCreateBlockNote({
 		initialContent: blocks,
-		//   TODO add upload file func
+		uploadFile: uploadFileHandler
 	});
 
 	const saveNote = useCallback(

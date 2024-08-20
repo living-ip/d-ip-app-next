@@ -81,3 +81,21 @@ export async function updateSubmissionContent(pid, creid, ucid, content, jwt) {
   }
   return response;
 }
+
+export async function uploadEditorDoc(pid, creid, ucid, file, jwt){
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/${creid}/submission/${ucid}/file`);
+    const func = () => fetch(url, {
+        method: "POST",
+        headers: {
+            "x-lip-d-jwt": jwt,
+        },
+        body: formData
+    });
+    const response = await doApiCall(func, {});
+    if (response instanceof Response) {
+        return await response.json();
+    }
+    return response;
+}
