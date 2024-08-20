@@ -1,10 +1,11 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useRouter } from "next/router";
 import { useStore } from "@/lib/store";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 
 export function CreationCard({ creation, projectId }) {
   const router = useRouter();
@@ -15,6 +16,11 @@ export function CreationCard({ creation, projectId }) {
   ]);
 
   const {isAuthenticated, setShowAuthFlow} = useDynamicContext()
+  const [auth, setAuth] = useState(isAuthenticated)
+
+  useEffect(() => {
+    setAuth(isAuthenticated)
+  }, [isAuthenticated]);
 
   const openDialog = () => {
     setIsDialogOpen(true);
@@ -81,8 +87,12 @@ export function CreationCard({ creation, projectId }) {
             </DialogDescription>
             <div className="mt-6 flex justify-end">
               {
-                isAuthenticated ? (
-                  <Button onClick={submitUserCreation} size="lg">Submit Yours</Button>
+                auth ? (
+                    <>
+                      <Button onClick={submitUserCreation} size="lg">Submit Yours</Button>
+
+                    </>
+
                   ) : (
                   <Button onClick={() => {setShowAuthFlow(true)}}>Sign in to submit</Button>
                 )
