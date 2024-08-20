@@ -10,7 +10,7 @@ export default function Component() {
   const [description, setDescription] = useState('')
   const [image, setImage] = useState<File | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     // Here you would typically send the data to your backend
     console.log({ title, description, image })
