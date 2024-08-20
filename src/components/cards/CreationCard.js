@@ -4,6 +4,7 @@ import { useStore } from "@/lib/store";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
 
 export function CreationCard({ creation, projectId }) {
   const router = useRouter();
@@ -12,6 +13,8 @@ export function CreationCard({ creation, projectId }) {
     state.userRoles,
     state.setInvalidPermissionsDialogOpen,
   ]);
+
+  const {isAuthenticated, setShowAuthFlow} = useDynamicContext()
 
   const openDialog = () => {
     setIsDialogOpen(true);
@@ -77,7 +80,13 @@ export function CreationCard({ creation, projectId }) {
               {creation.description}
             </DialogDescription>
             <div className="mt-6 flex justify-end">
-              <Button onClick={submitUserCreation} size="lg">Submit Yours</Button>
+              {
+                isAuthenticated ? (
+                  <Button onClick={submitUserCreation} size="lg">Submit Yours</Button>
+                  ) : (
+                  <Button onClick={() => {setShowAuthFlow(true)}}>Sign in to submit</Button>
+                )
+              }
             </div>
           </div>
         </DialogContent>

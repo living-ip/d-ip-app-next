@@ -8,6 +8,7 @@ import { DocumentCard } from "@/components/cards/DocumentCard";
 import { CreationCard } from "@/components/cards/CreationCard";
 import { NewLayout } from "@/components/NewLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {getProjectCreations} from "@/lib/creations";
 
 const ProjectHeader = ({ projectName, contributorCount }) => {
   const router = useRouter();
@@ -174,7 +175,10 @@ export const getServerSideProps = async ({ req, query }) => {
       },
     };
   }
-  const documents = await getProjectDocuments(project.pid, sessionJWT);
+  const [documents, creations] = await Promise.all([
+      getProjectDocuments(project.pid, sessionJWT),
+      getProjectCreations(project.pid)
+  ])
   const zustandServerStore = initializeStore({
     userProfile,
     userRoles: roles,
@@ -184,11 +188,7 @@ export const getServerSideProps = async ({ req, query }) => {
     props: {
       project: project,
       documents: documents,
-      creations: [{
-        title: "Creation contest 1",
-        description: "This is a description for creation contest 1",
-        media_uri: "https://storage.googleapis.com/livingip-cdn/fa6bc265-fc63-43eb-836e-e3d7921df503-mr_bush.png"
-      }],  // TODO implement backend.
+      creations: creations.creations,
       initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
     },
   };
