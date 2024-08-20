@@ -1,4 +1,7 @@
 import '@/styles/globals.css'
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/shadcn/style.css";
+
 import { createStytchUIClient } from '@stytch/nextjs/ui'
 import { StytchProvider } from '@stytch/nextjs'
 import { DynamicContextProvider, getAuthToken } from "@dynamic-labs/sdk-react-core";

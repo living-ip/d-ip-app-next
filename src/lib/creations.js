@@ -15,3 +15,18 @@ export async function getProjectCreations(pid) {
   }
   return response;
 }
+
+export async function getProjectCreation(pid, creid) {
+  const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/${creid}/`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await doApiCall(func, {creation: {}});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}

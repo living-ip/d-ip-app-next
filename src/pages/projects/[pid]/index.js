@@ -23,8 +23,6 @@ const ProjectHeader = ({ projectName, contributorCount }) => {
         <IoArrowBackOutline className="w-4 h-4 cursor-pointer text-black" />
       </Button>
       <h1 className="text-3xl leading-9 text-white">{projectName}</h1>
-      {/*TODO: Ben - uncomment when contributorCount is returned*/}
-      {/*<ContributorBadge contributorCount={contributorCount}/>*/}
     </div>
   );
 };
