@@ -1,6 +1,7 @@
 import { LIP_API_BASE } from "./constants";
 import { doApiCall } from "./api";
 import * as changeKeys from "change-case/keys";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export async function getProjectCreations(pid) {
   const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/`);
@@ -74,6 +75,23 @@ export async function updateSubmissionContent(pid, creid, ucid, content, jwt) {
       "x-lip-d-jwt": jwt,
     },
     body: JSON.stringify({content}),
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+export async function submitUserCreation(pid, creid, ucid) {
+  const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/${creid}/submission/${ucid}/`);
+  const func = () => fetch(url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": getAuthToken(),
+    },
+    body: JSON.stringify({submit: true}),
   });
   const response = await doApiCall(func, {});
   if (response instanceof Response) {

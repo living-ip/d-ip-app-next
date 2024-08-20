@@ -5,7 +5,7 @@ import {getProject} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {IoArrowBackOutline} from "react-icons/io5";
 import {NewLayout} from "@/components/NewLayout";
-import {createSubmission, getProjectCreation, getUserSubmission} from "@/lib/creations";
+import {createSubmission, getProjectCreation, getUserSubmission, submitUserCreation} from "@/lib/creations";
 import dynamic from "next/dynamic";
 
 const Editor = dynamic(() => import("@/components/editor/Editor"), {ssr: false});
@@ -28,6 +28,14 @@ const CreationRequestHeader = ({creationRequest}) => {
 };
 
 const CreationRequestPage = ({creationRequest, submission, content}) => {
+	const router = useRouter()
+
+	const handleSubmit = () => {
+		submitUserCreation(router.query.pid, router.query.creid, submission.ucid).then(() => {
+			router.push(`/projects/${router.query.pid}/creation/${router.query.creid}`);
+		});
+	}
+
 	return (
 		<NewLayout>
 			<main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
@@ -46,6 +54,11 @@ const CreationRequestPage = ({creationRequest, submission, content}) => {
 						<div className="flex flex-col w-[73%] max-md:w-full">
 							<CreationRequestHeader creationRequest={creationRequest}/>
 							<p className="mt-3 text-base leading-6 text-white max-md:max-w-full">{creationRequest.description}</p>
+						</div>
+						<div className="flex justify-end items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
+							<Button onClick={handleSubmit}>
+								Submit Creation
+							</Button>
 						</div>
 					</div>
 				</section>
