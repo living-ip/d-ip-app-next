@@ -57,6 +57,7 @@
     "cookies-next": "^4.0.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
+    "framer-motion": "^11.3.29",
     "gitdiff-parser": "^0.3.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.277.0",
