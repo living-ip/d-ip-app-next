@@ -155,7 +155,7 @@ export default function CreationsVotingDialog({children, campaign}) {
 								<Card className="w-full">
 									<CardContent className="p-0 w-full">
 										<BlockNoteContent content={proposals[currentProposal].content}/>
-										<div className="flex justify-center space-x-4 mt-4 w-full"> {/* Added w-full */}
+										<div className="flex justify-center space-x-4 mt-4 w-full p-6 pb-8"> {/* Added padding */}
 											<Button variant="outline" size="icon" onClick={handleReject}>
 												<XIcon className="h-4 w-4"/>
 											</Button>
