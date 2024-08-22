@@ -8,7 +8,7 @@ import {DocumentCard} from "@/components/cards/DocumentCard";
 import {CreationCard} from "@/components/cards/CreationCard";
 import {NewLayout} from "@/components/NewLayout";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
-import {getProjectCreations} from "@/lib/creations";
+import {getCreationsCampaigns, getProjectCreations} from "@/lib/creations";
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog";
 
 const ProjectHeader = ({projectName, contributorCount}) => {
@@ -32,7 +32,7 @@ const ProjectDescription = ({description}) => (
 	<p className="mt-3 text-base leading-6 text-white max-md:max-w-full">{description}</p>
 );
 
-const ProjectPage = ({project, documents, creations}) => {
+const ProjectPage = ({project, documents, creations, campaigns}) => {
 	const router = useRouter();
 	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
 		state.userRoles,
@@ -75,9 +75,9 @@ const ProjectPage = ({project, documents, creations}) => {
 							<ProjectDescription description={project.description}/>
 						</div>
 						<div className="flex justify-end items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
-							<CreationsVotingDialog>
+							<CreationsVotingDialog campaign={campaigns[0]}>
 								<Button variant="outline" className="bg-white text-black">
-									Vote
+									{campaigns.length} Votes
 								</Button>
 							</CreationsVotingDialog>
 							<Button onClick={handleCreateNewDocument}>
@@ -177,9 +177,10 @@ export const getServerSideProps = async ({req, query}) => {
 			},
 		};
 	}
-	const [documents, creations] = await Promise.all([
+	const [documents, creations, campaigns] = await Promise.all([
 		getProjectDocuments(project.pid, sessionJWT),
-		getProjectCreations(project.pid)
+		getProjectCreations(project.pid),
+		getCreationsCampaigns(project.pid)
 	])
 	const zustandServerStore = initializeStore({
 		userProfile,
@@ -191,6 +192,7 @@ export const getServerSideProps = async ({req, query}) => {
 			project: project,
 			documents: documents,
 			creations: creations.creations,
+			campaigns: campaigns.campaigns,
 			initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
 		},
 	};

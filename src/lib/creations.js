@@ -1,6 +1,5 @@
 import { LIP_API_BASE } from "./constants";
 import { doApiCall } from "./api";
-import * as changeKeys from "change-case/keys";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export async function getProjectCreations(pid) {
@@ -117,3 +116,35 @@ export async function uploadEditorDoc(pid, creid, ucid, file, jwt){
     }
     return response;
 }
+
+export async function getCreationsCampaigns(pid, active=true) {
+  const url = new URL(`${LIP_API_BASE}/project/${pid}/campaign/?active=${active}`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await doApiCall(func, {campaigns: []});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+
+export async function getVotingCampaign(pid, cvcid) {
+  const url = new URL(`${LIP_API_BASE}/project/${pid}/campaign/${cvcid}/`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const response = await doApiCall(func, {campaigns: []});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
