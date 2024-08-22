@@ -7,28 +7,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { XIcon, HeartIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-// Sample art proposals data with longer descriptions
-const artProposals = [
-  {
-    id: 1,
-    title: "Neon Cityscape",
-    description: "A vibrant, futuristic cityscape with neon lights and flying cars. The artwork captures the essence of a bustling metropolis in the year 2150, where towering skyscrapers reach into the clouds and holographic advertisements illuminate the night sky. Sleek vehicles zoom between buildings, showcasing advanced transportation systems. The piece explores themes of technological progress, urban development, and the blending of natural and artificial light in future cityscapes.",
-    image: "/placeholder.svg?height=400&width=600"
-  },
-  {
-    id: 2,
-    title: "Serene Forest",
-    description: "A peaceful forest scene with sunlight filtering through the trees. This artwork transports viewers to a lush, ancient woodland untouched by human influence. Rays of golden sunlight pierce through the dense canopy, creating a magical interplay of light and shadow on the forest floor. The piece captures the intricate details of moss-covered rocks, delicate ferns, and the rich textures of tree bark. It invites contemplation on the beauty of nature and the importance of preserving our planet's ecosystems.",
-    image: "/placeholder.svg?height=400&width=600"
-  },
-  {
-    id: 3,
-    title: "Abstract Emotions",
-    description: "An abstract representation of human emotions using bold colors and shapes. This piece delves into the complex world of human feelings, using a vibrant palette and dynamic forms to evoke various emotional states. Swirling patterns in warm reds and oranges might represent passion or anger, while cool blues and greens could signify calmness or melancholy. The artwork challenges viewers to explore their own emotional landscapes and consider how colors and shapes can convey feelings beyond words.",
-    image: "/placeholder.svg?height=400&width=600"
-  },
-]
-
 const variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
@@ -58,7 +36,8 @@ const truncateText = (text, maxLength) => {
   return text.substr(0, maxLength).trim() + '...';
 };
 
-export default function CreationsVotingDialog({ children }) {
+export default function CreationsVotingDialog({ children, campaigns }) {
+  console.log(campaigns)
   const [currentProposal, setCurrentProposal] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const [matches, setMatches] = useState([])
@@ -66,16 +45,16 @@ export default function CreationsVotingDialog({ children }) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const paginate = (newDirection) => {
-    if (currentProposal + newDirection >= 0 && currentProposal + newDirection < artProposals.length) {
+    if (currentProposal + newDirection >= 0 && currentProposal + newDirection < campaigns.length) {
       setCurrentProposal(currentProposal + newDirection)
       setIsExpanded(false) // Reset expanded state when changing proposals
     } else {
-      setCurrentProposal(artProposals.length) // Move to summary
+      setCurrentProposal(campaigns.length) // Move to summary
     }
   }
 
   const handleAccept = () => {
-    setMatches([...matches, artProposals[currentProposal].id])
+    setMatches([...matches, campaigns[currentProposal].id])
     paginate(1)
   }
 
@@ -115,7 +94,7 @@ export default function CreationsVotingDialog({ children }) {
           <AnimatePresence mode="wait">
             {!hasStartedVoting ? (
               <ExplanationScreen key="explanation" onBegin={handleBeginVoting} />
-            ) : currentProposal < artProposals.length ? (
+            ) : currentProposal < campaigns.length ? (
               <motion.div
                 key={currentProposal}
                 variants={variants}
@@ -128,12 +107,12 @@ export default function CreationsVotingDialog({ children }) {
                 <Card className="w-full"> {/* Added w-full */}
                   <CardContent className="p-0 w-full"> {/* Added w-full, removed padding */}
                     <img
-                      src={artProposals[currentProposal].image}
-                      alt={artProposals[currentProposal].title}
+                      src={campaigns[currentProposal].image}
+                      alt={campaigns[currentProposal].title}
                       className="w-full h-64 object-cover"
                     />
                     <div className="p-4 w-full"> {/* Added w-full */}
-                      <h3 className="text-lg font-semibold mb-2">{artProposals[currentProposal].title}</h3>
+                      <h3 className="text-lg font-semibold mb-2">{campaigns[currentProposal].title}</h3>
                       <motion.div
                         initial={{ height: 'auto' }}
                         animate={{ height: isExpanded ? 'auto' : '4.5em' }}
@@ -142,11 +121,11 @@ export default function CreationsVotingDialog({ children }) {
                       >
                         <p className="text-sm text-muted-foreground mb-2">
                           {isExpanded
-                            ? artProposals[currentProposal].description
-                            : truncateText(artProposals[currentProposal].description, 150)}
+                            ? campaigns[currentProposal].description
+                            : truncateText(campaigns[currentProposal].description, 150)}
                         </p>
                       </motion.div>
-                      {artProposals[currentProposal].description.length > 150 && (
+                      {campaigns[currentProposal].description.length > 150 && (
                         <Button
                           variant="ghost"
                           size="sm"
