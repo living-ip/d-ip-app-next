@@ -47,16 +47,23 @@ const ExplanationScreen = ({onBegin, campaign}) => (
 
 const BlockNoteContent = ({content}) => {
 	const editor = useCreateBlockNote({
-		initialContent: JSON.parse(content)
-	})
-	editor.blocksToMarkdownLossy().then(md => {
-		console.log(md);
-		return (
-			<div className="prose-sm prose max-w-none">
-				<ReactMarkdown className="text-black">{md}</ReactMarkdown>
-			</div>
-		)
-	})
+		initialContent: JSON.parse(content),
+		editable: false
+	});
+
+	const [markdown, setMarkdown] = useState('');
+
+	useEffect(() => {
+		editor.blocksToMarkdownLossy().then(md => {
+			setMarkdown(md);
+		});
+	}, [editor]);
+
+	return (
+		<div className="prose-sm prose max-w-none">
+			<ReactMarkdown className="text-black">{markdown}</ReactMarkdown>
+		</div>
+	);
 };
 
 export default function CreationsVotingDialog({children, campaign}) {
