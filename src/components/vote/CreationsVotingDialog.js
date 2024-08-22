@@ -133,9 +133,9 @@ export default function CreationsVotingDialog({children, campaign}) {
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle>Future Art Challenge</DialogTitle>
+					<DialogTitle>{campaign.creation_request.title}</DialogTitle>
 					<DialogDescription>
-						Explore and vote on futuristic art proposals.
+						{campaign.creation_request.description}
 					</DialogDescription>
 				</DialogHeader>
 				<div className="relative w-full">
