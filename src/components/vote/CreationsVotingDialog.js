@@ -60,8 +60,8 @@ const BlockNoteContent = ({content}) => {
 	}, [editor]);
 
 	return (
-		<div className="prose-sm prose max-w-none">
-			<ReactMarkdown className="text-black">{markdown}</ReactMarkdown>
+		<div className="prose prose-sm max-w-none p-6">
+			<ReactMarkdown className="text-black space-y-4">{markdown}</ReactMarkdown>
 		</div>
 	);
 };
