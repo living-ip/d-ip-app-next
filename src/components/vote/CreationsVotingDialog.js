@@ -8,7 +8,8 @@ import { XIcon, HeartIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getVotingCampaign } from '@/lib/creations'
 import ReactMarkdown from 'react-markdown'
-import { BlockNoteView, useBlockNote } from "@blocknote/react"
+import { useCreateBlockNote} from "@blocknote/react"
+import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/core/style.css"
 
 const variants = {
@@ -38,21 +39,23 @@ const ExplanationScreen = ({ onBegin, campaign }) => (
   </motion.div>
 );
 
-const truncateText = (text, maxLength) => {
-  if (text.length <= maxLength) return text;
-  return text.substr(0, maxLength).trim() + '...';
-};
-
 const BlockNoteContent = ({ content }) => {
-  const editor = useBlockNote({
+  const editor = useCreateBlockNote({
     editable: false,
     initialContent: JSON.parse(content),
   });
+  editor.blocksToMarkdownLossy(editor.document).then(blocks => {
+    return (
+        <div className="prose-sm prose">
+          <ReactMarkdown className="text-black">{content}</ReactMarkdown>
+        </div>
+    )
+  });
 
-  return <BlockNoteView editor={editor} />;
+  // return <BlockNoteView editor={editor} />;
 };
 
-export default function CreationsVotingDialog({ children, campaign }) {
+export default function CreationsVotingDialog({children, campaign }) {
   const [currentProposal, setCurrentProposal] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const [matches, setMatches] = useState([])
@@ -67,7 +70,7 @@ export default function CreationsVotingDialog({ children, campaign }) {
           if (response.entries) {
             const proposalsWithContent = await Promise.all(response.entries.map(async entry => {
               const contentResponse = await fetch(entry.user_creation.uri);
-              const contentJson = await contentResponse.json();
+              const contentJson = await contentResponse.text();
               return { ...entry, content: contentJson };
             }));
             setProposals(proposalsWithContent);
@@ -140,47 +143,7 @@ export default function CreationsVotingDialog({ children, campaign }) {
               >
                 <Card className="w-full">
                   <CardContent className="p-0 w-full">
-                    <img
-                      src={proposals[currentProposal].image}
-                      alt={proposals[currentProposal].title}
-                      className="w-full h-64 object-cover"
-                    />
-                    <div className="p-4 w-full">
-                      <h3 className="text-lg font-semibold mb-2">{proposals[currentProposal].title}</h3>
-                      <motion.div
-                        initial={{ height: 'auto' }}
-                        animate={{ height: isExpanded ? 'auto' : '4.5em' }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden w-full"
-                      >
-                        {proposals[currentProposal].content ? (
-                          <BlockNoteContent content={proposals[currentProposal].content} />
-                        ) : (
-                          <ReactMarkdown className="text-sm text-muted-foreground mb-2">
-                            {isExpanded
-                              ? proposals[currentProposal].description
-                              : truncateText(proposals[currentProposal].description, 150)}
-                          </ReactMarkdown>
-                        )}
-                      </motion.div>
-                      {(proposals[currentProposal].description.length > 150 || proposals[currentProposal].content) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={toggleExpanded}
-                          className="p-0 h-auto font-normal"
-                        >
-                          {isExpanded ? (
-                            <>
-                              Read less <ChevronUpIcon className="ml-1 h-4 w-4" />
-                            </>
-                          ) : (
-                            <>
-                              Read more <ChevronDownIcon className="ml-1 h-4 w-4" />
-                            </>
-                          )}
-                        </Button>
-                      )}
+                      <BlockNoteContent content={proposals[currentProposal].content} />
                       <div className="flex justify-center space-x-4 mt-4 w-full"> {/* Added w-full */}
                         <Button variant="outline" size="icon" onClick={handleReject}>
                           <XIcon className="h-4 w-4" />
@@ -189,7 +152,6 @@ export default function CreationsVotingDialog({ children, campaign }) {
                           <HeartIcon className="h-4 w-4" />
                         </Button>
                       </div>
-                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
