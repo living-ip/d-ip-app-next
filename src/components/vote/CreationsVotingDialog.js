@@ -40,19 +40,11 @@ const ExplanationScreen = ({ onBegin, campaign }) => (
 );
 
 const BlockNoteContent = ({ content }) => {
-  const editor = useCreateBlockNote({
-    editable: false,
-    initialContent: JSON.parse(content),
-  });
-  editor.blocksToMarkdownLossy(editor.document).then(blocks => {
-    return (
-        <div className="prose-sm prose">
-          <ReactMarkdown className="text-black">{content}</ReactMarkdown>
-        </div>
-    )
-  });
-
-  // return <BlockNoteView editor={editor} />;
+  return (
+    <div className="prose-sm prose max-w-none">
+      <ReactMarkdown className="text-black">{content}</ReactMarkdown>
+    </div>
+  );
 };
 
 export default function CreationsVotingDialog({children, campaign }) {
@@ -70,8 +62,8 @@ export default function CreationsVotingDialog({children, campaign }) {
           if (response.entries) {
             const proposalsWithContent = await Promise.all(response.entries.map(async entry => {
               const contentResponse = await fetch(entry.user_creation.uri);
-              const contentJson = await contentResponse.text();
-              return { ...entry, content: contentJson };
+              const contentJson = await contentResponse.json();
+              return { ...entry, content: contentJson.content };
             }));
             setProposals(proposalsWithContent);
           }
