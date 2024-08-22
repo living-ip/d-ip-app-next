@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { XIcon, HeartIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getVotingCampaign} from '@/lib/creations'
+import { getVotingCampaign } from '@/lib/creations'
+import ReactMarkdown from 'react-markdown'
+import { BlockNoteView, useBlockNote } from "@blocknote/react"
+import "@blocknote/core/style.css"
 
 const variants = {
   hidden: { opacity: 0 },
@@ -40,6 +43,15 @@ const truncateText = (text, maxLength) => {
   return text.substr(0, maxLength).trim() + '...';
 };
 
+const BlockNoteContent = ({ content }) => {
+  const editor = useBlockNote({
+    editable: false,
+    initialContent: JSON.parse(content),
+  });
+
+  return <BlockNoteView editor={editor} />;
+};
+
 export default function CreationsVotingDialog({ children, campaign }) {
   const [currentProposal, setCurrentProposal] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
@@ -51,10 +63,14 @@ export default function CreationsVotingDialog({ children, campaign }) {
   useEffect(() => {
     if (isOpen && campaign) {
       getVotingCampaign(campaign.creation_request.project_id, campaign.campaign.cvcid)
-        .then(response => {
+        .then(async response => {
           if (response.entries) {
-            console.log(response.entries)
-            setProposals(response.entries)
+            const proposalsWithContent = await Promise.all(response.entries.map(async entry => {
+              const contentResponse = await fetch(entry.user_creation.uri);
+              const contentJson = await contentResponse.json();
+              return { ...entry, content: contentJson };
+            }));
+            setProposals(proposalsWithContent);
           }
         })
         .catch(error => console.error('Error fetching creations:', error))
@@ -137,13 +153,17 @@ export default function CreationsVotingDialog({ children, campaign }) {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden w-full"
                       >
-                        <p className="text-sm text-muted-foreground mb-2">
-                          {isExpanded
-                            ? proposals[currentProposal].description
-                            : truncateText(proposals[currentProposal].description, 150)}
-                        </p>
+                        {proposals[currentProposal].content ? (
+                          <BlockNoteContent content={proposals[currentProposal].content} />
+                        ) : (
+                          <ReactMarkdown className="text-sm text-muted-foreground mb-2">
+                            {isExpanded
+                              ? proposals[currentProposal].description
+                              : truncateText(proposals[currentProposal].description, 150)}
+                          </ReactMarkdown>
+                        )}
                       </motion.div>
-                      {proposals[currentProposal].description.length > 150 && (
+                      {(proposals[currentProposal].description.length > 150 || proposals[currentProposal].content) && (
                         <Button
                           variant="ghost"
                           size="sm"
