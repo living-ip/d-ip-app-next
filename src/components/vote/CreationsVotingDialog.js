@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { XIcon, HeartIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getProjectCreations } from '@/lib/creations'
+import { getVotingCampaign} from '@/lib/creations'
 
 const variants = {
   hidden: { opacity: 0 },
@@ -50,10 +50,11 @@ export default function CreationsVotingDialog({ children, campaign }) {
 
   useEffect(() => {
     if (isOpen && campaign) {
-      getProjectCreations(campaign.cvcid)
+      getVotingCampaign(campaign.creation_request.project_id, campaign.campaign.cvcid)
         .then(response => {
-          if (response.creations) {
-            setProposals(response.creations)
+          if (response.entries) {
+            console.log(response.entries)
+            setProposals(response.entries)
           }
         })
         .catch(error => console.error('Error fetching creations:', error))
