@@ -13,7 +13,7 @@ import {Button} from "@/components/ui/button"
 import {Card, CardContent} from "@/components/ui/card"
 import {HeartIcon, XIcon} from 'lucide-react'
 import {AnimatePresence, motion} from 'framer-motion'
-import {getVotingCampaign} from '@/lib/creations'
+import {getVotingCampaign, voteOnEntry} from '@/lib/creations'
 import ReactMarkdown from 'react-markdown'
 import {useCreateBlockNote} from "@blocknote/react"
 import "@blocknote/core/style.css"
@@ -100,14 +100,26 @@ export default function CreationsVotingDialog({children, campaign}) {
 		}
 	}
 
-	const handleAccept = () => {
-		setMatches([...matches, proposals[currentProposal].id])
-		paginate(1)
+	const handleVote = async (vote) => {
+		try {
+			await voteOnEntry(
+				campaign.creation_request.project_id,
+				campaign.campaign.cvcid,
+				proposals[currentProposal].id,
+				vote
+			);
+			if (vote === 1) {
+				setMatches([...matches, proposals[currentProposal].id]);
+			}
+			paginate(1);
+		} catch (error) {
+			console.error('Error voting:', error);
+			// You might want to add some user feedback here
+		}
 	}
 
-	const handleReject = () => {
-		paginate(1)
-	}
+	const handleAccept = () => handleVote(1);
+	const handleReject = () => handleVote(0);
 
 	const handleBeginVoting = () => {
 		setHasStartedVoting(true)
