@@ -148,3 +148,20 @@ export async function getVotingCampaign(pid, cvcid) {
   return response;
 }
 
+
+export async function voteOnEntry(pid, cvcid, cveid, vote) {
+  const url = new URL(`${LIP_API_BASE}/project/${pid}/campaign/${cvcid}/entry/${cveid}`);
+  const func = () => fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": getAuthToken(),
+    },
+    body: JSON.stringify({vote}),
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}

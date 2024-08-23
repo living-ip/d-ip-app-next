@@ -102,15 +102,16 @@ export default function CreationsVotingDialog({children, campaign}) {
 
 	const handleVote = async (vote) => {
 		try {
-			const currentProposal = proposals[currentProposal];
+			const p = proposals[currentProposal];
+			console.log('Voting for:', p);
 			await voteOnEntry(
 				campaign.creation_request.project_id,
 				campaign.campaign.cvcid,
-				currentProposal.id,
+				p.entry.cveid,
 				vote
 			);
 			if (vote === 1) {
-				setMatches([...matches, currentProposal.id]);
+				setMatches([...matches, currentProposal.cveid]);
 			}
 			paginate(1);
 		} catch (error) {
