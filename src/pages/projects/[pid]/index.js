@@ -179,8 +179,8 @@ export const getServerSideProps = async ({req, query}) => {
 	}
 	const [documents, creations, campaigns] = await Promise.all([
 		getProjectDocuments(project.pid, sessionJWT),
-		getProjectCreations(project.pid),
-		getCreationsCampaigns(project.pid)
+		getProjectCreations(project.pid, sessionJWT),
+		getCreationsCampaigns(project.pid, sessionJWT)
 	])
 	const zustandServerStore = initializeStore({
 		userProfile,
