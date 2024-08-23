@@ -105,7 +105,7 @@ export default function CreationsVotingDialog({children, campaign}) {
 			await voteOnEntry(
 				campaign.creation_request.project_id,
 				campaign.campaign.cvcid,
-				proposals[currentProposal].id,
+				proposals[currentProposal].cveid,
 				vote
 			);
 			if (vote === 1) {
@@ -132,10 +132,6 @@ export default function CreationsVotingDialog({children, campaign}) {
 		setMatches([])
 		setIsExpanded(false)
 		setProposals([])
-	}
-
-	const toggleExpanded = () => {
-		setIsExpanded(!isExpanded)
 	}
 
 	return (
