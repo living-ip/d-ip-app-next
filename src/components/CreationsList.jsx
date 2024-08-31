@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CreateCreationDialog from './CreateCreationDialog';
+import CreateCreationDialog from './dialog/CreateCreationDialog';
 import { getCreationSubmissions } from '@/lib/creations';
 import { getAuthToken } from '@dynamic-labs/sdk-react-core';
 

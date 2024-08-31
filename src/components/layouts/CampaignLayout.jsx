@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { CreationCard } from "@/components/cards/CreationCard"
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog"
-import CreateCreationDialog from "@/components/CreateCreationDialog"
+import CreateCreationDialog from "@/components/dialog/CreateCreationDialog"
 import { getCreationSubmissions } from "@/lib/creations"
 import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { useCreateBlockNote } from "@blocknote/react"
@@ -42,9 +42,6 @@ const SubmissionDialog = ({ isOpen, setIsOpen, submission }) => {
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-				<DialogHeader>
-					<DialogTitle>{submission.user_name}'s Submission</DialogTitle>
-				</DialogHeader>
 				<BlockNoteContent content={submission.content} />
 			</DialogContent>
 		</Dialog>
@@ -99,7 +96,7 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 						{creations && creations.length > 0 ? (
 							creations.map((creation) => (
 								<Card
-									key={creation.did}
+									key={creation.creid}
 									className="w-full cursor-pointer transition-colors hover:bg-accent"
 									onClick={() => setSelectedCreation(creation)}
 								>
