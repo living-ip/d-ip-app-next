@@ -40,7 +40,6 @@ export function CampaignLayout({creations, projectId, campaigns}) {
 		if (selectedCreation) {
 			const fetchSubmissions = async () => {
 				const result = await getCreationSubmissions(projectId, selectedCreation.creid, getAuthToken())
-				console.log(result.submissions)
 				setSubmissions(result.submissions || [])
 			}
 			fetchSubmissions()
