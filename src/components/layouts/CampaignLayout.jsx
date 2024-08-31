@@ -74,7 +74,11 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 										<Card key={submission.id} className="cursor-pointer hover:bg-accent">
 											<CardHeader>
 												<CardTitle>{submission.user_name || 'Anonymous'}</CardTitle>
-												<CardDescription>{submission.content.slice(0, 100)}...</CardDescription>
+												<CardDescription>
+													{submission.content && typeof submission.content === 'string'
+														? `${submission.content.slice(0, 100)}${submission.content.length > 100 ? '...' : ''}`
+														: 'No content available'}
+												</CardDescription>
 											</CardHeader>
 										</Card>
 									))
