@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { addDays, format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+'use client'
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import React, { useState, useEffect } from "react"
+import { addDays, format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 
-export default function DatePickerWithPresets({ date, setDate, onOpenChange }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function DatePickerWithPresets({ date, setDate }) {
+  const [isOpen, setIsOpen] = useState(false)
 
-  useEffect(() => {
-    if (onOpenChange) {
-      onOpenChange(isOpen);
-    }
-  }, [isOpen, onOpenChange]);
+  const handleSelect = (value) => {
+    setDate(value)
+    setIsOpen(false)
+  }
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -44,7 +45,7 @@ export default function DatePickerWithPresets({ date, setDate, onOpenChange }) {
       <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
         <Select
           onValueChange={(value) =>
-            setDate(addDays(new Date(), parseInt(value)))
+            handleSelect(addDays(new Date(), parseInt(value)))
           }
         >
           <SelectTrigger>
@@ -58,9 +59,14 @@ export default function DatePickerWithPresets({ date, setDate, onOpenChange }) {
           </SelectContent>
         </Select>
         <div className="rounded-md border">
-          <Calendar mode="single" selected={date || undefined} onSelect={setDate} />
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={handleSelect}
+            initialFocus
+          />
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

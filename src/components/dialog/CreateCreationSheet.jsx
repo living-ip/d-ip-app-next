@@ -1,46 +1,51 @@
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import DatePickerWithPresets from "@/components/simple/DatePicker";
-import FormEditor from "@/components/editor/FormEditor";
-import { useToast } from "@/components/ui/use-toast";
+'use client'
+
+import React, { useState } from "react"
+import { useForm, Controller } from "react-hook-form"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import DatePickerWithPresets from "@/components/simple/DatePicker"
+import FormEditor from "@/components/editor/FormEditor"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function CreateCreationSheet() {
-  const [open, setOpen] = useState(false);
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
-  const { toast } = useToast();
+  const [open, setOpen] = useState(false)
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm()
+  const { toast } = useToast()
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("description", data.description);
-    formData.append("reward", data.reward);
+    const formData = new FormData()
+    formData.append("title", data.title)
+    formData.append("description", data.description)
+    formData.append("reward", data.reward)
     if (data.image[0]) {
-      formData.append("image", data.image[0]);
+      formData.append("image", data.image[0])
     }
     if (data.deadline) {
-      formData.append("deadline", data.deadline.getTime().toString());
+      formData.append("deadline", data.deadline.getTime().toString())
     }
 
     try {
+      // Here you would typically send the formData to your API
+      // For example: await fetch('/api/creations', { method: 'POST', body: formData })
+
       toast({
         title: "Creation successful",
         description: "Your new creation has been added.",
-      });
-      setOpen(false);
-      reset();
+      })
+      setOpen(false)
+      reset()
     } catch (error) {
-      console.error("Error creating creation:", error);
+      console.error("Error creating creation:", error)
       toast({
         title: "Error",
         description: "There was a problem creating your creation.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -87,7 +92,7 @@ export default function CreateCreationSheet() {
               render={({ field }) => (
                 <DatePickerWithPresets
                   date={field.value}
-                  setDate={field.onChange}
+                  setDate={(date) => field.onChange(date)}
                 />
               )}
             />
@@ -116,5 +121,5 @@ export default function CreateCreationSheet() {
         </form>
       </SheetContent>
     </Sheet>
-  );
+  )
 }
