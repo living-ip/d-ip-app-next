@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MainLayout } from "@/components/layouts/MainLayout";
 import { Switch } from "@/components/ui/switch";
+import { IoArrowBackOutline } from "react-icons/io5";
 import {
     addUserToProject,
     cancelInvite,
@@ -294,7 +295,16 @@ export default function ManagementPanel({
 	return (
 		<MainLayout>
 			<div className="max-w-4xl mx-auto p-8">
-				<h1 className="text-3xl font-bold mb-6">Project Management Admin Panel</h1>
+				<div className="flex items-center gap-4 mb-6">
+					<Button
+						variant="outline"
+						className="p-2.5 rounded-sm border border-gray-200 border-solid bg-white"
+						onClick={() => router.push(`/projects/${pid}`)}
+					>
+						<IoArrowBackOutline className="w-4 h-4 cursor-pointer text-black"/>
+					</Button>
+					<h1 className="text-3xl font-bold">Project Management Admin Panel</h1>
+				</div>
 
 				<Section title="Edit Project">
 					<Button onClick={() => router.push(`/projects/${pid}/edit`)}>Go to Edit Project page</Button>
