@@ -1,26 +1,27 @@
-import { useState, useEffect } from "react"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Button } from "@/components/ui/button"
-import { CreationCard } from "@/components/cards/CreationCard"
+import {useEffect, useState} from "react"
+import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {ScrollArea} from "@/components/ui/scroll-area"
+import {Button} from "@/components/ui/button"
+import {CreationCard} from "@/components/cards/CreationCard"
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog"
 import CreateCreationDialog from "@/components/CreateCreationDialog"
-import { getCreationSubmissions } from "@/lib/creations"
+import {getCreationSubmissions} from "@/lib/creations"
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
-export function CampaignLayout({ creations, projectId, campaigns }) {
-  const [selectedCreation, setSelectedCreation] = useState(null)
-  const [submissions, setSubmissions] = useState([])
+export function CampaignLayout({creations, projectId, campaigns}) {
+	const [selectedCreation, setSelectedCreation] = useState(null)
+	const [submissions, setSubmissions] = useState([])
 
-  useEffect(() => {
-    if (selectedCreation) {
-      const fetchSubmissions = async () => {
-        const result = await getCreationSubmissions(projectId, selectedCreation.creid, getAuthToken())
-        setSubmissions(result.submissions || [])
-      }
-      fetchSubmissions()
-    }
-  }, [selectedCreation, projectId])
+	useEffect(() => {
+		if (selectedCreation) {
+			const fetchSubmissions = async () => {
+				const result = await getCreationSubmissions(projectId, selectedCreation.creid, getAuthToken())
+				console.log(result.submissions)
+				setSubmissions(result.submissions || [])
+			}
+			fetchSubmissions()
+		}
+	}, [selectedCreation, projectId])
 	return (
 		<div className="flex h-full bg-background">
 			{/* Left column: Create button, campaign info, and scrollable list of cards */}
