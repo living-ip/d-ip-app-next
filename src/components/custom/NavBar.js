@@ -46,7 +46,7 @@ export function NavBar() {
 				onClick: () => router.push(`/projects/${currentProject}/management`),
 			},
 			{
-				label: "Campaign",
+				label: "User Creations",
 				onClick: () => router.push(`/projects/${currentProject}/campaign`),
 			}
 		] : []),

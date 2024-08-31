@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import CreateCreationDialog from './CreateCreationDialog';
 import { getCreationSubmissions } from '@/lib/creations';
-import { useAuth } from '@/contexts/AuthContext';
+import { getAuthToken } from '@dynamic-labs/sdk-react-core';
 
 const CreationsList = ({ projectId }) => {
   const [selectedCreation, setSelectedCreation] = useState(null);
   const [submissions, setSubmissions] = useState([]);
-  const { jwt } = useAuth();
 
   const handleCreateCreation = (creationData) => {
     // Implement the creation logic here
@@ -21,7 +20,7 @@ const CreationsList = ({ projectId }) => {
 
   const fetchSubmissions = async () => {
     try {
-      const response = await getCreationSubmissions(projectId, selectedCreation.id, jwt);
+      const response = await getCreationSubmissions(projectId, selectedCreation.id, getAuthToken());
       setSubmissions(response.submissions);
     } catch (error) {
       console.error('Error fetching submissions:', error);
