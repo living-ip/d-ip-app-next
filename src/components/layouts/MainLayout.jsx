@@ -22,7 +22,7 @@ export function MainLayout({children}) {
 	return (
 		<div className="flex flex-col h-screen bg-neutral-100">
 			<NewNavBar/>
-			<div className="flex-grow overflow-hidden">
+			<div className="flex-grow overflow-hidden w-full">
 				{children}
 			</div>
 			<AlertDialog open={invalidPermissionsDialogOpen} onOpenChange={handleDialogClose}>
