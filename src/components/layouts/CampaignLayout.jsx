@@ -115,7 +115,7 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 													<div className="p-6">Loading submission content...</div>
 												)}
 												<div className="p-4">
-													<CardTitle>{submission.user_name || 'Anonymous'}</CardTitle>
+													<CardTitle>{submission.user_name}</CardTitle>
 												</div>
 											</CardContent>
 										</Card>
