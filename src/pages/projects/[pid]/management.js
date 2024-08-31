@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { NewLayout } from "@/components/NewLayout";
 import { Switch } from "@/components/ui/switch";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
     addUserToProject,
     cancelInvite,
@@ -17,6 +18,8 @@ import {
     updateChangesRules,
     updateProjectUserRole,
     updateVotingRules,
+    acceptAccessRequest,
+    rejectAccessRequest,
 } from "@/lib/admin";
 import { initializeStore, useStore } from "@/lib/store";
 import { getUserProfile } from "@/lib/user";
@@ -32,6 +35,15 @@ import { InvitesTable } from '@/components/InvitesTable';
 import { AccessRequestsTable } from '@/components/AccessRequestsTable';
 
 const ROLES = ["project_manager", "moderator", "editor", "voter", "viewer"];
+const TIMEFRAMES = [
+    {label: "1 hour", value: 1 * 60 * 60 * 1000},
+    {label: "4 hours", value: 4 * 60 * 60 * 1000},
+    {label: "8 hours", value: 8 * 60 * 60 * 1000},
+    {label: "12 hours", value: 12 * 60 * 60 * 1000},
+    {label: "1 day", value: 24 * 60 * 60 * 1000},
+    {label: "3 days", value: 72 * 60 * 60 * 1000},
+    {label: "7 days", value: 168 * 60 * 60 * 1000}
+];
 
 export default function ManagementPanel({
     pid,
@@ -51,6 +63,32 @@ export default function ManagementPanel({
 	const [notificationsEnabled, setNotificationsEnabled] = useState(initialNotifications);
 	const [invites, setInvites] = useState(initialInvites);
 	const [accessRequests, setAccessRequests] = useState(initialAccessRequests);
+
+	const handleAccessRequest = async (role, arid) => {
+		try {
+			if (role === "reject") {
+				await rejectAccessRequest(pid, arid, getAuthToken());
+				toast({
+					title: "Access Request Rejected",
+					description: "The access request has been rejected."
+				});
+			} else {
+				await acceptAccessRequest(pid, arid, role, getAuthToken());
+				toast({
+					title: "Access Request Accepted",
+					description: "The user has been granted access to the project."
+				});
+			}
+			setAccessRequests(prevRequests => prevRequests.filter(request => request.arid !== arid));
+		} catch (error) {
+			console.error("Failed to handle access request:", error);
+			toast({
+				title: "Error",
+				description: "Failed to handle the access request. Please try again.",
+				variant: "destructive"
+			});
+		}
+	};
 
 	const [rules, setRules] = useState(changesRules.map((rule, index) => ({
 		start: rule.start,
@@ -359,202 +397,6 @@ export default function ManagementPanel({
 	);
 }
 
-const Section = ({title, children}) => (
-	<section className="mb-6">
-		<h2 className="text-xl font-semibold mb-4">{title}</h2>
-		{children}
-	</section>
-);
-
-const RuleInput = ({rule, index, handleRuleChange}) => (
-	<div className="flex items-center space-x-2 mb-2">
-		<Input
-			type="number"
-			className="w-[64px]"
-			value={rule.start}
-			onChange={(e) => handleRuleChange(index, 'start', e.target.value)}
-			readOnly={!rule.isStartEditable}
-		/>
-		<span>to</span>
-		<Input
-			type="number"
-			className="w-[64px]"
-			value={rule.end}
-			onChange={(e) => handleRuleChange(index, 'end', e.target.value)}
-			readOnly={!rule.isEndEditable}
-		/>
-		<span>line changes will be available to vote on for</span>
-		<Select
-			onValueChange={(value) => handleRuleChange(index, 'timeframe', value)}
-			defaultValue={rule.timeframe}
-		>
-			<SelectTrigger className="w-[180px]">
-				<SelectValue/>
-			</SelectTrigger>
-			<SelectContent>
-				{TIMEFRAMES.map(timeframe => (
-					<SelectItem key={timeframe.value} value={timeframe.value}>
-						{timeframe.label}
-					</SelectItem>
-				))}
-			</SelectContent>
-		</Select>
-	</div>
-);
-
-const VotingRulesInput = ({votingSettings, handleVotingSettingChange}) => (
-	<>
-		<div className="mb-4">
-			<label className="block mb-2" htmlFor="total-votes">
-				Minimum number of total votes required for a change to be able to pass:
-			</label>
-			<Input
-				id="total-votes"
-				type="number"
-				className="w-[64px]"
-				value={votingSettings.minimumVotes}
-				onChange={(e) => handleVotingSettingChange('minimumVotes', e.target.value)}
-				min="1"
-			/>
-		</div>
-		<div>
-			<label className="block mb-2" htmlFor="positive-votes">
-				What percentage of votes need to be positive for a change to be able to pass:
-			</label>
-			<Input
-				id="positive-votes"
-				type="number"
-				className="w-[64px]"
-				value={votingSettings.positiveVotesPercentage}
-				onChange={(e) => handleVotingSettingChange('positiveVotesPercentage', e.target.value)}
-				min="1"
-				max="100"
-			/>
-		</div>
-	</>
-);
-
-const UserRolesTable = ({userList, userRoles, currentProject, handleRoleChange, handleRemoveUser}) => (
-	<Table>
-		<TableHeader>
-			<TableRow>
-				<TableHead>Email</TableHead>
-				<TableHead>Name</TableHead>
-				<TableHead>Role</TableHead>
-				<TableHead>Remove</TableHead>
-			</TableRow>
-		</TableHeader>
-		<TableBody>
-			{userList.map(user => {
-				const currentUserRole = userRoles.find((role) => role.project === currentProject)?.role.name;
-				const canModifyUser = user.role !== "admin" && ROLES.indexOf(user.role) > ROLES.indexOf(currentUserRole);
-
-				return (
-					<TableRow key={user.email}>
-						<TableCell className="font-medium">{user.email}</TableCell>
-						<TableCell>{user.name}</TableCell>
-						<TableCell>
-							{canModifyUser ? (
-								<Select onValueChange={(newRole) => handleRoleChange(user.uid, newRole)}>
-									<SelectTrigger>
-										<SelectValue>{user.role}</SelectValue>
-									</SelectTrigger>
-									<SelectContent>
-										{ROLES.map(role => (
-											<SelectItem key={role} value={role}>{role}</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							) : (
-								<div>{user.role}</div>
-							)}
-						</TableCell>
-						<TableCell>
-							<Button
-								onClick={() => handleRemoveUser(user.uid)}
-								disabled={!canModifyUser}
-							>
-								Remove
-							</Button>
-						</TableCell>
-					</TableRow>
-				);
-			})}
-		</TableBody>
-	</Table>
-);
-
-const InvitesTable = ({invites}) => (
-	<Table>
-		<TableHeader>
-			<TableRow>
-				<TableHead>Email</TableHead>
-				<TableHead>Status</TableHead>
-			</TableRow>
-		</TableHeader>
-		<TableBody>
-			{invites.map(invite => (
-				<TableRow key={invite.iid}>
-					<TableCell>{invite.email}</TableCell>
-					<TableCell>
-						{invite.accepted ? 'Accepted' : invite.rejected ? 'Rejected' : 'Pending'}
-					</TableCell>
-				</TableRow>
-			))}
-		</TableBody>
-	</Table>
-);
-
-const handleAccessRequest = async (role, pid, arid) => {
-	if (role === "reject") {
-		await rejectAccessRequest(pid, arid, getAuthToken());
-		toast({
-			title: "Access Request Rejected",
-			description: "The access request has been rejected."
-		});
-	} else {
-		await acceptAccessRequest(pid, arid, role, getAuthToken());
-		toast({
-			title: "Access Request Accepted",
-			description: "The user has been granted access to the project."
-		});
-	}
-}
-
-const AccessRequestsTable = ({accessRequests}) => (
-	<Table>
-		<TableHeader>
-			<TableRow>
-				<TableHead>Email</TableHead>
-				<TableHead>Requested At</TableHead>
-				<TableHead>Assign Role</TableHead>
-			</TableRow>
-		</TableHeader>
-		<TableBody>
-			{accessRequests.map(request => (
-				<TableRow key={request.arid}>
-					<TableCell>{request.email}</TableCell>
-					<TableCell>{new Date(request.created_at).toLocaleString()}</TableCell>
-					<TableCell>
-						<Select onValueChange={(role) => {
-							handleAccessRequest(role, request.project_id, request.arid)
-						}}>
-							<SelectTrigger>
-								<SelectValue></SelectValue>
-							</SelectTrigger>
-							<SelectContent>
-								{ROLES.map(role => (
-									<SelectItem key={role} value={role}>{role}</SelectItem>
-								))}
-								<SelectItem value={"reject"} className={"text-red-800"}>reject</SelectItem>
-							</SelectContent>
-						</Select>
-					</TableCell>
-				</TableRow>
-			))}
-		</TableBody>
-	</Table>
-);
 
 export async function getServerSideProps({req, query}) {
 	const sessionJWT = req.cookies["x_d_jwt"];
