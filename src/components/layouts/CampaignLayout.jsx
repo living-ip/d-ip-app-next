@@ -104,8 +104,7 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 									onClick={() => setSelectedCreation(creation)}
 								>
 									<CardHeader>
-										<CardTitle>{creation.name}</CardTitle>
-										<CardDescription>{creation.description}</CardDescription>
+										<CardTitle>{creation.title}</CardTitle>
 									</CardHeader>
 								</Card>
 							))
