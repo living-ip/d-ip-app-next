@@ -15,7 +15,7 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
   useEffect(() => {
     if (selectedCreation) {
       const fetchSubmissions = async () => {
-        const result = await getCreationSubmissions(projectId, selectedCreation.did, getAuthToken())
+        const result = await getCreationSubmissions(projectId, selectedCreation.creid, getAuthToken())
         setSubmissions(result.submissions || [])
       }
       fetchSubmissions()
