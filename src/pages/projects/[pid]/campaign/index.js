@@ -4,19 +4,25 @@ import { getProject, getProjectCreations } from "@/lib/project";
 import { initializeStore } from "@/lib/store";
 import { MainLayout } from "@/components/layouts/MainLayout";
 import { CampaignLayout } from "@/components/layouts/CampaignLayout";
+import { getCreationsCampaigns } from "@/lib/creations";
 
-const CampaignPage = ({ project, creations }) => {
+const CampaignPage = ({ project, creations, campaigns }) => {
   const router = useRouter();
 
-  if (!project || !creations) {
-    console.error('Missing required props: project or creations');
+  if (!project || !creations || !campaigns) {
+    console.error('Missing required props: project, creations, or campaigns');
     return null;
   }
 
   return (
     <MainLayout>
       <main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
-        <CampaignLayout creations={creations} projectId={project.pid} />
+        <h1 className="text-3xl font-bold p-6">{project.name} - Campaign</h1>
+        <CampaignLayout 
+          creations={creations} 
+          projectId={project.pid} 
+          campaigns={campaigns}
+        />
       </main>
     </MainLayout>
   );
@@ -46,16 +52,23 @@ export const getServerSideProps = async ({ req, query }) => {
       },
     };
   }
-  const creationsResponse = await getProjectCreations(project.pid, sessionJWT);
+
+  const [creationsResponse, campaignsResponse] = await Promise.all([
+    getProjectCreations(project.pid, sessionJWT),
+    getCreationsCampaigns(project.pid, sessionJWT)
+  ]);
+
   const zustandServerStore = initializeStore({
     userProfile,
     userRoles: roles,
     currentProject: pid,
   });
+
   return {
     props: {
       project: project,
       creations: creationsResponse.creations,
+      campaigns: campaignsResponse.campaigns,
       initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
     },
   };
