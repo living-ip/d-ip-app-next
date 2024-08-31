@@ -104,24 +104,26 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 						/>
 						<div>
 							<h2 className="text-2xl font-bold mb-4">Submissions</h2>
-							<div className="grid grid-cols-1 gap-4">
+							<div className="grid grid-cols-3 gap-4">
 								{submissions.length > 0 ? (
 									submissions.map((submission) => (
-										<Card key={submission.id} className="w-full">
-											<CardContent className="p-0 w-full">
-												{submission.content ? (
-													<BlockNoteContent content={submission.content} />
-												) : (
-													<div className="p-6">Loading submission content...</div>
-												)}
-												<div className="p-4">
-													<CardTitle>{submission.user_name}</CardTitle>
+										<Card key={submission.id} className="w-full h-64 overflow-hidden">
+											<CardContent className="p-0 w-full h-full flex flex-col">
+												<div className="flex-grow overflow-auto">
+													{submission.content ? (
+														<BlockNoteContent content={submission.content} />
+													) : (
+														<div className="p-4">Loading submission content...</div>
+													)}
+												</div>
+												<div className="p-2 bg-background">
+													<CardTitle className="text-sm truncate">{submission.user_name}</CardTitle>
 												</div>
 											</CardContent>
 										</Card>
 									))
 								) : (
-									<p>No submissions available for this creation.</p>
+									<p className="col-span-3">No submissions available for this creation.</p>
 								)}
 							</div>
 						</div>
