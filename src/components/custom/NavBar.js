@@ -40,10 +40,16 @@ export function NavBar() {
 	}, []);
 
 	const navItems = [
-		...((canAccessAdminPanel && router.query.pid) ? [{
-			label: "Management",
-			onClick: () => router.push(`/projects/${currentProject}/management`),
-		}] : []),
+		...((canAccessAdminPanel && router.query.pid) ? [
+			{
+				label: "Management",
+				onClick: () => router.push(`/projects/${currentProject}/management`),
+			},
+			{
+				label: "Campaign",
+				onClick: () => router.push(`/projects/${currentProject}/campaign`),
+			}
+		] : []),
 		{
 			label: "User Guide",
 			onClick: () => router.push('/projects/pid-76047bbe1fc241959bb636eaa4d6e27f/document/did-1569a552a4894b90af40f7a3d511abf4'),
