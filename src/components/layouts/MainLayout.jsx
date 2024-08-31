@@ -20,11 +20,11 @@ export function MainLayout({children}) {
 		setInvalidPermissionsDialogOpen(false);
 	}
 	return (
-		<div className="flex flex-col min-h-screen bg-neutral-100">
+		<div className="flex flex-col h-screen bg-neutral-100">
 			<NewNavBar/>
-			<main className="flex-grow px-4 md:px-8 py-6 overflow-y-auto">
+			<div className="flex-grow overflow-hidden">
 				{children}
-			</main>
+			</div>
 			<AlertDialog open={invalidPermissionsDialogOpen} onOpenChange={handleDialogClose}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
