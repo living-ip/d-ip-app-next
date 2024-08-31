@@ -20,32 +20,53 @@ export default function CreateCreationSheet() {
   const { toast } = useToast()
 
   const onSubmit = async (data) => {
-    const formData = new FormData()
-    formData.append("title", data.title)
-    formData.append("description", data.description)
-    formData.append("reward", data.reward)
-    if (data.image[0]) {
-      formData.append("image", data.image[0])
-    }
-    if (data.deadline) {
-      formData.append("deadline", data.deadline.getTime().toString())
+    const creationData = {
+      title: data.title,
+      description: data.description,
+      reward: data.reward,
+      deadline: data.deadline ? data.deadline.getTime().toString() : (Date.now() + 7 * 24 * 60 * 60 * 1000).toString(),
     }
 
-    try {
-      await createCreationRequest(router.query.pid, data, getAuthToken())
-      toast({
-        title: "Creation successful",
-        description: "Your new creation has been added.",
-      })
-      setOpen(false)
-      reset()
-    } catch (error) {
-      console.error("Error creating creation:", error)
-      toast({
-        title: "Error",
-        description: "There was a problem creating your creation.",
-        variant: "destructive",
-      })
+    if (data.image[0]) {
+      const reader = new FileReader()
+      reader.onloadend = async () => {
+        creationData.image = reader.result.split(',')[1] // Get base64 encoded part
+
+        try {
+          await createCreationRequest(router.query.pid, creationData, getAuthToken())
+          toast({
+            title: "Creation successful",
+            description: "Your new creation has been added.",
+          })
+          setOpen(false)
+          reset()
+        } catch (error) {
+          console.error("Error creating creation:", error)
+          toast({
+            title: "Error",
+            description: "There was a problem creating your creation.",
+            variant: "destructive",
+          })
+        }
+      }
+      reader.readAsDataURL(data.image[0])
+    } else {
+      try {
+        await createCreationRequest(router.query.pid, creationData, getAuthToken())
+        toast({
+          title: "Creation successful",
+          description: "Your new creation has been added.",
+        })
+        setOpen(false)
+        reset()
+      } catch (error) {
+        console.error("Error creating creation:", error)
+        toast({
+          title: "Error",
+          description: "There was a problem creating your creation.",
+          variant: "destructive",
+        })
+      }
     }
   }
 
