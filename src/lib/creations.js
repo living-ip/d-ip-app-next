@@ -2,6 +2,24 @@ import { LIP_API_BASE } from "./constants";
 import { doApiCall } from "./api";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
+export async function createCreationRequest(pid, data, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/`);
+  const func = () => fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+    body: JSON.stringify(data),
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+
 export async function getProjectCreations(pid, jwt) {
   const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/`);
   const func = () => fetch(url, {
