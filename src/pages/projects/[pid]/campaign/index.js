@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { getUserProfile } from "@/lib/user";
-import { getProject, getProjectCreations } from "@/lib/project";
+import { getProject } from "@/lib/project";
+import {getCreationsCampaigns, getProjectCreations} from "@/lib/creations";
 import { initializeStore } from "@/lib/store";
 import { MainLayout } from "@/components/layouts/MainLayout";
 import { CampaignLayout } from "@/components/layouts/CampaignLayout";
-import { getCreationsCampaigns } from "@/lib/creations";
 
 const CampaignPage = ({ project, creations, campaigns }) => {
   const router = useRouter();
@@ -17,7 +17,7 @@ const CampaignPage = ({ project, creations, campaigns }) => {
   return (
     <MainLayout>
       <main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
-        <h1 className="text-3xl font-bold p-6">{project.name} - Campaign</h1>
+        <h1 className="text-3xl font-bold p-6">{project.name}</h1>
         <CampaignLayout 
           creations={creations} 
           projectId={project.pid} 
