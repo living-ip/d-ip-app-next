@@ -9,7 +9,7 @@ import {
 	AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import {useStore} from "@/lib/store";
-import {NewNavBar} from "@/components/custom/NewNavBar";
+import {NavBar} from "@/components/custom/NavBar";
 
 export function MainLayout({children}) {
 	const [invalidPermissionsDialogOpen, setInvalidPermissionsDialogOpen] = useStore((state) => [
@@ -21,8 +21,8 @@ export function MainLayout({children}) {
 	}
 	return (
 		<div className="flex flex-col h-screen bg-neutral-100">
-			<NewNavBar/>
-			<div className="flex-grow overflow-hidden w-full">
+			<NavBar/>
+			<div className="flex-grow overflow-hidden w-full px-4">
 				{children}
 			</div>
 			<AlertDialog open={invalidPermissionsDialogOpen} onOpenChange={handleDialogClose}>
