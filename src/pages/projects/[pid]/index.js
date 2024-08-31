@@ -90,7 +90,7 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 				</section>
 				<article className="mt-6 max-md:max-w-full p-4">
 					<div className="hidden md:flex flex-row gap-4">
-						<div className="flex flex-col w-2/3">
+						<div className={`flex flex-col ${creations.length > 0 ? 'w-2/3' : 'w-full'}`}>
 							<h2 className="text-xl leading-7 text-neutral-950 mb-4">Documents</h2>
 							<div className="flex flex-col gap-4">
 								{documents.map((document, index) => (
