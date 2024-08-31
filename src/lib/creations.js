@@ -33,6 +33,23 @@ export async function getProjectCreation(pid, creid) {
   return response;
 }
 
+export async function getCreationSubmissions(pid, creid, jwt) {
+  const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/${creid}/submission/`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, {creation: {}, submissions: []});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+
 export async function getUserSubmission(pid, creid, jwt) {
   const url = new URL(`${LIP_API_BASE}/project/${pid}/creation/${creid}/submission/?users=true`);
   const func = () => fetch(url, {
