@@ -13,30 +13,38 @@ export function CampaignLayout({ creations, projectId }) {
         </div>
         <ScrollArea className="flex-1">
           <div className="p-2 space-y-2">
-            {creations.map((creation) => (
-              <Card
-                key={creation.did}
-                className="w-full cursor-pointer transition-colors hover:bg-accent"
-              >
-                <CardHeader>
-                  <CardTitle>{creation.name}</CardTitle>
-                  <CardDescription>{creation.description}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
+            {creations && creations.length > 0 ? (
+              creations.map((creation) => (
+                <Card
+                  key={creation.did}
+                  className="w-full cursor-pointer transition-colors hover:bg-accent"
+                >
+                  <CardHeader>
+                    <CardTitle>{creation.name}</CardTitle>
+                    <CardDescription>{creation.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))
+            ) : (
+              <p>No creations available.</p>
+            )}
           </div>
         </ScrollArea>
       </div>
       {/* Right column: Selected creation details */}
       <div className="flex-1 p-6 overflow-auto">
         <div className="grid grid-cols-1 gap-4">
-          {creations.map((creation) => (
-            <CreationCard
-              key={creation.did}
-              creation={creation}
-              projectId={projectId}
-            />
-          ))}
+          {creations && creations.length > 0 ? (
+            creations.map((creation) => (
+              <CreationCard
+                key={creation.did}
+                creation={creation}
+                projectId={projectId}
+              />
+            ))
+          ) : (
+            <p>No creations available.</p>
+          )}
         </div>
       </div>
     </div>
