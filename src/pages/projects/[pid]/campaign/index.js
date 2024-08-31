@@ -16,13 +16,15 @@ const CampaignPage = ({ project, creations, campaigns }) => {
 
   return (
     <MainLayout>
-      <main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
+      <main className="flex flex-col h-screen">
         <h1 className="text-3xl font-bold p-6">{project.name}</h1>
-        <CampaignLayout 
-          creations={creations} 
-          projectId={project.pid} 
-          campaigns={campaigns}
-        />
+        <div className="flex-grow overflow-hidden">
+          <CampaignLayout 
+            creations={creations} 
+            projectId={project.pid} 
+            campaigns={campaigns}
+          />
+        </div>
       </main>
     </MainLayout>
   );
