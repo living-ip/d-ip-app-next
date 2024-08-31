@@ -11,7 +11,7 @@ export function CreateCreationDialog() {
   const [description, setDescription] = useState("");
   const [reward, setReward] = useState("");
   const [image, setImage] = useState(null);
-  const [date, setDate] = useState(null);
+  const [deadline, setDeadline] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,8 +22,8 @@ export function CreateCreationDialog() {
     if (image) {
       formData.append("image", image);
     }
-    if (date) {
-      formData.append("date", date.getTime()); // Convert to milliseconds
+    if (deadline) {
+      formData.append("deadline", deadline.getTime()); // Convert to milliseconds
     }
     
     try {
@@ -44,7 +44,7 @@ export function CreateCreationDialog() {
         <DialogHeader>
           <DialogTitle>Create Creation</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             placeholder="Title"
             value={title}
@@ -60,7 +60,10 @@ export function CreateCreationDialog() {
             onChange={(e) => setReward(e.target.value)}
           />
           <Input type="file" onChange={(e) => setImage(e.target.files[0])} />
-          <DatePickerWithPresets date={date} setDate={setDate} />
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Deadline</label>
+            <DatePickerWithPresets date={deadline} setDate={setDeadline} />
+          </div>
           <Button type="submit">Create Creation</Button>
         </form>
       </DialogContent>
