@@ -120,25 +120,25 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 						)}
 					</div>
 					<div className="md:hidden">
-						<Tabs defaultValue="documents" className="w-full">
-							<TabsList className="grid w-full grid-cols-2">
-								<TabsTrigger value="documents">Documents</TabsTrigger>
-								{creations.length > 0 && <TabsTrigger value="creations">Creations</TabsTrigger>}
-							</TabsList>
-							<TabsContent value="documents">
-								<div className="flex flex-col gap-4">
-									{documents.map((document, index) => (
-										<DocumentCard
-											key={document.did || index}
-											name={document.name}
-											description={document.description}
-											lastEditDate={document.last_edit || document.created_at}
-											onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}
-										/>
-									))}
-								</div>
-							</TabsContent>
-							{creations.length > 0 && (
+						{creations.length > 0 ? (
+							<Tabs defaultValue="documents" className="w-full">
+								<TabsList className="grid w-full grid-cols-2">
+									<TabsTrigger value="documents">Documents</TabsTrigger>
+									<TabsTrigger value="creations">Creations</TabsTrigger>
+								</TabsList>
+								<TabsContent value="documents">
+									<div className="flex flex-col gap-4">
+										{documents.map((document, index) => (
+											<DocumentCard
+												key={document.did || index}
+												name={document.name}
+												description={document.description}
+												lastEditDate={document.last_edit || document.created_at}
+												onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}
+											/>
+										))}
+									</div>
+								</TabsContent>
 								<TabsContent value="creations">
 									<div className="grid grid-cols-1 gap-4">
 										{creations.map((creation, index) => (
@@ -150,8 +150,20 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 										))}
 									</div>
 								</TabsContent>
-							)}
-						</Tabs>
+							</Tabs>
+						) : (
+							<div className="flex flex-col gap-4">
+								{documents.map((document, index) => (
+									<DocumentCard
+										key={document.did || index}
+										name={document.name}
+										description={document.description}
+										lastEditDate={document.last_edit || document.created_at}
+										onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}`)}
+									/>
+								))}
+							</div>
+						)}
 					</div>
 				</article>
 			</main>
