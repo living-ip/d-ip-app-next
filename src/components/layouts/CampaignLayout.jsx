@@ -1,17 +1,17 @@
-import {useEffect, useState} from "react"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {ScrollArea} from "@/components/ui/scroll-area"
-import {Button} from "@/components/ui/button"
-import {CreationCard} from "@/components/cards/CreationCard"
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
+import { CreationCard } from "@/components/cards/CreationCard"
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog"
 import CreateCreationDialog from "@/components/CreateCreationDialog"
-import {getCreationSubmissions} from "@/lib/creations"
-import {getAuthToken} from "@dynamic-labs/sdk-react-core";
-import {useCreateBlockNote} from "@blocknote/react"
+import { getCreationSubmissions } from "@/lib/creations"
+import { getAuthToken } from "@dynamic-labs/sdk-react-core";
+import { useCreateBlockNote } from "@blocknote/react"
 import "@blocknote/core/style.css"
 import ReactMarkdown from 'react-markdown'
 
-const BlockNoteContent = ({content}) => {
+const BlockNoteContent = ({ content }) => {
 	const editor = useCreateBlockNote({
 		initialContent: JSON.parse(content),
 		editable: false
@@ -32,7 +32,7 @@ const BlockNoteContent = ({content}) => {
 	);
 };
 
-export function CampaignLayout({creations, projectId, campaigns}) {
+export function CampaignLayout({ creations, projectId, campaigns }) {
 	const [selectedCreation, setSelectedCreation] = useState(null)
 	const [submissions, setSubmissions] = useState([])
 
@@ -40,7 +40,19 @@ export function CampaignLayout({creations, projectId, campaigns}) {
 		if (selectedCreation) {
 			const fetchSubmissions = async () => {
 				const result = await getCreationSubmissions(projectId, selectedCreation.creid, getAuthToken())
-				setSubmissions(result.submissions || [])
+				const submissionsWithContent = await Promise.all(
+					(result.submissions || []).map(async (submission) => {
+						try {
+							const contentResponse = await fetch(submission.uri);
+							const contentJson = await contentResponse.text();
+							return { ...submission, content: contentJson };
+						} catch (error) {
+							console.error('Error fetching submission content:', error);
+							return { ...submission, content: '{"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Error loading content"}]}]}' };
+						}
+					})
+				);
+				setSubmissions(submissionsWithContent);
 			}
 			fetchSubmissions()
 		}
@@ -97,7 +109,11 @@ export function CampaignLayout({creations, projectId, campaigns}) {
 									submissions.map((submission) => (
 										<Card key={submission.id} className="w-full">
 											<CardContent className="p-0 w-full">
-												<BlockNoteContent content={submission.content} />
+												{submission.content ? (
+													<BlockNoteContent content={submission.content} />
+												) : (
+													<div className="p-6">Loading submission content...</div>
+												)}
 												<div className="p-4">
 													<CardTitle>{submission.user_name || 'Anonymous'}</CardTitle>
 												</div>
