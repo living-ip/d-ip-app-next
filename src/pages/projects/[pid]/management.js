@@ -1,53 +1,47 @@
-import React, {useCallback, useState} from 'react';
-import {useRouter} from "next/router";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
-import {NewLayout} from "@/components/NewLayout";
-import {Switch} from "@/components/ui/switch";
+import React, { useCallback, useState } from 'react';
+import { useRouter } from "next/router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NewLayout } from "@/components/NewLayout";
+import { Switch } from "@/components/ui/switch";
 import {
-	acceptAccessRequest,
-	addUserToProject,
-	cancelInvite,
-	getChangesRules,
-	getProjectAccessRequests,
-	getProjectInvites,
-	getProjectUsers,
-	getVotingRules,
-	rejectAccessRequest,
-	removeUserFromProject,
-	updateChangesRules,
-	updateProjectUserRole,
-	updateVotingRules,
+    addUserToProject,
+    cancelInvite,
+    getChangesRules,
+    getProjectAccessRequests,
+    getProjectInvites,
+    getProjectUsers,
+    getVotingRules,
+    removeUserFromProject,
+    updateChangesRules,
+    updateProjectUserRole,
+    updateVotingRules,
 } from "@/lib/admin";
-import {initializeStore, useStore} from "@/lib/store";
-import {getUserProfile} from "@/lib/user";
-import {getProjectSettings, updateProjectSettings} from "@/lib/settings";
-import {getAuthToken} from "@dynamic-labs/sdk-react-core";
-import {toast, useToast} from "@/components/ui/use-toast";
+import { initializeStore, useStore } from "@/lib/store";
+import { getUserProfile } from "@/lib/user";
+import { getProjectSettings, updateProjectSettings } from "@/lib/settings";
+import { getAuthToken } from "@dynamic-labs/sdk-react-core";
+import { useToast } from "@/components/ui/use-toast";
 
-const TIMEFRAMES = [
-	{label: "1 hour", value: 1 * 60 * 60 * 1000},
-	{label: "4 hours", value: 4 * 60 * 60 * 1000},
-	{label: "8 hours", value: 8 * 60 * 60 * 1000},
-	{label: "12 hours", value: 12 * 60 * 60 * 1000},
-	{label: "1 day", value: 24 * 60 * 60 * 1000},
-	{label: "3 days", value: 72 * 60 * 60 * 1000},
-	{label: "7 days", value: 168 * 60 * 60 * 1000}
-];
+import { Section } from '@/components/Section';
+import { RuleInput } from '@/components/RuleInput';
+import { VotingRulesInput } from '@/components/VotingRulesInput';
+import { UserRolesTable } from '@/components/UserRolesTable';
+import { InvitesTable } from '@/components/InvitesTable';
+import { AccessRequestsTable } from '@/components/AccessRequestsTable';
 
 const ROLES = ["project_manager", "moderator", "editor", "voter", "viewer"];
 
 export default function ManagementPanel({
-	                                        pid,
-	                                        changesRules,
-	                                        votingRules,
-	                                        initialUserList,
-	                                        initialNotifications,
-	                                        initialInvites,
-	                                        initialAccessRequests
-                                        }) {
+    pid,
+    changesRules,
+    votingRules,
+    initialUserList,
+    initialNotifications,
+    initialInvites,
+    initialAccessRequests
+}) {
 	const {toast} = useToast();
 	const router = useRouter();
 	const [userRoles, currentProject] = useStore((state) => [state.userRoles, state.currentProject]);
