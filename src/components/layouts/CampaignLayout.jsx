@@ -163,19 +163,8 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 						</div>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 gap-4">
-						{creations && creations.length > 0 ? (
-							creations.map((creation) => (
-								<CreationCard
-									key={creation.did}
-									creation={creation}
-									projectId={projectId}
-									onClick={() => setSelectedCreation(creation)}
-								/>
-							))
-						) : (
-							<p>No creations available.</p>
-						)}
+					<div className="flex items-center justify-center h-full">
+						<p className="text-lg text-gray-500">Select a creation to view details</p>
 					</div>
 				)}
 			</div>
