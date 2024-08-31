@@ -6,7 +6,7 @@ import { getProject } from "@/lib/project";
 import { getDocument } from "@/lib/document";
 import Image from "next/image";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { NewLayout } from "@/components/NewLayout";
+import { MainLayout } from "@/components/layouts/MainLayout";
 import { getUserProfile } from "@/lib/user";
 import { initializeStore } from "@/lib/store";
 
@@ -30,7 +30,7 @@ export default function Index({ project, document }) {
   const handleEdit = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/edit`);
 
   return (
-    <NewLayout>
+    <MainLayout>
       <main className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5">
         <section className="flex flex-row max-md:flex-col gap-3 justify-between w-full">
           <div className="flex flex-col w-[73%] max-md:w-full">
@@ -73,7 +73,7 @@ export default function Index({ project, document }) {
           </div>
         </article>
       </main>
-    </NewLayout>
+    </MainLayout>
   );
 }
 

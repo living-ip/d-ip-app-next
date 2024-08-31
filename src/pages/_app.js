@@ -1,7 +1,11 @@
 import '@/styles/globals.css'
+import "@blocknote/core/fonts/inter.css";
+import "@blocknote/shadcn/style.css";
+
 import { createStytchUIClient } from '@stytch/nextjs/ui'
 import { StytchProvider } from '@stytch/nextjs'
 import { DynamicContextProvider, getAuthToken } from "@dynamic-labs/sdk-react-core";
+import {IsBrowser} from "@dynamic-labs/sdk-react-core";
 import { SolanaWalletConnectors } from "@dynamic-labs/solana";
 import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
@@ -33,7 +37,6 @@ export default function App({ Component, pageProps }) {
 
   const setAuthCookie = useCallback(async (token) => {
     try {
-      console.log('Setting auth cookie with token:', token);
       const response = await fetch('/api/set-auth-cookie', {
         method: 'POST',
         headers: {
@@ -45,7 +48,6 @@ export default function App({ Component, pageProps }) {
         console.log('Cookie set successfully');
         const responseData = await response.json();
         console.log('Server response:', responseData);
-        router.push("/projects")
       } else {
         console.error('Failed to set cookie. Status:', response.status);
         const errorData = await response.text();
@@ -94,6 +96,7 @@ export default function App({ Component, pageProps }) {
         <title>Living IP</title>
         <link rel="icon" href="https://storage.googleapis.com/syb_us_cdn/sibylline_favicon.png" />
       </Head>
+      <IsBrowser>
       <DynamicContextProvider
         theme="auto"
         settings={{
@@ -113,6 +116,7 @@ export default function App({ Component, pageProps }) {
         </StytchProvider>
       </DynamicContextProvider>
       <Toaster />
+      </IsBrowser>
     </>
   )
 }

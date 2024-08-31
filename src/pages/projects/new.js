@@ -4,7 +4,7 @@ import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
 import {getCookie} from "cookies-next";
 import {createProject} from "@/lib/project";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {useToast} from "@/components/ui/use-toast";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
@@ -42,7 +42,7 @@ export default function CreateNewProject() {
 	};
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<div className="flex flex-col w-full overflow-auto items-left">
 				<Card className="w-full bg-white mt-10">
 					<CardContent className="mt-10 mb-4 text-4xl font-bold">Create a New Project</CardContent>
@@ -53,6 +53,6 @@ export default function CreateNewProject() {
 					/>
 				</Card>
 			</div>
-		</NewLayout>
+		</MainLayout>
 	)
 }

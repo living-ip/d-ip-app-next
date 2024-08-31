@@ -6,7 +6,7 @@ import {AlertDialog, AlertDialogContent, AlertDialogHeader} from "@/components/u
 import {authStytchRequest} from "@/lib/stytch";
 import {useRouter} from "next/router";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {getUsers} from "@/lib/user";
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
 
@@ -40,7 +40,7 @@ export default function AdminPanel({projects, users}) {
 		});
 	};
 	return (
-		<NewLayout>
+		<MainLayout>
 			<div className="py-8 space-y-8">
 				{/* Project Management Section */}
 				<section>
@@ -164,7 +164,7 @@ export default function AdminPanel({projects, users}) {
 					</AlertDialog>
 				)}
 			</div>
-		</NewLayout>
+		</MainLayout>
 	);
 }
 export const getServerSideProps = async ({req}) => {

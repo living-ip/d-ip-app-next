@@ -7,7 +7,7 @@ import {convertNameToGithubRepo} from "@/lib/utils";
 import {getProject} from "@/lib/project";
 import {getUserProfile} from "@/lib/user";
 import {initializeStore, useStore} from "@/lib/store";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {TbArrowsSort} from "react-icons/tb";
 import {FiEdit3} from "react-icons/fi";
 import {Input} from "@/components/ui/input";
@@ -46,7 +46,7 @@ export default function Index({project, document, changes}) {
 	};
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<main
 				className="flex flex-col self-center px-8 py-8 w-full h-screen bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
 				<div className="flex gap-4 justify-between max-md:flex-wrap max-md:max-w-full">
@@ -169,7 +169,7 @@ export default function Index({project, document, changes}) {
 					))
 				}
 			</main>
-		</NewLayout>
+		</MainLayout>
 	)
 
 }

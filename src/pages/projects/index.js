@@ -4,7 +4,7 @@ import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {YourProjectCard} from "@/components/cards/YourProjectCard";
 import {OtherProjectCard} from "@/components/cards/OtherProjectCard";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
@@ -38,7 +38,7 @@ export default function Projects({projects}) {
 	);
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<main className="flex flex-col px-5 sm:px-10 lg:px-20 py-8 w-full h-auto bg-white rounded-3xl shadow">
 				<div className="flex justify-between items-center">
 					<h1 className="text-2xl sm:text-3xl text-neutral-950">Projects</h1>
@@ -70,7 +70,7 @@ export default function Projects({projects}) {
 					<p className="mt-4 text-neutral-600">There are no other projects available at the moment.</p>
 				)}
 			</main>
-		</NewLayout>
+		</MainLayout>
 	);
 }
 
