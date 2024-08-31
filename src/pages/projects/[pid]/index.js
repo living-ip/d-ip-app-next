@@ -75,11 +75,13 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 							<ProjectDescription description={project.description}/>
 						</div>
 						<div className="flex justify-end items-center gap-3 w-[27%] max-md:w-[100%] mt-24 max-md:mt-2">
-							<CreationsVotingDialog campaign={campaigns[0]}>
-								<Button variant="outline" className="bg-white text-black">
-									{campaigns.length} Votes
-								</Button>
-							</CreationsVotingDialog>
+							{campaigns.length > 0 && (
+								<CreationsVotingDialog campaign={campaigns[0]}>
+									<Button variant="outline" className="bg-white text-black">
+										{campaigns.length} Votes
+									</Button>
+								</CreationsVotingDialog>
+							)}
 							<Button onClick={handleCreateNewDocument}>
 								Create New Document
 							</Button>
@@ -102,24 +104,26 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 								))}
 							</div>
 						</div>
-						<div className="flex flex-col w-1/3">
-							<h2 className="text-xl leading-7 text-neutral-950 mb-4">Creations</h2>
-							<div className="grid grid-cols-1 gap-4">
-								{creations.map((creation, index) => (
-									<CreationCard
-										key={creation.did || index}
-										creation={creation}
-										projectId={project.pid}
-									/>
-								))}
+						{creations.length > 0 && (
+							<div className="flex flex-col w-1/3">
+								<h2 className="text-xl leading-7 text-neutral-950 mb-4">Creations</h2>
+								<div className="grid grid-cols-1 gap-4">
+									{creations.map((creation, index) => (
+										<CreationCard
+											key={creation.did || index}
+											creation={creation}
+											projectId={project.pid}
+										/>
+									))}
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 					<div className="md:hidden">
 						<Tabs defaultValue="documents" className="w-full">
 							<TabsList className="grid w-full grid-cols-2">
 								<TabsTrigger value="documents">Documents</TabsTrigger>
-								<TabsTrigger value="creations">Creations</TabsTrigger>
+								{creations.length > 0 && <TabsTrigger value="creations">Creations</TabsTrigger>}
 							</TabsList>
 							<TabsContent value="documents">
 								<div className="flex flex-col gap-4">
@@ -134,17 +138,19 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 									))}
 								</div>
 							</TabsContent>
-							<TabsContent value="creations">
-								<div className="grid grid-cols-1 gap-4">
-									{creations.map((creation, index) => (
-										<CreationCard
-											key={creation.did || index}
-											creation={creation}
-											projectId={project.pid}
-										/>
-									))}
-								</div>
-							</TabsContent>
+							{creations.length > 0 && (
+								<TabsContent value="creations">
+									<div className="grid grid-cols-1 gap-4">
+										{creations.map((creation, index) => (
+											<CreationCard
+												key={creation.did || index}
+												creation={creation}
+												projectId={project.pid}
+											/>
+										))}
+									</div>
+								</TabsContent>
+							)}
 						</Tabs>
 					</div>
 				</article>
