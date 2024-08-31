@@ -61,21 +61,27 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 			{/* Right column: Selected creation details or submissions grid */}
 			<div className="flex-1 p-6 overflow-auto">
 				{selectedCreation ? (
-					<div>
-						<h2 className="text-2xl font-bold mb-4">{selectedCreation.name} Submissions</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-							{submissions.length > 0 ? (
-								submissions.map((submission) => (
-									<Card key={submission.id} className="cursor-pointer hover:bg-accent">
-										<CardHeader>
-											<CardTitle>{submission.user_name || 'Anonymous'}</CardTitle>
-											<CardDescription>{submission.content.slice(0, 100)}...</CardDescription>
-										</CardHeader>
-									</Card>
-								))
-							) : (
-								<p>No submissions available for this creation.</p>
-							)}
+					<div className="space-y-6">
+						<CreationCard
+							creation={selectedCreation}
+							projectId={projectId}
+						/>
+						<div>
+							<h2 className="text-2xl font-bold mb-4">Submissions</h2>
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+								{submissions.length > 0 ? (
+									submissions.map((submission) => (
+										<Card key={submission.id} className="cursor-pointer hover:bg-accent">
+											<CardHeader>
+												<CardTitle>{submission.user_name || 'Anonymous'}</CardTitle>
+												<CardDescription>{submission.content.slice(0, 100)}...</CardDescription>
+											</CardHeader>
+										</Card>
+									))
+								) : (
+									<p>No submissions available for this creation.</p>
+								)}
+							</div>
 						</div>
 					</div>
 				) : (
