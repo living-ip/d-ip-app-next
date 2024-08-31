@@ -13,3 +13,18 @@ export default function FormEditor({setEditorContent}) {
 
 	return <BlockNoteView editor={editor}/>;
 }
+import React from 'react';
+import { Textarea } from '@/components/ui/textarea';
+
+const FormEditor = ({ value, onChange }) => {
+  return (
+    <Textarea
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      rows={4}
+      className="w-full"
+    />
+  );
+};
+
+export default FormEditor;
