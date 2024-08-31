@@ -10,6 +10,12 @@ import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { useCreateBlockNote } from "@blocknote/react"
 import "@blocknote/core/style.css"
 import ReactMarkdown from 'react-markdown'
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog"
 
 const BlockNoteContent = ({ content }) => {
 	const editor = useCreateBlockNote({
@@ -32,9 +38,24 @@ const BlockNoteContent = ({ content }) => {
 	);
 };
 
+const SubmissionDialog = ({ isOpen, setIsOpen, submission }) => {
+	return (
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
+			<DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+				<DialogHeader>
+					<DialogTitle>{submission.user_name}'s Submission</DialogTitle>
+				</DialogHeader>
+				<BlockNoteContent content={submission.content} />
+			</DialogContent>
+		</Dialog>
+	);
+};
+
 export function CampaignLayout({ creations, projectId, campaigns }) {
 	const [selectedCreation, setSelectedCreation] = useState(null)
 	const [submissions, setSubmissions] = useState([])
+	const [selectedSubmission, setSelectedSubmission] = useState(null)
+	const [isSubmissionDialogOpen, setIsSubmissionDialogOpen] = useState(false)
 
 	useEffect(() => {
 		if (selectedCreation) {
@@ -107,7 +128,14 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 							<div className="grid grid-cols-3 gap-4">
 								{submissions.length > 0 ? (
 									submissions.map((submission) => (
-										<Card key={submission.id} className="w-full h-64 overflow-hidden">
+										<Card 
+											key={submission.id} 
+											className="w-full h-64 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+											onClick={() => {
+												setSelectedSubmission(submission);
+												setIsSubmissionDialogOpen(true);
+											}}
+										>
 											<CardContent className="p-0 w-full h-full flex flex-col">
 												<div className="flex-grow overflow-auto">
 													{submission.content ? (
@@ -126,6 +154,13 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 									<p className="col-span-3">No submissions available for this creation.</p>
 								)}
 							</div>
+							{selectedSubmission && (
+								<SubmissionDialog
+									isOpen={isSubmissionDialogOpen}
+									setIsOpen={setIsSubmissionDialogOpen}
+									submission={selectedSubmission}
+								/>
+							)}
 						</div>
 					</div>
 				) : (
