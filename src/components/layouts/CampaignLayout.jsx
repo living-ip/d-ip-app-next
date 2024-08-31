@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { CreationCard } from "@/components/cards/CreationCard"
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog"
-import CreateCreationDialog from "@/components/dialog/CreateCreationDialog"
+import CreateCreationSheet from "@/components/dialog/CreateCreationSheet"
 import { getCreationSubmissions } from "@/lib/creations"
 import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { useCreateBlockNote } from "@blocknote/react"
@@ -80,9 +80,9 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
 			{/* Left column: Create button, campaign info, and scrollable list of cards */}
 			<div className="w-1/3 border-r flex flex-col">
 				<div className="p-2 space-y-2">
-					<CreateCreationDialog>
+					<CreateCreationSheet>
 						<Button className="w-full">Create New Creation</Button>
-					</CreateCreationDialog>
+					</CreateCreationSheet>
 					{campaigns && campaigns.length > 0 && (
 						<CreationsVotingDialog campaign={campaigns[0]}>
 							<Button variant="outline" className="w-full">

@@ -1,20 +1,16 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose } from "@/components/ui/sheet";
+import { useForm, Controller } from "react-hook-form";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FormEditor } from "@/components/editor/FormEditor";
-import { DatePickerWithPresets } from "@/components/ui/date-picker";
-import { createCreation } from "@/lib/creations";
-import { useParams } from "react-router-dom";
+import DatePickerWithPresets from "@/components/simple/DatePicker";
+import FormEditor from "@/components/editor/FormEditor";
 import { useToast } from "@/components/ui/use-toast";
 
-export function CreateCreationSheet({ open, onOpenChange }) {
-  const { register, handleSubmit, setValue, watch } = useForm();
-  const [image, setImage] = useState(null);
-  const [deadline, setDeadline] = useState(new Date());
-  const { pid } = useParams();
+export default function CreateCreationSheet() {
+  const [open, setOpen] = useState(false);
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
   const { toast } = useToast();
 
   const onSubmit = async (data) => {
@@ -22,77 +18,101 @@ export function CreateCreationSheet({ open, onOpenChange }) {
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("reward", data.reward);
-    formData.append("deadline", deadline.getTime());
-    if (image) {
-      formData.append("image", image);
+    if (data.image[0]) {
+      formData.append("image", data.image[0]);
+    }
+    if (data.deadline) {
+      formData.append("deadline", data.deadline.getTime().toString());
     }
 
     try {
-      await createCreation(pid, formData);
       toast({
-        title: "Creation created successfully",
-        description: "Your new creation has been added to the project.",
+        title: "Creation successful",
+        description: "Your new creation has been added.",
       });
-      onOpenChange(false);
+      setOpen(false);
+      reset();
     } catch (error) {
       console.error("Error creating creation:", error);
       toast({
-        title: "Error creating creation",
-        description: "There was a problem creating your creation. Please try again.",
+        title: "Error",
+        description: "There was a problem creating your creation.",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant="outline">Create Creation</Button>
+      </SheetTrigger>
+      <SheetContent className="sm:max-w-[425px]">
         <SheetHeader>
-          <SheetTitle>Create New Creation</SheetTitle>
-          <SheetDescription>Add a new creation to your project.</SheetDescription>
+          <SheetTitle>Create Creation</SheetTitle>
         </SheetHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+          <div className="space-y-1">
             <Label htmlFor="title">Title</Label>
-            <Input id="title" {...register("title", { required: true })} />
+            <Input
+              id="title"
+              {...register("title", { required: "Title is required" })}
+              aria-invalid={errors.title ? "true" : "false"}
+            />
+            {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
           </div>
-          <div>
+
+          <div className="space-y-1">
             <Label htmlFor="description">Description</Label>
-            <FormEditor
-              id="description"
-              {...register("description", { required: true })}
-              onChange={(value) => setValue("description", value)}
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: "Description is required" }}
+              render={({ field }) => (
+                <FormEditor
+                  id="description"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="deadline">Deadline</Label>
+            <Controller
+              name="deadline"
+              control={control}
+              render={({ field }) => (
+                <DatePickerWithPresets
+                  date={field.value}
+                  setDate={field.onChange}
+                />
+              )}
             />
           </div>
-          <div>
+
+          <div className="space-y-1">
             <Label htmlFor="reward">Reward</Label>
             <Input
               id="reward"
-              type="number"
-              {...register("reward", { required: true, min: 0 })}
+              {...register("reward", { required: "Reward is required" })}
+              aria-invalid={errors.reward ? "true" : "false"}
             />
+            {errors.reward && <p className="text-sm text-destructive">{errors.reward.message}</p>}
           </div>
-          <div>
+
+          <div className="space-y-1">
             <Label htmlFor="image">Image</Label>
             <Input
               id="image"
               type="file"
-              onChange={(e) => setImage(e.target.files[0])}
+              {...register("image")}
             />
           </div>
-          <div>
-            <Label htmlFor="deadline">Deadline</Label>
-            <DatePickerWithPresets
-              date={deadline}
-              setDate={setDeadline}
-            />
-          </div>
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
-            </SheetClose>
-            <Button type="submit">Create</Button>
-          </SheetFooter>
+
+          <Button type="submit" className="w-full">Create Creation</Button>
         </form>
       </SheetContent>
     </Sheet>
