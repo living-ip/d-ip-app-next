@@ -7,7 +7,7 @@ import {getUserProfile, getUserRoles} from "@/lib/user";
 import {getProject, updateProject} from "@/lib/project";
 import {getCookie} from "cookies-next";
 import {initializeStore} from "@/lib/store";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 
@@ -36,7 +36,7 @@ export default function EditProject({project}) {
 	};
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<div className="flex flex-col w-full overflow-auto items-left min-h-screen">
 				<Card className="w-full bg-white mt-10">
 					<CardContent className="mt-10 mb-4 text-4xl font-bold">Edit a Project</CardContent>
@@ -53,7 +53,7 @@ export default function EditProject({project}) {
 					/>
 				</Card>
 			</div>
-		</NewLayout>
+		</MainLayout>
 	)
 }
 

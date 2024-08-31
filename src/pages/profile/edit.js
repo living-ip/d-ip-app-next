@@ -6,7 +6,7 @@ import {useRouter} from "next/router";
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {AiOutlineCamera} from "react-icons/ai";
 import {initializeStore, useStore} from "@/lib/store";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile, getUserRoles, updateUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
@@ -57,7 +57,7 @@ export default function EditProfile() {
 	}
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<main
 				className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5 max-md:max-w-full">
 				<h1 className="text-3xl leading-9 text-neutral-950 max-md:max-w-full">Settings</h1>
@@ -115,7 +115,7 @@ export default function EditProfile() {
 					</div>
 				</div>
 			</main>
-		</NewLayout>
+		</MainLayout>
 	);
 }
 

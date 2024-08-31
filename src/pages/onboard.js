@@ -1,15 +1,15 @@
 import {RegisterCard} from "@/components/cards/RegisterCard";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/user";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 
 export default function Onboard() {
 	return (
-		<NewLayout>
+		<MainLayout>
 			<div className="flex items-center justify-center">
 				<RegisterCard/>
 			</div>
-		</NewLayout>
+		</MainLayout>
 	);
 }
 

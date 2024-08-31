@@ -7,7 +7,7 @@ import { getChange, getChangeVotes } from "@/lib/change";
 import { getProject } from "@/lib/project";
 import { getDocument } from "@/lib/document";
 import { getUserProfile } from "@/lib/user";
-import { NewLayout } from "@/components/NewLayout";
+import { MainLayout } from "@/components/layouts/MainLayout";
 import { VotingForm } from "@/components/vote/VotingForm";
 import { VotePageBadge } from "@/components/badge/VotePageBadge";
 import { ResultsCard } from "@/components/cards/ResultsCard";
@@ -67,7 +67,7 @@ export default function Index({ project, document, change, changeVotes, userVote
   );
 
   return (
-    <NewLayout>
+    <MainLayout>
       <div className="flex flex-col justify-center pb-6 bg-neutral-100">
         <main className="flex flex-col items-start p-8 w-full bg-white rounded-3xl shadow-md max-md:px-5">
           <div className="flex gap-3 items-center flex-wrap">
@@ -116,7 +116,7 @@ export default function Index({ project, document, change, changeVotes, userVote
           </section>
         </main>
       </div>
-    </NewLayout>
+    </MainLayout>
   );
 }
 

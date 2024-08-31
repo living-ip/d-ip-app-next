@@ -3,7 +3,7 @@ import {authStytchRequest} from "@/lib/stytch";
 import {getProject} from "@/lib/project";
 import {getDocument, getDocumentChanges} from "@/lib/document";
 import {getChangeVotes} from "@/lib/change";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {ChangeCard} from "@/components/cards/ChangeCard";
 import {initializeStore} from "@/lib/store";
 import {getUserProfile} from "@/lib/user";
@@ -29,7 +29,7 @@ export default function Index({project, document, changesWithVotes}) {
 	const completedChanges = changesWithVotes.filter(change => change.closed || change.merged);
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<div
 				className="flex flex-col self-center px-4 sm:px-8 md:px-20 py-8 w-full bg-white min-h-screen border rounded-3xl">
 				<section className="flex flex-col md:flex-row gap-3 justify-between w-full">
@@ -67,7 +67,7 @@ export default function Index({project, document, changesWithVotes}) {
 					)}
 				</section>
 			</div>
-		</NewLayout>
+		</MainLayout>
 	);
 }
 

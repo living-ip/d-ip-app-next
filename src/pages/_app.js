@@ -5,6 +5,7 @@ import "@blocknote/shadcn/style.css";
 import { createStytchUIClient } from '@stytch/nextjs/ui'
 import { StytchProvider } from '@stytch/nextjs'
 import { DynamicContextProvider, getAuthToken } from "@dynamic-labs/sdk-react-core";
+import {IsBrowser} from "@dynamic-labs/sdk-react-core";
 import { SolanaWalletConnectors } from "@dynamic-labs/solana";
 import Head from "next/head";
 import StoreProvider from "@/lib/storeProvider";
@@ -95,6 +96,7 @@ export default function App({ Component, pageProps }) {
         <title>Living IP</title>
         <link rel="icon" href="https://storage.googleapis.com/syb_us_cdn/sibylline_favicon.png" />
       </Head>
+      <IsBrowser>
       <DynamicContextProvider
         theme="auto"
         settings={{
@@ -114,6 +116,7 @@ export default function App({ Component, pageProps }) {
         </StytchProvider>
       </DynamicContextProvider>
       <Toaster />
+      </IsBrowser>
     </>
   )
 }

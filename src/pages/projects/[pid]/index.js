@@ -6,7 +6,7 @@ import {initializeStore, useStore} from "@/lib/store";
 import {IoArrowBackOutline} from "react-icons/io5";
 import {DocumentCard} from "@/components/cards/DocumentCard";
 import {CreationCard} from "@/components/cards/CreationCard";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {getCreationsCampaigns, getProjectCreations} from "@/lib/creations";
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog";
@@ -56,7 +56,7 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 	const contributorCount = "XX";
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<main className="flex flex-col self-center w-full bg-white rounded-3xl shadow max-md:max-w-full">
 				<section
 					className="flex flex-row max-md:flex-col gap-3 justify-between max-md:justify-center w-full px-20 py-8 max-md:px-5 rounded-t-3xl"
@@ -149,7 +149,7 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 					</div>
 				</article>
 			</main>
-		</NewLayout>
+		</MainLayout>
 	);
 };
 

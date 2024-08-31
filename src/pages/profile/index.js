@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ProfileCard} from "@/components/cards/ProfileCard";
-import {NewLayout} from "@/components/NewLayout";
+import {MainLayout} from "@/components/layouts/MainLayout";
 import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
@@ -9,11 +9,11 @@ import {initializeStore, useStore} from "@/lib/store";
 export default function ProfilePage() {
 	const [userProfile] = useStore((state) => [state.userProfile]);
 	return (
-		<NewLayout>
+		<MainLayout>
 			<main className="container mx-auto px-4 py-8 max-w-3xl">
 				<ProfileCard profile={userProfile}/>
 			</main>
-		</NewLayout>
+		</MainLayout>
 	);
 }
 

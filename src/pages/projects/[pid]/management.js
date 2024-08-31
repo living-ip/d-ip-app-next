@@ -3,9 +3,8 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { NewLayout } from "@/components/NewLayout";
+import { MainLayout } from "@/components/layouts/MainLayout";
 import { Switch } from "@/components/ui/switch";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
     addUserToProject,
     cancelInvite,
@@ -35,15 +34,6 @@ import { InvitesTable } from '@/components/InvitesTable';
 import { AccessRequestsTable } from '@/components/AccessRequestsTable';
 
 const ROLES = ["project_manager", "moderator", "editor", "voter", "viewer"];
-const TIMEFRAMES = [
-    {label: "1 hour", value: 1 * 60 * 60 * 1000},
-    {label: "4 hours", value: 4 * 60 * 60 * 1000},
-    {label: "8 hours", value: 8 * 60 * 60 * 1000},
-    {label: "12 hours", value: 12 * 60 * 60 * 1000},
-    {label: "1 day", value: 24 * 60 * 60 * 1000},
-    {label: "3 days", value: 72 * 60 * 60 * 1000},
-    {label: "7 days", value: 168 * 60 * 60 * 1000}
-];
 
 export default function ManagementPanel({
     pid,
@@ -302,7 +292,7 @@ export default function ManagementPanel({
 	};
 
 	return (
-		<NewLayout>
+		<MainLayout>
 			<div className="max-w-4xl mx-auto p-8">
 				<h1 className="text-3xl font-bold mb-6">Project Management Admin Panel</h1>
 
@@ -393,7 +383,7 @@ export default function ManagementPanel({
 					/>
 				</Section>
 			</div>
-		</NewLayout>
+		</MainLayout>
 	);
 }
 
