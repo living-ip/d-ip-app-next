@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react"
-import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {Button} from "@/components/ui/button"
 import {CreationCard} from "@/components/cards/CreationCard"
@@ -7,6 +7,30 @@ import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog"
 import CreateCreationDialog from "@/components/CreateCreationDialog"
 import {getCreationSubmissions} from "@/lib/creations"
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
+import {useCreateBlockNote} from "@blocknote/react"
+import "@blocknote/core/style.css"
+import ReactMarkdown from 'react-markdown'
+
+const BlockNoteContent = ({content}) => {
+	const editor = useCreateBlockNote({
+		initialContent: JSON.parse(content),
+		editable: false
+	});
+
+	const [markdown, setMarkdown] = useState('');
+
+	useEffect(() => {
+		editor.blocksToMarkdownLossy().then(md => {
+			setMarkdown(md);
+		});
+	}, [editor]);
+
+	return (
+		<div className="prose prose-sm max-w-none p-6">
+			<ReactMarkdown className="text-black space-y-4">{markdown}</ReactMarkdown>
+		</div>
+	);
+};
 
 export function CampaignLayout({creations, projectId, campaigns}) {
 	const [selectedCreation, setSelectedCreation] = useState(null)
@@ -69,18 +93,16 @@ export function CampaignLayout({creations, projectId, campaigns}) {
 						/>
 						<div>
 							<h2 className="text-2xl font-bold mb-4">Submissions</h2>
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+							<div className="grid grid-cols-1 gap-4">
 								{submissions.length > 0 ? (
 									submissions.map((submission) => (
-										<Card key={submission.id} className="cursor-pointer hover:bg-accent">
-											<CardHeader>
-												<CardTitle>{submission.user_name || 'Anonymous'}</CardTitle>
-												<CardDescription>
-													{submission.content && typeof submission.content === 'string'
-														? `${submission.content.slice(0, 100)}${submission.content.length > 100 ? '...' : ''}`
-														: 'No content available'}
-												</CardDescription>
-											</CardHeader>
+										<Card key={submission.id} className="w-full">
+											<CardContent className="p-0 w-full">
+												<BlockNoteContent content={submission.content} />
+												<div className="p-4">
+													<CardTitle>{submission.user_name || 'Anonymous'}</CardTitle>
+												</div>
+											</CardContent>
 										</Card>
 									))
 								) : (
