@@ -6,6 +6,7 @@ import { CreationCard } from "@/components/cards/CreationCard"
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog"
 import CreateCreationDialog from "@/components/CreateCreationDialog"
 import { getCreationSubmissions } from "@/lib/creations"
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export function CampaignLayout({ creations, projectId, campaigns }) {
   const [selectedCreation, setSelectedCreation] = useState(null)
@@ -14,8 +15,7 @@ export function CampaignLayout({ creations, projectId, campaigns }) {
   useEffect(() => {
     if (selectedCreation) {
       const fetchSubmissions = async () => {
-        const jwt = "YOUR_JWT_TOKEN" // Replace this with the actual JWT token
-        const result = await getCreationSubmissions(projectId, selectedCreation.did, jwt)
+        const result = await getCreationSubmissions(projectId, selectedCreation.did, getAuthToken())
         setSubmissions(result.submissions || [])
       }
       fetchSubmissions()
