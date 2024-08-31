@@ -9,8 +9,12 @@ import { Label } from "@/components/ui/label"
 import DatePickerWithPresets from "@/components/simple/DatePicker"
 import FormEditor from "@/components/editor/FormEditor"
 import { useToast } from "@/components/ui/use-toast"
+import {createCreationRequest} from "@/lib/creations";
+import {useRouter} from "next/router";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core"
 
 export default function CreateCreationSheet() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const { register, handleSubmit, control, reset, formState: { errors } } = useForm()
   const { toast } = useToast()
@@ -28,9 +32,7 @@ export default function CreateCreationSheet() {
     }
 
     try {
-      // Here you would typically send the formData to your API
-      // For example: await fetch('/api/creations', { method: 'POST', body: formData })
-
+      await createCreationRequest(router.query.pid, data, getAuthToken())
       toast({
         title: "Creation successful",
         description: "Your new creation has been added.",
@@ -84,19 +86,19 @@ export default function CreateCreationSheet() {
             {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="deadline">Deadline</Label>
-            <Controller
-              name="deadline"
-              control={control}
-              render={({ field }) => (
-                <DatePickerWithPresets
-                  date={field.value}
-                  setDate={(date) => field.onChange(date)}
-                />
-              )}
-            />
-          </div>
+          {/*<div className="space-y-1">*/}
+          {/*  <Label htmlFor="deadline">Deadline</Label>*/}
+          {/*  <Controller*/}
+          {/*    name="deadline"*/}
+          {/*    control={control}*/}
+          {/*    render={({ field }) => (*/}
+          {/*      <DatePickerWithPresets*/}
+          {/*        date={field.value}*/}
+          {/*        setDate={(date) => field.onChange(date)}*/}
+          {/*      />*/}
+          {/*    )}*/}
+          {/*  />*/}
+          {/*</div>*/}
 
           <div className="space-y-1">
             <Label htmlFor="reward">Reward</Label>
