@@ -20,8 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export function DatePickerWithPresets() {
-  const [date, setDate] = useState()
+export function DatePickerWithPresets({ date, setDate }) {
 
   return (
     <Popover>
