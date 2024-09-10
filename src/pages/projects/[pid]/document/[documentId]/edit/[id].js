@@ -1,5 +1,5 @@
 import "@mdxeditor/editor/style.css";
-import Editor from "@/components/edit/Editor";
+// import Editor from "@/components/edit/Editor";
 import {useState} from "react";
 import {useRouter} from "next/router";
 import {getChange, publishChange, updateChange} from "@/lib/change";
@@ -9,6 +9,10 @@ import {EditChangeLayout} from "@/components/EditChangeLayout";
 import {FiEdit3} from "react-icons/fi";
 import {useToast} from "@/components/ui/use-toast";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
+import dynamic from "next/dynamic";
+import {useEffect} from "react";
+
+const ChangeEditor = dynamic(() => import("@/components/editor/ChangeEditor"), {ssr: false});
 
 export default function Index({project, document, change}) {
 	const decodedContent = Buffer.from(change.content, 'base64').toString("utf-8");
@@ -19,6 +23,10 @@ export default function Index({project, document, change}) {
 	const editorCallback = (data) => {
 		setPageData(data);
 	};
+
+	useEffect(() => {
+		console.log(pageData);
+	}, [pageData]);
 
 	const saveHandler = async () => {
 		console.log("Updating Change", pageData);
@@ -62,7 +70,8 @@ export default function Index({project, document, change}) {
 					</h1>
 					<section
 						className="flex flex-col p-8 mt-8 text-base bg-white rounded-3xl shadow text-neutral-600 max-md:px-5 max-md:max-w-full">
-						<Editor markdown={pageData} onChange={editorCallback}/>
+						{/* <Editor markdown={pageData} onChange={editorCallback}/> */}
+						<ChangeEditor content={decodedContent} saveContent={editorCallback}/>
 					</section>
 				</div>
 			</div>
