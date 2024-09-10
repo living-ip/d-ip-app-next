@@ -54,12 +54,13 @@ export default function Editor({ creation, content, saveContent }) {
     (async () => {
       try {
         const blocks = editor.document;
-        const markdownContent = await editor.blocksToMarkdownLossy(blocks);
-        saveContent(markdownContent); // Call saveContent with converted markdown
+        editor.blocksToMarkdownLossy(blocks).then((markdown) => {
+          saveContent(markdown);
+        });
       } catch (error) {
         console.error("Failed to convert blocks to markdown:", error);
       }
-    })(); // Self-invoking async function
+    })();
   });
 
 	return <BlockNoteView editor={editor} />;
