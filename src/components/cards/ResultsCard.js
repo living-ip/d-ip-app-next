@@ -22,7 +22,9 @@ export function ResultsCard({change, changeVotes}) {
 
 	const VoterItem = ({name, src}) => (
 		<div className="flex gap-3 py-2 mt-1 text-sm font-medium leading-5 text-neutral-950">
-			<Image src={src} alt={`${name}`} height={32} width={32} className="shrink-0 w-8 aspect-square"/>
+			{src && (
+				<Image src={src} alt={`${name}`} height={32} width={32} className="shrink-0 w-8 aspect-square"/>
+			)}
 			<div className="my-auto">{name}</div>
 		</div>
 	);
