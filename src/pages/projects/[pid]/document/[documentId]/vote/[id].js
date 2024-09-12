@@ -87,7 +87,7 @@ export default function Index({ project, document, change, changeVotes, userVote
                 <VoteTimeRemainingBadge change={change} />
               </>
             ) : (
-              <VotePageBadge>Voting Closed</VotePageBadge>
+              <VotePageBadge>Closed</VotePageBadge>
             )}
           </div>
           <p className="mt-2 text-sm text-neutral-600 w-full max-w-3xl">{change.description}</p>
