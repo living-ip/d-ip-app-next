@@ -21,7 +21,7 @@ export default function VoteTimeRemainingBadge({change}){
 		)
 	} else {
 		return (
-			<VotePageBadge>Voting Closed</VotePageBadge>
+			<VotePageBadge>Closed</VotePageBadge>
 		)
 	}
 

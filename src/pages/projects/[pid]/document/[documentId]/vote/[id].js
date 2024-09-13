@@ -61,7 +61,7 @@ export default function Index({ project, document, change, changeVotes, userVote
 
   const ResultsSection = () => (
     <>
-      <h2 className="mt-4 text-lg font-semibold">Results</h2>
+      <h2 className="mt-4 text-lg px-5 font-semibold">Results</h2>
       <AwaitResults />
     </>
   );
