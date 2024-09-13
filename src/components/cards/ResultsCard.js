@@ -22,7 +22,9 @@ export function ResultsCard({change, changeVotes}) {
 
 	const VoterItem = ({name, src}) => (
 		<div className="flex gap-3 py-2 mt-1 text-sm font-medium leading-5 text-neutral-950">
-			<Image src={src} alt={`${name}`} height={32} width={32} className="shrink-0 w-8 aspect-square"/>
+			{src && (
+				<Image src={src} alt={`${name}`} height={32} width={32} className="shrink-0 w-8 aspect-square"/>
+			)}
 			<div className="my-auto">{name}</div>
 		</div>
 	);
@@ -49,11 +51,11 @@ export function ResultsCard({change, changeVotes}) {
 			<div className="mt-8 text-lg leading-7 text-neutral-950">Voters</div>
 			<div className="mt-3 text-base font-medium leading-6 text-neutral-600">Approved</div>
 			{positiveVotes.map((voter, index) => (
-				<VoterItem key={index} name={voter.name} src={voter.avatar}/>
+				<VoterItem key={index} name={voter.name} src={voter.image_uri}/>
 			))}
 			<div className="mt-2 text-base font-medium leading-6 text-neutral-600">Rejected</div>
 			{negativeVotes.map((voter, index) => (
-				<VoterItem key={index} name={voter.name} src={voter.avatar}/>
+				<VoterItem key={index} name={voter.name} src={voter.image_uri}/>
 			))}
 		</section>
 	)
