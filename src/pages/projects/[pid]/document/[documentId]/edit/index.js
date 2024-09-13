@@ -24,9 +24,6 @@ export default function Index({project, document, changes}) {
 		[state.userRoles, state.setInvalidPermissionsDialogOpen]
 	);
 	const [name, setName] = useState("");
-	const [nameFilled, setNameFilled] = useState(false);
-	const [description, setDescription] = useState("");
-	const [descriptionFilled, setDescriptionFilled] = useState(false);
 	const [filteredStatus, setFilteredStatus] = useState("not-published");
 
 	const [loading, setLoading] = useState(false)
@@ -37,7 +34,6 @@ export default function Index({project, document, changes}) {
 			document.did,
 			{
 				name: name,
-				description: description,
 			},
 			getAuthToken()
 		);
@@ -84,51 +80,28 @@ export default function Index({project, document, changes}) {
 									<div className="flex flex-col gap-y-2 items-center max-w-full">
 										<FiEdit3
 											className="w-12 h-12 p-2 items-center justify-center shadow-md rounded-lg stroke-white bg-[#245D00] border-2 border-[#D7E2D0]"/>
-										{!nameFilled && (
-											<>
-												<div className="flex flex-col justify-center items-center py-8">
-													<div className="mb-2 text-4xl">Name the edit</div>
-													<div>Choose a fitting and understandable name for your edit.</div>
-												</div>
-												<Input
-													placeholder="Enter the name of the edit"
-													id="name"
-													value={name}
-													onChange={(e) =>
-														setName(convertNameToGithubRepo(e.target.value))
-													}
-												/>
-												<Button disabled={!name}
-												        onClick={() => setNameFilled(true)}>Continue</Button>
-											</>
-										)}
-										{nameFilled && !descriptionFilled && (
-											<>
-												<div className="flex flex-col justify-center items-center py-8">
-													<div className="mb-2 text-4xl">Add description</div>
-													<div>Write a description to summarise your edit.</div>
-												</div>
-												<Textarea
-													placeholder="Enter the change description"
-													id="description"
-													value={description}
-													onChange={(e) =>
-														setDescription(e.target.value)
-													}
-												/>
-												{loading ? (
-													<Button className={"bg-[#245D00]"} disabled>
-														<Loader2 className="mr-2 h-4 w-4 animate-spin"/>
-														Please wait
-													</Button>
-												) : (
-													<Button type="submit" disabled={!description}
-													        onClick={() => newEditHandler(document)}>
-														Create Edit
-													</Button>
-												)
-												}
-											</>
+										<div className="flex flex-col justify-center items-center py-8">
+											<div className="mb-2 text-4xl">Name the edit</div>
+											<div>Choose a fitting and understandable name for your edit.</div>
+										</div>
+										<Input
+											placeholder="Enter the name of the edit"
+											id="name"
+											value={name}
+											onChange={(e) =>
+												setName(convertNameToGithubRepo(e.target.value))
+											}
+										/>
+										{loading ? (
+											<Button className={"bg-[#245D00]"} disabled>
+												<Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+												Please wait
+											</Button>
+										) : (
+											<Button type="submit" disabled={!name}
+											        onClick={() => newEditHandler(document)}>
+												Create Edit
+											</Button>
 										)}
 									</div>
 								</div>
