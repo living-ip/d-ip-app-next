@@ -2,60 +2,52 @@
 import "@blocknote/core/fonts/inter.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { debounce } from "lodash";
-import {updateSubmissionContent, uploadEditorDoc} from "@/lib/creations";
 import {useRouter} from "next/router";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core"
+import { updateChangeContent, uploadChangeFile } from "@/lib/change";
 
-export default function Editor({ creation, content, saveContent }) {
+export default function Editor({ change, content, setMarkdown }) {
 	const router = useRouter()
 
 	const uploadFileHandler = async (file) => {
-		// const r = await uploadEditorDoc(router.query.pid, router.query.creid, creation.ucid, file, getAuthToken());
+		const r = await uploadChangeFile(change.cid, file, getAuthToken());
 		return r.uri || "";
 	}
 
-  const editor = useCreateBlockNote({
+	let blocks;
+	if (content) {
+		try {
+			blocks = JSON.parse(content)
+		} catch (error) {
+			console.error("Failed to parse note content:", error);
+		}
+	}
+	const editor = useCreateBlockNote({
+		initialContent: blocks,
 		uploadFile: uploadFileHandler
 	});
 
-  useEffect(() => {
-    if (editor && content) {
-      (async () => {
-        try {
-          // Ensure content is a valid string
-          if (typeof content === "string") {
-            const parsedBlocks = await editor.tryParseMarkdownToBlocks(content);
-            editor.replaceBlocks(editor.document, parsedBlocks);
-          } else {
-            console.error("Content is not a valid string", content);
-          }
-        } catch (error) {
-          console.error("Failed to parse note content:", error);
-        }
-      })();
-    }
-  }, [editor, content]);
-
-	// const saveNote = useCallback(
-	// 	debounce(async (content) => {
-	// 		try {
-	// 			await updateSubmissionContent(router.query.pid, router.query.creid, creation.ucid, content, getAuthToken());
-	// 			console.log("Note saved:", content);
-	// 		} catch (error) {
-	// 			console.error("Failed to save note:", error);
-	// 		}
-	// 	}, 2000),
-	// 	[creation]
-	// );
+	const saveNote = useCallback(
+		debounce(async (content) => {
+			try {
+				await updateChangeContent(change.cid, content, getAuthToken());
+				console.log("Note saved:", content);
+			} catch (error) {
+				console.error("Failed to save note:", error);
+			}
+		}, 2000),
+		[change]
+	);
 
   editor.onEditorContentChange(() => {
+    const blocks = editor.document;
+		saveNote(JSON.stringify(blocks));
     (async () => {
       try {
-        const blocks = editor.document;
         editor.blocksToMarkdownLossy(blocks).then((markdown) => {
-          saveContent(markdown);
+          setMarkdown(markdown);
         });
       } catch (error) {
         console.error("Failed to convert blocks to markdown:", error);

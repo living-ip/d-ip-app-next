@@ -35,6 +35,41 @@ export async function updateChange(changeId, changeDetails, jwt) {
   return response;
 }
 
+export async function updateChangeContent(changeId, content, jwt) {
+  const url = new URL(`${LIP_API_BASE}/change/${changeId}/content`);
+  const func = () => fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+    body: JSON.stringify({content}),
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+export async function uploadChangeFile(changeId, file, jwt){
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  const url = new URL(`${LIP_API_BASE}/change/${changeId}/file`);
+  const func = () => fetch(url, {
+      method: "POST",
+      headers: {
+          "x-lip-d-jwt": jwt,
+      },
+      body: formData
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+      return await response.json();
+  }
+  return response;
+}
+
 export async function deleteChange(changeId, jwt) {
   const url = new URL(`${LIP_API_BASE}/change/${changeId}`);
   const func = () => fetch(url, {
