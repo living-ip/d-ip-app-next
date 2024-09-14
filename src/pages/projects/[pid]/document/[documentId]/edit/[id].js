@@ -13,8 +13,8 @@ import dynamic from "next/dynamic";
 
 const ChangeEditor = dynamic(() => import("@/components/editor/ChangeEditor"), {ssr: false});
 
-export default function Index({project, document, change, content}) {
-	const [markdown, setMarkdown] = useState("");
+export default function Index({project, document, change, blocks, decodedMarkdown}) {
+	const [markdown, setMarkdown] = useState(decodedMarkdown);
 	const router = useRouter();
 	const {toast} = useToast();
 
@@ -61,7 +61,7 @@ export default function Index({project, document, change, content}) {
 					<section
 						className="flex flex-col p-8 mt-8 text-base bg-white rounded-3xl shadow text-neutral-600 max-md:px-5 max-md:max-w-full">
 						{/* <Editor markdown={pageData} onChange={editorCallback}/> */}
-						<ChangeEditor change={change} content={content} setMarkdown={setMarkdown}/>
+						<ChangeEditor change={change} blocksContent={blocks} initialMarkdown={decodedMarkdown} setMarkdown={setMarkdown}/>
 					</section>
 				</div>
 			</div>
@@ -86,10 +86,13 @@ export const getServerSideProps = async ({req, query}) => {
 			},
 		};
 	}
-	let content = "";
+	let blocks = "";
+	let markdown = "";
 	if (change.content_uri) {
 		const bucketData = await fetch(change.content_uri);
-		content = await bucketData.text();
+		blocks = await bucketData.text();
+	} else {
+		markdown = Buffer.from(change.content, 'base64').toString('utf-8');
 	}
 
 	return {
@@ -97,7 +100,8 @@ export const getServerSideProps = async ({req, query}) => {
 			project: project,
 			document: document,
 			change: change,
-			content: content,
+			blocks: blocks,
+			decodedMarkdown: markdown,
 		},
 	};
 };

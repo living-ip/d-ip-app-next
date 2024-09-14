@@ -7,8 +7,9 @@ import { debounce } from "lodash";
 import {useRouter} from "next/router";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core"
 import { updateChangeContent, uploadChangeFile } from "@/lib/change";
+import { useEffect } from "react";
 
-export default function Editor({ change, content, setMarkdown }) {
+export default function Editor({ change, blocksContent, initialMarkdown, setMarkdown }) {
 	const router = useRouter()
 
 	const uploadFileHandler = async (file) => {
@@ -17,9 +18,13 @@ export default function Editor({ change, content, setMarkdown }) {
 	}
 
 	let blocks;
-	if (content) {
+	if (blocksContent) {
 		try {
-			blocks = JSON.parse(content)
+			blocks = JSON.parse(blocksContent);
+      // We have to convert the blocks to markdown to ensure that the state is updated, so that if you publish without making any changes, the markdown is still updated
+      editor.blocksToMarkdownLossy(blocks).then((markdown) => {
+        setMarkdown(markdown);
+      });
 		} catch (error) {
 			console.error("Failed to parse note content:", error);
 		}
@@ -28,6 +33,29 @@ export default function Editor({ change, content, setMarkdown }) {
 		initialContent: blocks,
 		uploadFile: uploadFileHandler
 	});
+
+  useEffect(() => {
+    if (editor && initialMarkdown) {
+      console.log(initialMarkdown);
+      (async () => {
+        try {
+          // Ensure content is a valid string
+          if (typeof initialMarkdown === "string") {
+            const parsedBlocks = await editor.tryParseMarkdownToBlocks(initialMarkdown);
+            editor.replaceBlocks(editor.document, parsedBlocks);
+            // We have to convert the blocks to markdown to ensure that the state is updated, so that if you publish without making any changes, the markdown is still updated
+            editor.blocksToMarkdownLossy(blocks).then((markdown) => {
+              setMarkdown(markdown);
+            });
+          } else {
+            console.error("Content is not a valid string", initialMarkdown);
+          }
+        } catch (error) {
+          console.error("Failed to parse note content:", error);
+        }
+      })();
+    }
+  }, [blocks, editor, initialMarkdown, setMarkdown]);
 
 	const saveNote = useCallback(
 		debounce(async (content) => {
