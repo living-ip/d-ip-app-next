@@ -1,6 +1,6 @@
 import "@mdxeditor/editor/style.css";
 // import Editor from "@/components/edit/Editor";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {getChange, publishChange, updateChange} from "@/lib/change";
 import {getProject} from "@/lib/project";
@@ -17,6 +17,10 @@ export default function Index({project, document, change, blocks, decodedMarkdow
 	const [markdown, setMarkdown] = useState(decodedMarkdown);
 	const router = useRouter();
 	const {toast} = useToast();
+
+	useEffect(() => {
+		console.log(markdown);
+	}, [markdown]);
 
 	const saveHandler = async () => {
 		console.log("Updating Change", markdown);

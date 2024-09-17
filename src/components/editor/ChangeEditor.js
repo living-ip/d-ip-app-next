@@ -21,10 +21,6 @@ export default function Editor({ change, blocksContent, initialMarkdown, setMark
 	if (blocksContent) {
 		try {
 			blocks = JSON.parse(blocksContent);
-      // We have to convert the blocks to markdown to ensure that the state is updated, so that if you publish without making any changes, the markdown is still updated
-      editor.blocksToMarkdownLossy(blocks).then((markdown) => {
-        setMarkdown(markdown);
-      });
 		} catch (error) {
 			console.error("Failed to parse note content:", error);
 		}
@@ -35,6 +31,12 @@ export default function Editor({ change, blocksContent, initialMarkdown, setMark
 	});
 
   useEffect(() => {
+    if (editor && blocksContent) {
+      // We have to convert the blocks to markdown to ensure that the state is updated, so that if you publish without making any changes, the markdown is still updated
+      editor.blocksToMarkdownLossy(blocks).then((markdown) => {
+        setMarkdown(markdown);
+      });
+    }
     if (editor && initialMarkdown) {
       console.log(initialMarkdown);
       (async () => {
