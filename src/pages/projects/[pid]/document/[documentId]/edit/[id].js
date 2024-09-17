@@ -1,5 +1,4 @@
 import "@mdxeditor/editor/style.css";
-// import Editor from "@/components/edit/Editor";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {getChange, publishChange, updateChange} from "@/lib/change";
@@ -64,7 +63,6 @@ export default function Index({project, document, change, blocks, decodedMarkdow
 					</h1>
 					<section
 						className="flex flex-col p-8 mt-8 text-base bg-white rounded-3xl shadow text-neutral-600 max-md:px-5 max-md:max-w-full">
-						{/* <Editor markdown={pageData} onChange={editorCallback}/> */}
 						<ChangeEditor change={change} blocksContent={blocks} initialMarkdown={decodedMarkdown} setMarkdown={setMarkdown}/>
 					</section>
 				</div>
