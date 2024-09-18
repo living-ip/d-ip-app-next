@@ -14,6 +14,7 @@ import { deleteCookie } from "cookies-next";
 import { useEffect, useState, useCallback } from "react";
 import { Analytics } from "@vercel/analytics/react"
 import {useRouter} from "next/router";
+import { createUserProfile } from '@/lib/user';
 
 const stytch = createStytchUIClient(
   process.env.NEXT_PUBLIC_STYTCH_PUBLIC_TOKEN ||
@@ -102,6 +103,15 @@ export default function App({ Component, pageProps }) {
         settings={{
           environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
           walletConnectors: [SolanaWalletConnectors],
+          handlers: {
+						handleVerifiedUser: async (args) => {
+							console.log("Handling verified user", args);
+							const userData = {
+								name: args.user.firstName + " " + args.user.lastName,
+							};
+							await createUserProfile(userData, getAuthToken());
+						},
+					},
           eventsCallbacks: {
             onAuthSuccess: handleAuthSuccess,
             onLogout: handleLogout,
