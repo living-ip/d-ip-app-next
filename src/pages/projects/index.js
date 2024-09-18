@@ -83,15 +83,6 @@ export const getServerSideProps = async ({req}) => {
 			getUserProfile("TODO", dynamicAuthToken),
 			getProjects(dynamicAuthToken),
 		]);
-		const {userProfile} = user;
-		if (!userProfile) {
-			return {
-				redirect: {
-					destination: "/onboard",
-					permanent: false,
-				},
-			};
-		}
 	} else {
 		[projects] = await Promise.all([
 			getProjects(),
