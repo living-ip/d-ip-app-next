@@ -11,6 +11,7 @@ import {
   createReactInlineContentSpec
 } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
+import Link from "next/link";
 import { useCallback, useEffect } from "react";
 import { debounce } from "lodash";
 import { getAuthToken } from "@dynamic-labs/sdk-react-core";
@@ -30,9 +31,9 @@ const DocumentLink = createReactInlineContentSpec(
   },
   {
     render: (props) => (
-      <a href={`/projects/${props.inlineContent.props.projectId}/document/${props.inlineContent.props.documentId}`} target="_blank">
+      <Link href={`/projects/${props.inlineContent.props.projectId}/document/${props.inlineContent.props.documentId}`} target="_blank">
         {props.inlineContent.props.documentName}
-      </a>
+      </Link>
     ),
   }
 );
