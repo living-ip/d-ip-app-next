@@ -41,6 +41,7 @@ export function EditChangeLayout({children, publishHandler, saveHandler}) {
 		<div className="flex flex-col pb-6 bg-neutral-100 h-screen px-8">
 			<div className="flex flex-row justify-between items-center pt-4">
 				<Button variant="ghost" onClick={() => {
+					saveWrapper()
 					router.push(`/projects/${router.query.pid}/document/${router.query.documentId}/edit`)
 				}}>
 					<IoIosArrowRoundBack className="w-4 h-4"/>
