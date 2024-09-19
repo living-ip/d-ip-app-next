@@ -107,7 +107,7 @@ export default function App({ Component, pageProps }) {
 						handleVerifiedUser: async (args) => {
 							console.log("Handling verified user", args);
 							const userData = {
-								name: args.user.firstName + " " + args.user.lastName,
+								name: args.user.username,
 							};
 							await createUserProfile(userData, getAuthToken());
 						},
