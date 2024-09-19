@@ -31,28 +31,35 @@ export default function Index({ project, document }) {
 
   return (
     <MainLayout>
-      <main className="flex flex-row justify-between px-5 py-8 w-full bg-white rounded-3xl shadow">
+      <main className="flex flex-row justify-between w-full bg-white rounded-3xl shadow">
         {/* Main content area */}
-        <div className="w-[70%] pr-6 overflow-y-auto max-h-screen">
-          <div className="flex gap-3 items-center mb-4">
-            <Button
-              variant="outline"
-              className="p-2.5 rounded-sm border border-gray-200 border-solid"
-              onClick={handleBack}
-              aria-label="Go back"
-            >
-              <IoArrowBackOutline className="w-4 h-4" />
-            </Button>
-            <h1 className="text-3xl leading-9 text-neutral-950">{document.name}</h1>
-          </div>
-          <p className="mb-6 text-base leading-6 text-neutral-600">{document.description}</p>
-          <article>
-            <div className="text-base text-neutral-600">
-              {document.content && (
-                <ReadingPane content={Buffer.from(document.content, 'base64').toString("utf-8")} />
-              )}
+        <div className="w-[70%] flex flex-col h-screen">
+          {/* Sticky header */}
+          <div className="sticky top-0 bg-white z-10 px-5 py-8">
+            <div className="flex gap-3 items-center mb-4">
+              <Button
+                variant="outline"
+                className="p-2.5 rounded-sm border border-gray-200 border-solid"
+                onClick={handleBack}
+                aria-label="Go back"
+              >
+                <IoArrowBackOutline className="w-4 h-4" />
+              </Button>
+              <h1 className="text-3xl leading-9 text-neutral-950">{document.name}</h1>
             </div>
-          </article>
+            <p className="mb-6 text-base leading-6 text-neutral-600">{document.description}</p>
+          </div>
+          
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto px-5">
+            <article>
+              <div className="text-base text-neutral-600">
+                {document.content && (
+                  <ReadingPane content={Buffer.from(document.content, 'base64').toString("utf-8")} />
+                )}
+              </div>
+            </article>
+          </div>
         </div>
 
         {/* Sticky sidebar */}
