@@ -31,47 +31,46 @@ export default function Index({ project, document }) {
 
   return (
     <MainLayout>
-      <main className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5">
-        <section className="flex flex-row max-md:flex-col gap-3 justify-between w-full">
-          <div className="flex flex-col w-[73%] max-md:w-full">
-            <div className="flex gap-3 max-md:flex-wrap">
-              <Button
-                variant="outline"
-                className="p-2.5 rounded-sm border border-gray-200 border-solid"
-                onClick={handleBack}
-                aria-label="Go back"
-              >
-                <IoArrowBackOutline className="w-4 h-4" />
-              </Button>
-              <h1 className="text-3xl leading-9 text-neutral-950">{document.name}</h1>
+      <main className="flex flex-row justify-between px-5 py-8 w-full bg-white rounded-3xl shadow">
+        {/* Main content area */}
+        <div className="w-[70%] pr-6 overflow-y-auto max-h-screen">
+          <div className="flex gap-3 items-center mb-4">
+            <Button
+              variant="outline"
+              className="p-2.5 rounded-sm border border-gray-200 border-solid"
+              onClick={handleBack}
+              aria-label="Go back"
+            >
+              <IoArrowBackOutline className="w-4 h-4" />
+            </Button>
+            <h1 className="text-3xl leading-9 text-neutral-950">{document.name}</h1>
+          </div>
+          <p className="mb-6 text-base leading-6 text-neutral-600">{document.description}</p>
+          <article>
+            <div className="text-base text-neutral-600">
+              {document.content && (
+                <ReadingPane content={Buffer.from(document.content, 'base64').toString("utf-8")} />
+              )}
             </div>
-            <p className="mt-3 text-base leading-6 text-neutral-600">{document.description}</p>
-          </div>
-          <div className="flex justify-end items-center gap-3 w-[27%] max-md:w-full mt-24 max-md:mt-2">
-            <Button variant="outline" disabled>Log History</Button>
-            <Button onClick={handleVote}>Vote</Button>
-            <Button variant="secondary" onClick={handleEdit}>Edit</Button>
-          </div>
-        </section>
-        <article className="mt-6">
-          <div className="flex gap-5 max-md:flex-col max-md:gap-0">
-            <div className="flex flex-col w-[73%] max-md:w-full">
-              <div className="text-base text-neutral-600 h-full overflow-y-auto">
-                {document.content && (
-                  <ReadingPane content={Buffer.from(document.content, 'base64').toString("utf-8")} />
-                )}
-              </div>
+          </article>
+        </div>
+
+        {/* Sticky sidebar */}
+        <div className="w-[30%] pl-6 border-l border-gray-200">
+          <div className="sticky top-8 flex flex-col gap-6">
+            <div className="flex flex-row gap-2 justify-start">
+              <Button variant="outline">Log History</Button>
+              <Button onClick={handleVote}>Vote</Button>
+              <Button variant="secondary" onClick={handleEdit}>Edit</Button>
             </div>
-            <aside className="flex flex-col ml-5 w-[27%] max-md:ml-0 max-md:w-full">
-              <div className="flex flex-col grow text-neutral-950 max-md:mt-8">
-                <h2 className="text-xl">Contributors</h2>
-                {document.contributors?.map((contributor, index) => (
-                  <Contributor key={index} src={contributor.image_uri} name={contributor.name} />
-                ))}
-              </div>
-            </aside>
+            <div className="flex flex-col text-neutral-950">
+              <h2 className="text-xl mb-4">Contributors</h2>
+              {document.contributors?.map((contributor, index) => (
+                <Contributor key={index} src={contributor.image_uri} name={contributor.name} />
+              ))}
+            </div>
           </div>
-        </article>
+        </div>
       </main>
     </MainLayout>
   );
