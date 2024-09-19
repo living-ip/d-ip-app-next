@@ -61,7 +61,6 @@ export default function Index({ project, document }) {
   const router = useRouter();
 
 	const [userProfile] = useStore((state) => [state.userProfile]);
-  console.log(userProfile)
 
   const handleBack = () => router.push(`/projects/${encodeURIComponent(project.pid)}`)
   const handleVote = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/vote`);
