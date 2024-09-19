@@ -46,7 +46,7 @@ const schema = BlockNoteSchema.create({
   },
 });
 
-export default function Editor({ projectId, documentName, change, blocksContent, initialMarkdown, setMarkdown }) {
+export default function Editor({ projectId, documentId, change, blocksContent, initialMarkdown, setMarkdown }) {
 
   const uploadFileHandler = async (file) => {
     const r = await uploadChangeFile(change.cid, file, getAuthToken());
@@ -76,7 +76,6 @@ export default function Editor({ projectId, documentName, change, blocksContent,
       });
     }
     if (editor && initialMarkdown) {
-      console.log(initialMarkdown);
       (async () => {
         try {
           // Ensure content is a valid string
@@ -129,7 +128,7 @@ export default function Editor({ projectId, documentName, change, blocksContent,
 
     return documents
       .filter((doc) => doc.name.toLowerCase().includes(query.toLowerCase())
-          && doc.name !== documentName)
+          && doc.did !== documentId)
       .map((doc) => ({
         title: doc.name,
         onItemClick: () => {

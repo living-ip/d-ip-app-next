@@ -59,7 +59,7 @@ export default function Index({project, document, change, blocks, decodedMarkdow
 					</h1>
 					<section
 						className="flex flex-col p-8 mt-8 text-base bg-white rounded-3xl shadow text-neutral-600 max-md:px-5 max-md:max-w-full">
-						<ChangeEditor projectId={project.pid} documentName={document.name} change={change} blocksContent={blocks} initialMarkdown={decodedMarkdown} setMarkdown={setMarkdown}/>
+						<ChangeEditor projectId={project.pid} documentId={document.did} change={change} blocksContent={blocks} initialMarkdown={decodedMarkdown} setMarkdown={setMarkdown}/>
 					</section>
 				</div>
 			</div>
