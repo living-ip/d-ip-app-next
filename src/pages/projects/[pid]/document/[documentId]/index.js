@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/router";
 import dynamic from 'next/dynamic';
-import { authStytchRequest } from "@/lib/stytch";
 import { getProject } from "@/lib/project";
 import { getDocument } from "@/lib/document";
+import {useStore} from "@/lib/store";
 import Image from "next/image";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { MainLayout } from "@/components/layouts/MainLayout";
@@ -22,12 +26,65 @@ const Contributor = ({ src, name }) => (
   </div>
 );
 
+// Mock data for comments (replace with actual data from your API later)
+const initialComments = [
+  { id: 1, author: "John Doe", content: "Great document!", avatar: "JD" },
+  { id: 2, author: "Jane Smith", content: "I have a question about section 3.", avatar: "JS" },
+];
+
+function getInitials(name) {
+  let parts = name.split(' ')
+  let initials = parts[0][0]
+  if (parts.length > 1){
+    initials += parts[1][0]
+  }
+  return initials.toUpperCase()
+}
+
+
+function Comment({ author, content, avatar }) {
+  return (
+    <Card className="mb-4">
+      <CardHeader className="flex flex-row items-center gap-4 p-4">
+        <Avatar>
+          <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${avatar}`} />
+          <AvatarFallback>{avatar}</AvatarFallback>
+        </Avatar>
+        <div>
+          <h4 className="text-sm font-semibold">{author}</h4>
+        </div>
+      </CardHeader>
+      <CardContent className="p-4 pt-0">
+        <p className="text-sm">{content}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function Index({ project, document }) {
   const router = useRouter();
+
+	const [userProfile] = useStore((state) => [state.userProfile]);
 
   const handleBack = () => router.push(`/projects/${encodeURIComponent(project.pid)}`)
   const handleVote = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/vote`);
   const handleEdit = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/edit`);
+
+  const [comments, setComments] = useState(initialComments);
+  const [newComment, setNewComment] = useState('');
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      const comment = {
+        id: comments.length + 1,
+        author: userProfile.name || userProfile.email, // Replace with actual user data
+        content: newComment,
+        avatar: getInitials(userProfile.name || userProfile.email)
+      };
+      setComments([...comments, comment]);
+      setNewComment('');
+    }
+  };
 
   return (
     <MainLayout>
@@ -75,6 +132,26 @@ export default function Index({ project, document }) {
               {document.contributors?.map((contributor, index) => (
                 <Contributor key={index} src={contributor.image_uri} name={contributor.name} />
               ))}
+            </div>
+          </div>
+
+          {/* Comments Section */}
+          <div className="flex flex-col text-neutral-950 mt-6">
+            <h2 className="text-xl mb-4">Comments</h2>
+            <div className="space-y-4">
+              {comments.map((comment) => (
+                <Comment key={comment.id} {...comment} />
+              ))}
+            </div>
+            <div className="mt-4">
+              <Input
+                placeholder="Add a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <Button className="mt-2 w-full" onClick={handleAddComment}>
+                Add Comment
+              </Button>
             </div>
           </div>
         </div>
