@@ -1,14 +1,19 @@
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/router";
 import dynamic from 'next/dynamic';
-import { authStytchRequest } from "@/lib/stytch";
 import { getProject } from "@/lib/project";
-import { getDocument } from "@/lib/document";
+import { addDocumentComment, getDocument } from "@/lib/document";
+import {useStore} from "@/lib/store";
 import Image from "next/image";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { MainLayout } from "@/components/layouts/MainLayout";
 import { getUserProfile } from "@/lib/user";
 import { initializeStore } from "@/lib/store";
+import { getAuthToken } from '@dynamic-labs/sdk-react-core';
 
 // Dynamically import ReadingPane with SSR disabled
 const ReadingPane = dynamic(() => import("@/components/doc/ReadingPane"), { ssr: false });
@@ -22,19 +27,70 @@ const Contributor = ({ src, name }) => (
   </div>
 );
 
+function getInitials(name) {
+  let parts = name.split(' ')
+  let initials = parts[0][0]
+  if (parts.length > 1){
+    initials += parts[1][0]
+  }
+  return initials.toUpperCase()
+}
+
+
+function Comment({ name, content }) {
+  const initials = getInitials(name)
+  return (
+    <Card className="mb-4">
+      <CardHeader className="flex flex-row items-center gap-4 p-4">
+        <Avatar>
+          {/* <AvatarImage src={userProfile.image_uri} /> */}
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
+        <div>
+          <h4 className="text-sm font-semibold">{name}</h4>
+        </div>
+      </CardHeader>
+      <CardContent className="p-4 pt-0">
+        <p className="text-sm">{content}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function Index({ project, document }) {
   const router = useRouter();
+
+	const [userProfile] = useStore((state) => [state.userProfile]);
 
   const handleBack = () => router.push(`/projects/${encodeURIComponent(project.pid)}`)
   const handleVote = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/vote`);
   const handleEdit = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/edit`);
 
+  const [comments, setComments] = useState(document.comments || []);
+  
+
+  const [newComment, setNewComment] = useState('');
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      const comment = {
+        did: document.did,
+        content: newComment
+      };
+      setComments([...comments, comment]);
+      addDocumentComment(document.did, comment, getAuthToken())
+      setNewComment('');
+    }
+  };
+
   return (
     <MainLayout>
-      <main className="flex flex-col self-center px-20 py-8 w-full bg-white rounded-3xl shadow max-md:px-5">
-        <section className="flex flex-row max-md:flex-col gap-3 justify-between w-full">
-          <div className="flex flex-col w-[73%] max-md:w-full">
-            <div className="flex gap-3 max-md:flex-wrap">
+      <main className="flex flex-row justify-between w-full bg-white rounded-3xl shadow">
+        {/* Main content area */}
+        <div className="w-[70%] flex flex-col h-screen">
+          {/* Sticky header */}
+          <div className="sticky top-0 bg-white z-10 px-5 py-8">
+            <div className="flex gap-3 items-center mb-4">
               <Button
                 variant="outline"
                 className="p-2.5 rounded-sm border border-gray-200 border-solid"
@@ -45,33 +101,57 @@ export default function Index({ project, document }) {
               </Button>
               <h1 className="text-3xl leading-9 text-neutral-950">{document.name}</h1>
             </div>
-            <p className="mt-3 text-base leading-6 text-neutral-600">{document.description}</p>
+            <p className="mb-6 text-base leading-6 text-neutral-600">{document.description}</p>
           </div>
-          <div className="flex justify-end items-center gap-3 w-[27%] max-md:w-full mt-24 max-md:mt-2">
-            <Button variant="outline" disabled>Log History</Button>
-            <Button onClick={handleVote}>Vote</Button>
-            <Button variant="secondary" onClick={handleEdit}>Edit</Button>
-          </div>
-        </section>
-        <article className="mt-6">
-          <div className="flex gap-5 max-md:flex-col max-md:gap-0">
-            <div className="flex flex-col w-[73%] max-md:w-full">
-              <div className="text-base text-neutral-600 h-full overflow-y-auto">
+          
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto px-5">
+            <article>
+              <div className="text-base text-neutral-600">
                 {document.content && (
                   <ReadingPane content={Buffer.from(document.content, 'base64').toString("utf-8")} />
                 )}
               </div>
-            </div>
-            <aside className="flex flex-col ml-5 w-[27%] max-md:ml-0 max-md:w-full">
-              <div className="flex flex-col grow text-neutral-950 max-md:mt-8">
-                <h2 className="text-xl">Contributors</h2>
-                {document.contributors?.map((contributor, index) => (
-                  <Contributor key={index} src={contributor.image_uri} name={contributor.name} />
-                ))}
-              </div>
-            </aside>
+            </article>
           </div>
-        </article>
+        </div>
+
+        {/* Sticky sidebar */}
+        <div className="w-[30%] pl-6 border-l border-gray-200">
+          <div className="sticky top-8 flex flex-col gap-6">
+            <div className="flex flex-row gap-2 justify-start">
+              <Button variant="outline">Log History</Button>
+              <Button onClick={handleVote}>Vote</Button>
+              <Button variant="secondary" onClick={handleEdit}>Edit</Button>
+            </div>
+            <div className="flex flex-col text-neutral-950">
+              <h2 className="text-xl mb-4">Contributors</h2>
+              {document.contributors?.map((contributor, index) => (
+                <Contributor key={index} src={contributor.image_uri} name={contributor.name} />
+              ))}
+            </div>
+          </div>
+
+          {/* Comments Section */}
+          <div className="flex flex-col text-neutral-950 mt-6">
+            <h2 className="text-xl mb-4">Comments</h2>
+            <div className="space-y-4">
+              {comments?.map((comment) => (
+                <Comment key={comment.id} name={userProfile.name || userProfile.email} {...comment} />
+              ))}
+            </div>
+            <div className="mt-4">
+              <Input
+                placeholder="Add a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <Button className="mt-2 w-full" onClick={handleAddComment}>
+                Add Comment
+              </Button>
+            </div>
+          </div>
+        </div>
       </main>
     </MainLayout>
   );
