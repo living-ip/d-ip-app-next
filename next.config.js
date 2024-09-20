@@ -18,6 +18,7 @@ const nextConfig = {
     STYTCH_PROJECT_ID: process.env.STYTCH_PROJECT_ID,
     STYTCH_SECRET: process.env.STYTCH_SECRET,
     GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+    DYNAMIC_ENV: process.env.DYNAMIC_ENV,
   },
   images: {
     domains: [

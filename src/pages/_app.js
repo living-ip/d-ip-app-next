@@ -101,7 +101,7 @@ export default function App({ Component, pageProps }) {
       <DynamicContextProvider
         theme="auto"
         settings={{
-          environmentId: "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
+          environmentId: process.env.DYNAMIC_ENV || "17eae500-ba75-4c6c-a7ae-fbc3049c5178",
           walletConnectors: [SolanaWalletConnectors],
           handlers: {
 						handleVerifiedUser: async (args) => {
