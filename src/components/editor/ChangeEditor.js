@@ -1,31 +1,72 @@
-"use client"; // this registers <Editor> as a Client Component
+"use client";
 import "@blocknote/core/fonts/inter.css";
-import { useCreateBlockNote } from "@blocknote/react";
+import {
+  BlockNoteSchema,
+  defaultInlineContentSpecs,
+  filterSuggestionItems,
+} from "@blocknote/core";
+import {
+  useCreateBlockNote,
+  SuggestionMenuController,
+  createReactInlineContentSpec
+} from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
-import { useCallback } from "react";
+import Link from "next/link";
+import { useCallback, useEffect } from "react";
 import { debounce } from "lodash";
-import {getAuthToken} from "@dynamic-labs/sdk-react-core"
+import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { updateChangeContent, uploadChangeFile } from "@/lib/change";
-import { useEffect } from "react";
+import { getProjectDocuments } from "@/lib/project";
 
-export default function Editor({ change, blocksContent, initialMarkdown, setMarkdown }) {
-	const uploadFileHandler = async (file) => {
-		const r = await uploadChangeFile(change.cid, file, getAuthToken());
-		return r.uri || "";
-	}
+// Custom inline content type for document links
+const DocumentLink = createReactInlineContentSpec(
+  {
+    type: "documentLink",
+    propSchema: {
+      documentId: { default: "" },
+      documentName: { default: "" },
+      projectId: { default: "" },
+    },
+    content: "none",
+  },
+  {
+    render: (props) => (
+      <Link href={`/projects/${props.inlineContent.props.projectId}/document/${props.inlineContent.props.documentId}`} target="_blank">
+        {props.inlineContent.props.documentName}
+      </Link>
+    ),
+  }
+);
 
-	let blocks;
-	if (blocksContent) {
-		try {
-			blocks = JSON.parse(blocksContent);
-		} catch (error) {
-			console.error("Failed to parse note content:", error);
-		}
-	}
-	const editor = useCreateBlockNote({
-		initialContent: blocks,
-		uploadFile: uploadFileHandler
-	});
+// Create a custom schema with our document link inline content
+const schema = BlockNoteSchema.create({
+  inlineContentSpecs: {
+    ...defaultInlineContentSpecs,
+    documentLink: DocumentLink,
+  },
+});
+
+export default function Editor({ projectId, documentId, change, blocksContent, initialMarkdown, setMarkdown }) {
+
+  const uploadFileHandler = async (file) => {
+    const r = await uploadChangeFile(change.cid, file, getAuthToken());
+    return r.uri || "";
+  };
+
+  let blocks;
+  if (blocksContent) {
+    try {
+      blocks = JSON.parse(blocksContent);
+    } catch (error) {
+      console.error("Failed to parse note content:", error);
+    }
+  }
+
+  const editor = useCreateBlockNote({
+    initialContent: blocks,
+    uploadFile: uploadFileHandler,
+    schema,
+  });
 
   useEffect(() => {
     if (editor && blocksContent) {
@@ -35,7 +76,6 @@ export default function Editor({ change, blocksContent, initialMarkdown, setMark
       });
     }
     if (editor && initialMarkdown) {
-      console.log(initialMarkdown);
       (async () => {
         try {
           // Ensure content is a valid string
@@ -82,5 +122,37 @@ export default function Editor({ change, blocksContent, initialMarkdown, setMark
     })();
   });
 
-	return <BlockNoteView editor={editor} />;
+  // Function to get document items for the suggestion menu
+  const getDocumentMenuItems = async (query) => {
+    const documents = await getProjectDocuments(projectId, getAuthToken());
+
+    return documents
+      .filter((doc) => doc.name.toLowerCase().includes(query.toLowerCase())
+          && doc.did !== documentId)
+      .map((doc) => ({
+        title: doc.name,
+        onItemClick: () => {
+          editor.insertInlineContent([
+            {
+              type: "documentLink",
+              props: {
+                documentId: doc.did,
+                documentName: doc.name,
+                projectId: doc.project_id
+              },
+            },
+            " ", // add a space after the link
+          ]);
+        },
+      }));
+  };
+
+  return (
+    <BlockNoteView editor={editor}>
+      <SuggestionMenuController
+        triggerCharacter="@"
+        getItems={async (query) => filterSuggestionItems(await getDocumentMenuItems(query), query)}
+      />
+    </BlockNoteView>
+  );
 }
