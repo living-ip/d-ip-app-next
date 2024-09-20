@@ -2,21 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useRouter } from "next/router"
 import dynamic from 'next/dynamic'
 import { getProject } from "@/lib/project"
-import { addDocumentComment, getDocument } from "@/lib/document"
-import { initializeStore, useStore } from "@/lib/store"
+import { getDocument } from "@/lib/document"
+import { initializeStore } from "@/lib/store"
 import Image from "next/image"
 import { IoArrowBackOutline } from "react-icons/io5"
 import { MainLayout } from "@/components/layouts/MainLayout"
 import { getUserProfile } from "@/lib/user"
-import { getAuthToken, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import CommentSection from '@/components/CommentSection'
 
 // Dynamically import ReadingPane with SSR disabled
 const ReadingPane = dynamic(() => import("@/components/doc/ReadingPane"), { ssr: false })
@@ -30,43 +27,8 @@ const Contributor = ({ src, name }) => (
   </div>
 )
 
-function getInitials(name) {
-  if (!name) {
-    return 'LIP'
-  }
-  let parts = name.split(' ')
-  let initials = parts[0][0]
-  if (parts.length > 1) {
-    initials += parts[1][0]
-  }
-  return initials.toUpperCase()
-}
-
-function Comment({ name, content }) {
-  const initials = getInitials(name)
-  return (
-    <Card className="mb-4">
-      <CardHeader className="flex flex-row items-center gap-4 p-4">
-        <Avatar>
-          <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
-        <div>
-          <h4 className="text-sm font-semibold">{name}</h4>
-        </div>
-      </CardHeader>
-      <CardContent className="p-4 pt-0">
-        <p className="text-sm">{content}</p>
-      </CardContent>
-    </Card>
-  )
-}
-
 export default function Index({ project, document }) {
   const router = useRouter()
-  const [userProfile] = useStore((state) => [state.userProfile])
-  const { isAuthenticated } = useDynamicContext()
-  const [comments, setComments] = useState(document.comments || [])
-  const [newComment, setNewComment] = useState('')
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -80,20 +42,6 @@ export default function Index({ project, document }) {
   const handleVote = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/vote`)
   const handleEdit = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/edit`)
 
-  const handleAddComment = () => {
-    if (!isAuthenticated) {
-      return
-    }
-    if (newComment.trim()) {
-      const comment = {
-        did: document.did,
-        content: newComment
-      }
-      setComments([...comments, comment])
-      addDocumentComment(document.did, comment, getAuthToken())
-      setNewComment('')
-    }
-  }
 
   const MainContent = () => (
     <div className="flex flex-col h-full">
@@ -137,26 +85,7 @@ export default function Index({ project, document }) {
         ))}
       </div>
       <Separator />
-      <div className="flex flex-col text-neutral-950">
-        <h2 className="text-xl mb-4">Comments</h2>
-        <div className="space-y-4">
-          {comments?.map((comment) => (
-            <Comment key={comment.coid} name={userProfile.name || userProfile.email} {...comment} />
-          ))}
-        </div>
-        {isAuthenticated && (
-          <div className="mt-4">
-            <Input
-              placeholder="Add a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            <Button className="mt-2 w-full" onClick={handleAddComment} disabled={!isAuthenticated}>
-              Add Comment
-            </Button>
-          </div>
-        )}
-      </div>
+        <CommentSection documentComments={document.comments} documentId={document.did}/>
     </div>
   )
 
