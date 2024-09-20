@@ -1,4 +1,3 @@
-import {authStytchRequest} from "@/lib/stytch";
 import {getUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
@@ -37,6 +36,23 @@ export default function Projects({projects}) {
 		projects.filter(project => !userRoles.some(role => role.project === project.pid))
 	);
 
+	const yourProjectsComponent = () => {
+		if (isAuthenticated && yourProjects.length >= 0) {
+			return (
+				<>
+					<h2 className="mt-6 text-xl text-neutral-950">Your projects</h2>
+					<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-5">
+						{yourProjects.map((project) => (
+							<YourProjectCard key={project.pid} project={project}/>
+						))}
+					</div>
+					<h2 className="mt-10 text-xl text-neutral-950">Other projects</h2>
+				</>
+			)
+		}
+		return null
+	}
+
 	return (
 		<MainLayout>
 			<main className="flex flex-col px-5 sm:px-10 lg:px-20 py-8 w-full h-auto bg-white rounded-3xl shadow">
@@ -50,17 +66,7 @@ export default function Projects({projects}) {
 						)
 					}
 				</div>
-				<h2 className="mt-6 text-xl text-neutral-950">Your projects</h2>
-				<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-5">
-					{yourProjects.map((project) => (
-						<YourProjectCard key={project.pid} project={project}/>
-					))}
-				</div>
-				{yourProjects.length === 0 && (
-					<p className="mt-4 text-neutral-600">{"You don't have access to any projects yet."}</p>
-				)}
-
-				<h2 className="mt-10 text-xl text-neutral-950">Other projects</h2>
+				{yourProjectsComponent()}
 				<div className="mt-4 space-y-4">
 					{otherProjects.map((project) => (
 						<OtherProjectCard key={project.pid} project={project}/>
