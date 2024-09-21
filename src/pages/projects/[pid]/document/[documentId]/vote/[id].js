@@ -81,7 +81,7 @@ export default function Index({ project, document, change, changeVotes, userVote
             <h1 className="text-3xl font-bold leading-9 text-neutral-950">{document.name}</h1>
           </div>
           <div className="flex mt-2 space-x-2 flex-wrap">
-            {voteTimeLeft > 0 ? (
+            {voteTimeLeft && voteTimeLeft > 0 ? (
               <>
                 <VotePageBadge>Voting Ongoing</VotePageBadge>
                 <VoteTimeRemainingBadge change={change} />
@@ -95,7 +95,7 @@ export default function Index({ project, document, change, changeVotes, userVote
             <div className="flex gap-5 flex-col lg:flex-row">
               <article className="w-full lg:w-2/3">
                 <div className="max-h-screen overflow-y-auto">
-                  {files.map((file, index) => (
+                  {files && files.map((file, index) => (
                     <DiffFile key={index} {...file} />
                   ))}
                 </div>
