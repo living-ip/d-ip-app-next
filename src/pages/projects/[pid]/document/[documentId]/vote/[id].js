@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { parseDiff } from "react-diff-view";
 import { useRouter } from "next/router";
 import { IoArrowBackOutline } from "react-icons/io5";
@@ -111,7 +111,7 @@ export const getServerSideProps = async ({ req, query }) => {
       getDocument(documentId, sessionJWT),
       getChange(id, sessionJWT),
       getChangeVotes(id, { "include_voters": true }, sessionJWT),
-      getUserProfile("TODO", sessionJWT),
+      getUserProfile(sessionJWT),
     ]);
 
     if (!project || !document || !change) {
@@ -125,12 +125,6 @@ export const getServerSideProps = async ({ req, query }) => {
 
     const userVote = changeVotes.voters.find((vote) => vote.voter_id === userProfile.uid);
 
-    const zustandServerStore = initializeStore({
-      userProfile,
-      userRoles: roles,
-      currentProject: pid,
-    });
-
     return {
       props: {
         project,
@@ -138,8 +132,7 @@ export const getServerSideProps = async ({ req, query }) => {
         change,
         changeVotes: changeVotes || {},
         userVoteProp: userVote ? userVote.vote : 0,
-        initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
-        // This is still not ideal. We'll improve it further in the next step.
+        initialUserRoles: roles,
       },
     };
   } catch (error) {
