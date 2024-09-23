@@ -14,10 +14,10 @@ import { ResultsCard } from "@/components/cards/ResultsCard";
 import { AwaitResults } from "@/components/vote/AwaitResults";
 import { Button } from "@/components/ui/button";
 import VoteTimeRemainingBadge from "@/components/badge/VoteTimeRemainingBadge";
-
 import DiffFile from '@/components/diff/DiffFile';
 
 export default function Index({ project, document, change, changeVotes, userVoteProp, initialUserRoles }) {
+  console.log('Rendering Index component');
   const router = useRouter();
   const { userRoles, setInvalidPermissionsDialogOpen } = useStore((state) => ({
     userRoles: state.userRoles,
@@ -26,10 +26,13 @@ export default function Index({ project, document, change, changeVotes, userVote
   const [userVote, setUserVote] = useState(userVoteProp);
 
   useEffect(() => {
+    console.log('Setting userRoles in useEffect');
     useStore.setState({ userRoles: initialUserRoles });
   }, [initialUserRoles]);
 
+  console.log('Parsing diff data');
   const files = parseDiff(change.diff_data);
+  console.log('Calculating voteTimeLeft');
   const voteTimeLeft = change.vote_timeout - Date.now();
 
   const userCanVote = useCallback(() => {
