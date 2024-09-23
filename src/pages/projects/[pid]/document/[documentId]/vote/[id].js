@@ -2,7 +2,7 @@ import { useState } from "react";
 import { parseDiff } from "react-diff-view";
 import { useRouter } from "next/router";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { initializeStore, useStore } from "@/lib/store";
+import { useStore } from "@/lib/store";
 import { getChange, getChangeVotes } from "@/lib/change";
 import { getProject } from "@/lib/project";
 import { getDocument } from "@/lib/document";
@@ -15,49 +15,30 @@ import { AwaitResults } from "@/components/vote/AwaitResults";
 import { Button } from "@/components/ui/button";
 import VoteTimeRemainingBadge from "@/components/badge/VoteTimeRemainingBadge";
 
-const DiffLine = ({ type, content }) => {
-  const bgColor = type === 'insert' ? 'bg-green-100' : type === 'delete' ? 'bg-red-100' : 'bg-gray-100';
-  const textColor = type === 'insert' ? 'text-green-800' : type === 'delete' ? 'text-red-800' : 'text-gray-800';
+import DiffFile from '@/components/diff/DiffFile';
 
-  return (
-    <div className={`${bgColor} ${textColor} px-4 py-1 font-mono text-sm whitespace-pre-wrap break-words`}>
-      {type === 'insert' && '+ '}
-      {type === 'delete' && '- '}
-      {content}
-    </div>
-  );
-};
-
-const DiffFile = ({ hunks }) => (
-  <div className="mb-4 border rounded-lg overflow-hidden">
-    {hunks.map((hunk, index) => (
-      <div key={index} className="border-t border-gray-200 first:border-t-0">
-        {hunk.changes.map((change, changeIndex) => (
-          <DiffLine key={changeIndex} type={change.type} content={change.content} />
-        ))}
-      </div>
-    ))}
-  </div>
-);
-
-export default function Index({ project, document, change, changeVotes, userVoteProp }) {
+export default function Index({ project, document, change, changeVotes, userVoteProp, initialUserRoles }) {
   const router = useRouter();
-  const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
-    state.userRoles,
-    state.setInvalidPermissionsDialogOpen,
-  ]);
+  const { userRoles, setInvalidPermissionsDialogOpen } = useStore((state) => ({
+    userRoles: state.userRoles,
+    setInvalidPermissionsDialogOpen: state.setInvalidPermissionsDialogOpen,
+  }));
   const [userVote, setUserVote] = useState(userVoteProp);
+
+  useEffect(() => {
+    useStore.setState({ userRoles: initialUserRoles });
+  }, [initialUserRoles]);
 
   const files = parseDiff(change.diff_data);
   const voteTimeLeft = change.vote_timeout - Date.now();
 
-  const userCanVote = () => {
-    if (!userRoles.find((role) => role.project === project.pid && role.role.vote_on_change)) {
+  const userCanVote = useCallback(() => {
+    const canVote = userRoles.some((role) => role.project === project.pid && role.role.vote_on_change);
+    if (!canVote) {
       setInvalidPermissionsDialogOpen(true);
-      return false;
     }
-    return true;
-  };
+    return canVote;
+  }, [userRoles, project.pid, setInvalidPermissionsDialogOpen]);
 
   const ResultsSection = () => (
     <>
@@ -158,6 +139,7 @@ export const getServerSideProps = async ({ req, query }) => {
         changeVotes: changeVotes || {},
         userVoteProp: userVote ? userVote.vote : 0,
         initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
+        // This is still not ideal. We'll improve it further in the next step.
       },
     };
   } catch (error) {
