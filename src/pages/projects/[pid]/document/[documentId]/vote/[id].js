@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import VoteTimeRemainingBadge from "@/components/badge/VoteTimeRemainingBadge";
 
 const DiffLine = ({ type, content }) => {
+  if (!type || !content) return null;
+
   const bgColor = type === 'insert' ? 'bg-green-100' : type === 'delete' ? 'bg-red-100' : 'bg-gray-100';
   const textColor = type === 'insert' ? 'text-green-800' : type === 'delete' ? 'text-red-800' : 'text-gray-800';
 
@@ -56,13 +58,17 @@ export default function Index({ project, document, change, changeVotes, userVote
     state.userRoles,
     state.setInvalidPermissionsDialogOpen,
   ]);
-  const [userVote, setUserVote] = useState(userVoteProp);
+  const [userVote, setUserVote] = useState(userVoteProp || 0);
 
-  const files = parseDiff(change.diff_data);
-  const voteTimeLeft = change.vote_timeout - Date.now();
+  const files = change && change.diff_data ? parseDiff(change.diff_data) : [];
+  const voteTimeLeft = change && change.vote_timeout ? change.vote_timeout - Date.now() : 0;
 
   const userCanVote = () => {
-    if (!userRoles.find((role) => role.project === project.pid && role.role.vote_on_change)) {
+    if (!userRoles || !userRoles.length || !project || !project.pid) {
+      setInvalidPermissionsDialogOpen(true);
+      return false;
+    }
+    if (!userRoles.find((role) => role.project === project.pid && role.role && role.role.vote_on_change)) {
       setInvalidPermissionsDialogOpen(true);
       return false;
     }
@@ -75,6 +81,10 @@ export default function Index({ project, document, change, changeVotes, userVote
       <AwaitResults />
     </>
   );
+
+  if (!project || !document || !change) {
+    return <div>Error: Missing required data</div>;
+  }
 
   return (
     <MainLayout>
@@ -91,7 +101,7 @@ export default function Index({ project, document, change, changeVotes, userVote
             <h1 className="text-3xl font-bold leading-9 text-neutral-950">{document.name}</h1>
           </div>
           <div className="flex mt-2 space-x-2 flex-wrap">
-            {voteTimeLeft && voteTimeLeft > 0 ? (
+            {voteTimeLeft > 0 ? (
               <>
                 <VotePageBadge>Voting Ongoing</VotePageBadge>
                 <VoteTimeRemainingBadge change={change} />
@@ -100,12 +110,12 @@ export default function Index({ project, document, change, changeVotes, userVote
               <VotePageBadge>Closed</VotePageBadge>
             )}
           </div>
-          <p className="mt-2 text-sm text-neutral-600 w-full max-w-3xl">{change.description}</p>
+          <p className="mt-2 text-sm text-neutral-600 w-full max-w-3xl">{change.description || 'No description available'}</p>
           <section className="mt-7 mb-10 w-full">
             <div className="flex gap-5 flex-col lg:flex-row">
               <article className="w-full lg:w-2/3">
                 <div className="max-h-screen overflow-y-auto">
-                  {files && files.map((file, index) => (
+                  {files.map((file, index) => (
                     <DiffFile key={index} {...file} />
                   ))}
                 </div>
@@ -134,6 +144,15 @@ export const getServerSideProps = async ({ req, query }) => {
   const { pid, documentId, id } = query;
   const sessionJWT = req.cookies["x_d_jwt"];
 
+  if (!pid || !documentId || !id || !sessionJWT) {
+    return {
+      redirect: {
+        destination: "/error",
+        permanent: false,
+      },
+    };
+  }
+
   try {
     const [project, document, change, changeVotes, { userProfile, roles }] = await Promise.all([
       getProject(pid, sessionJWT),
@@ -152,11 +171,13 @@ export const getServerSideProps = async ({ req, query }) => {
       };
     }
 
-    const userVote = changeVotes.voters.find((vote) => vote.voter_id === userProfile.uid);
+    const userVote = changeVotes && changeVotes.voters 
+      ? changeVotes.voters.find((vote) => vote.voter_id === userProfile.uid)
+      : null;
 
     const zustandServerStore = initializeStore({
-      userProfile,
-      userRoles: roles,
+      userProfile: userProfile || null,
+      userRoles: roles || [],
       currentProject: pid,
     });
 
