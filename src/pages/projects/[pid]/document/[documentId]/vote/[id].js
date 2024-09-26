@@ -130,7 +130,7 @@ export const getServerSideProps = async ({ req, query }) => {
       getDocument(documentId, sessionJWT),
       getChange(id, sessionJWT),
       getChangeVotes(id, { "include_voters": true }, sessionJWT),
-      getUserProfile(sessionJWT, sessionJWT),
+      getUserProfile("TODO", sessionJWT),
     ]);
 
     if (!project || !document || !change) {
