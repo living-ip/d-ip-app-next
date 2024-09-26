@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { parseDiff } from "react-diff-view";
 import { useRouter } from "next/router";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { useStore } from "@/lib/store";
+import { initializeStore, useStore } from "@/lib/store";
 import { getChange, getChangeVotes } from "@/lib/change";
 import { getProject } from "@/lib/project";
 import { getDocument } from "@/lib/document";
@@ -14,34 +14,50 @@ import { ResultsCard } from "@/components/cards/ResultsCard";
 import { AwaitResults } from "@/components/vote/AwaitResults";
 import { Button } from "@/components/ui/button";
 import VoteTimeRemainingBadge from "@/components/badge/VoteTimeRemainingBadge";
-import DiffFile from '@/components/diff/DiffFile';
 
-export default function Index({ project, document, change, changeVotes, userVoteProp, initialUserRoles }) {
-  console.log('Rendering Index component');
+const DiffLine = ({ type, content }) => {
+  const bgColor = type === 'insert' ? 'bg-green-100' : type === 'delete' ? 'bg-red-100' : 'bg-gray-100';
+  const textColor = type === 'insert' ? 'text-green-800' : type === 'delete' ? 'text-red-800' : 'text-gray-800';
+
+  return (
+    <div className={`${bgColor} ${textColor} px-4 py-1 font-mono text-sm whitespace-pre-wrap break-words`}>
+      {type === 'insert' && '+ '}
+      {type === 'delete' && '- '}
+      {content}
+    </div>
+  );
+};
+
+const DiffFile = ({ hunks }) => (
+  <div className="mb-4 border rounded-lg overflow-hidden">
+    {hunks.map((hunk, index) => (
+      <div key={index} className="border-t border-gray-200 first:border-t-0">
+        {hunk.changes.map((change, changeIndex) => (
+          <DiffLine key={changeIndex} type={change.type} content={change.content} />
+        ))}
+      </div>
+    ))}
+  </div>
+);
+
+export default function Index({ project, document, change, changeVotes, userVoteProp }) {
   const router = useRouter();
-  const { userRoles, setInvalidPermissionsDialogOpen } = useStore((state) => ({
-    userRoles: state.userRoles,
-    setInvalidPermissionsDialogOpen: state.setInvalidPermissionsDialogOpen,
-  }));
+  const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
+    state.userRoles,
+    state.setInvalidPermissionsDialogOpen,
+  ]);
   const [userVote, setUserVote] = useState(userVoteProp);
 
-  useEffect(() => {
-    console.log('Setting userRoles in useEffect');
-    useStore.setState({ userRoles: initialUserRoles });
-  }, [initialUserRoles]);
-
-  console.log('Parsing diff data');
   const files = parseDiff(change.diff_data);
-  console.log('Calculating voteTimeLeft');
   const voteTimeLeft = change.vote_timeout - Date.now();
 
-  const userCanVote = useCallback(() => {
-    const canVote = userRoles.some((role) => role.project === project.pid && role.role.vote_on_change);
-    if (!canVote) {
+  const userCanVote = () => {
+    if (!userRoles.find((role) => role.project === project.pid && role.role.vote_on_change)) {
       setInvalidPermissionsDialogOpen(true);
+      return false;
     }
-    return canVote;
-  }, [userRoles, project.pid, setInvalidPermissionsDialogOpen]);
+    return true;
+  };
 
   const ResultsSection = () => (
     <>
@@ -114,7 +130,7 @@ export const getServerSideProps = async ({ req, query }) => {
       getDocument(documentId, sessionJWT),
       getChange(id, sessionJWT),
       getChangeVotes(id, { "include_voters": true }, sessionJWT),
-      getUserProfile(sessionJWT),
+      getUserProfile(sessionJWT, sessionJWT),
     ]);
 
     if (!project || !document || !change) {
@@ -128,6 +144,12 @@ export const getServerSideProps = async ({ req, query }) => {
 
     const userVote = changeVotes.voters.find((vote) => vote.voter_id === userProfile.uid);
 
+    const zustandServerStore = initializeStore({
+      userProfile,
+      userRoles: roles,
+      currentProject: pid,
+    });
+
     return {
       props: {
         project,
@@ -135,7 +157,7 @@ export const getServerSideProps = async ({ req, query }) => {
         change,
         changeVotes: changeVotes || {},
         userVoteProp: userVote ? userVote.vote : 0,
-        initialUserRoles: roles,
+        initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
       },
     };
   } catch (error) {
