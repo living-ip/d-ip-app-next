@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useStore } from '@/lib/store'
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { addDocumentComment } from "@/lib/document"
-import { useStore } from "@/lib/store"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { addDocumentComment, getCommentUsers } from "@/lib/document"
 import { getAuthToken, useDynamicContext } from '@dynamic-labs/sdk-react-core'
 
 function getInitials(name) {
@@ -19,51 +19,92 @@ function getInitials(name) {
   return initials.toUpperCase()
 }
 
-function Comment({ name, content }) {
-  const initials = getInitials(name)
-  return (
-    <Card className="mb-4">
-      <CardHeader className="flex flex-row items-center gap-4 p-4">
-        <Avatar>
-          <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
-        <div>
-          <h4 className="text-sm font-semibold">{name}</h4>
-        </div>
-      </CardHeader>
-      <CardContent className="p-4 pt-0">
-        <p className="text-sm">{content}</p>
-      </CardContent>
-    </Card>
-  )
-}
+function Comment({ name, content, imageUri }) {
+    const initials = getInitials(name)
+    console.log(imageUri)
+    return (
+      <Card className="mb-4">
+        <CardHeader className="flex flex-row items-center gap-4 p-4">
+          <Avatar>
+            {imageUri ? (
+              <AvatarImage src={imageUri} alt={name} />
+            ) : (<>
+              <AvatarImage src={`https://ui-avatars.com/api/?background=random?name=${name}`} alt={name} />
+              <AvatarFallback>{initials}</AvatarFallback>
+              </>
+            )}
+          </Avatar>
+          <div>
+            <h4 className="text-sm font-semibold">{name}</h4>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4 pt-0">
+          <p className="text-sm">{content}</p>
+        </CardContent>
+      </Card>
+    )
+  }
 
-export default function CommentSection({ documentComments, documentId }) {
-  const [userProfile] = useStore((state) => [state.userProfile])
+export default function CommentSection({ document }) {
   const { isAuthenticated } = useDynamicContext()
-  const [comments, setComments] = useState(documentComments || [])
+  const [userProfile] = useStore((state) => [state.userProfile]);
+  const [comments, setComments] = useState(document.comments || [])
+  const [commentUsers, setCommentUsers] = useState(null)
   const [newComment, setNewComment] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
-  const handleAddComment = useCallback(() => {
+  useEffect(() => {
+    const fetchCommentUsers = async () => {
+      try {
+        const users = await getCommentUsers(document.did)
+        setCommentUsers(users)
+        setIsLoading(false)
+      } catch (error) {
+        console.error("Error fetching comment users:", error)
+        setIsLoading(false)
+      }
+    }
+
+    fetchCommentUsers()
+  }, [document.did])
+
+  const handleAddComment = useCallback(async () => {
     if (!isAuthenticated || !newComment.trim()) {
       return
     }
-    
     const comment = {
-      did: documentId,
-      content: newComment
+      did: document.did,
+      content: newComment,
+      user_id: userProfile.user_id
     }
-    setComments(prevComments => [...prevComments, comment])
-    addDocumentComment(documentId, comment, getAuthToken())
-    setNewComment('')
-  }, [isAuthenticated, newComment, documentId])
+    try {
+      const addedComment = await addDocumentComment(document.did, comment, getAuthToken())
+      setComments(prevComments => [...prevComments, addedComment])
+      setNewComment('')
+
+      // Fetch updated comment users
+      const updatedUsers = await getCommentUsers(document.did)
+      setCommentUsers(updatedUsers)
+    } catch (error) {
+      console.error("Error adding comment:", error)
+    }
+  }, [isAuthenticated, newComment, document.did])
+
+  if (isLoading) {
+    return <div>Loading comments...</div>
+  }
 
   return (
     <div className="flex flex-col text-neutral-950">
       <h2 className="text-xl mb-4">Comments</h2>
       <div className="space-y-4">
         {comments?.map((comment, index) => (
-          <Comment key={index} name={userProfile.name || userProfile.email} {...comment} />
+          <Comment 
+            key={index} 
+            name={commentUsers[comment.user_id]?.name || 'Unkown User'}
+            content={comment.content}
+            imageUri={commentUsers[comment.user_id]?.image_uri}
+        />
         ))}
       </div>
       {isAuthenticated && (

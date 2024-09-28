@@ -85,7 +85,7 @@ export default function Index({ project, document }) {
         ))}
       </div>
       <Separator />
-        <CommentSection documentComments={document.comments} documentId={document.did}/>
+        <CommentSection document={document}/>
     </div>
   )
 

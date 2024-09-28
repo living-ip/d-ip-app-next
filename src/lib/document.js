@@ -84,6 +84,23 @@ export async function addDocumentComment(documentId, comment, jwt) {
   return response; 
 }
 
+
+export async function getCommentUsers(documentId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/document/${documentId}/comment-users`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
 export async function getDocumentChanges(documentId, queryParams = {}, jwt) {
   const params = new URLSearchParams(queryParams).toString();
   const url = new URL(`${LIP_API_BASE}/document/${documentId}/change`);
