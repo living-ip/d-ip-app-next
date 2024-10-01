@@ -22,7 +22,7 @@ import {
     rejectAccessRequest,
 } from "@/lib/admin";
 import { initializeStore, useStore } from "@/lib/store";
-import { getUserProfile } from "@/lib/user";
+import { getOwnUserProfile } from "@/lib/user";
 import { getProjectSettings, updateProjectSettings } from "@/lib/settings";
 import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { useToast } from "@/components/ui/use-toast";
@@ -400,7 +400,7 @@ export default function ManagementPanel({
 
 export async function getServerSideProps({req, query}) {
 	const sessionJWT = req.cookies["x_d_jwt"];
-	const {userProfile, roles} = await getUserProfile("TODO", sessionJWT);
+	const {userProfile, roles} = await getOwnUserProfile(essionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

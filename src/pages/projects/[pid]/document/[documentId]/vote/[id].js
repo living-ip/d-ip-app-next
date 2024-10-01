@@ -6,7 +6,7 @@ import { initializeStore, useStore } from "@/lib/store";
 import { getChange, getChangeVotes } from "@/lib/change";
 import { getProject } from "@/lib/project";
 import { getDocument } from "@/lib/document";
-import { getUserProfile } from "@/lib/user";
+import { getOwnUserProfile } from "@/lib/user";
 import { MainLayout } from "@/components/layouts/MainLayout";
 import { VotingForm } from "@/components/vote/VotingForm";
 import { VotePageBadge } from "@/components/badge/VotePageBadge";
@@ -159,7 +159,7 @@ export const getServerSideProps = async ({ req, query }) => {
       getDocument(documentId, sessionJWT),
       getChange(id, sessionJWT),
       getChangeVotes(id, { "include_voters": true }, sessionJWT),
-      getUserProfile("TODO", sessionJWT),
+      getOwnUserProfile(sessionJWT),
     ]);
 
     if (!project || !document || !change) {

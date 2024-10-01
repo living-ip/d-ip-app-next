@@ -6,7 +6,7 @@ import {getChangeVotes} from "@/lib/change";
 import {MainLayout} from "@/components/layouts/MainLayout";
 import {ChangeCard} from "@/components/cards/ChangeCard";
 import {initializeStore} from "@/lib/store";
-import {getUserProfile} from "@/lib/user";
+import {getOwnUserProfile} from "@/lib/user";
 import {Button} from "@/components/ui/button";
 import {IoArrowBackOutline} from "react-icons/io5";
 
@@ -78,7 +78,7 @@ export const getServerSideProps = async ({
 	const {pid, documentId} = query
 
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
+    const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

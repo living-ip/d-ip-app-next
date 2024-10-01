@@ -8,7 +8,7 @@ import {AiOutlineCamera} from "react-icons/ai";
 import {initializeStore, useStore} from "@/lib/store";
 import {MainLayout} from "@/components/layouts/MainLayout";
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile, getUserRoles, updateUserProfile} from "@/lib/user";
+import {getOwnUserProfile, getUserRoles, updateUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
 import {getCookie} from "cookies-next";
 import {Input} from "@/components/ui/input";
@@ -121,7 +121,7 @@ export default function EditProfile() {
 
 export const getServerSideProps = async ({req}) => {
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
+    const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

@@ -1,4 +1,4 @@
-import {getUserProfile} from "@/lib/user";
+import {getOwnUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {YourProjectCard} from "@/components/cards/YourProjectCard";
@@ -86,7 +86,7 @@ export const getServerSideProps = async ({req}) => {
 	let projects
 	if (dynamicAuthToken) {
 		[user, projects] = await Promise.all([
-			getUserProfile("TODO", dynamicAuthToken),
+			getOwnUserProfile(dynamicAuthToken),
 			getProjects(dynamicAuthToken),
 		]);
 	} else {

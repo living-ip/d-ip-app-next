@@ -2,7 +2,7 @@ import * as React from "react";
 import {ProfileCard} from "@/components/cards/ProfileCard";
 import {MainLayout} from "@/components/layouts/MainLayout";
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile} from "@/lib/user";
+import {getOwnUserProfile} from "@/lib/user";
 import {getProjects} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 
@@ -19,7 +19,7 @@ export default function ProfilePage() {
 
 export const getServerSideProps = async ({req}) => {
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
+    const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

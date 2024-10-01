@@ -1,6 +1,6 @@
 import {useRouter} from "next/router";
 import {Button} from "@/components/ui/button";
-import {getUserProfile} from "@/lib/user";
+import {getOwnUserProfile} from "@/lib/user";
 import {getProject} from "@/lib/project";
 import {initializeStore, useStore} from "@/lib/store";
 import {IoArrowBackOutline} from "react-icons/io5";
@@ -78,7 +78,7 @@ export default CreationRequestPage;
 
 export const getServerSideProps = async ({req, query}) => {
 	const sessionJWT = req.cookies["x_d_jwt"];
-	const {userProfile, roles} = await getUserProfile("TODO", sessionJWT);
+	const {userProfile, roles} = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

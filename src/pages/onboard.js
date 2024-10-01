@@ -1,6 +1,6 @@
 import {RegisterCard} from "@/components/cards/RegisterCard";
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile} from "@/lib/user";
+import {getOwnUserProfile} from "@/lib/user";
 import {MainLayout} from "@/components/layouts/MainLayout";
 
 export default function Onboard() {
@@ -22,7 +22,7 @@ export const getServerSideProps = async ({req, query}) => {
 	};
 	try {
 		const sessionJWT = req.cookies["x_d_jwt"];
-		const {userProfile} = await getUserProfile("TODO", sessionJWT);
+		const {userProfile} = await getOwnUserProfile(sessionJWT);
 		if (userProfile) {
 			return {
 				redirect: {

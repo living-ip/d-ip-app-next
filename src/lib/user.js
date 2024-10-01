@@ -18,6 +18,23 @@ export async function getUsers(jwt) {
   return response;
 }
 
+export async function getOwnUserProfile(jwt) {
+  const url = new URL(`${LIP_API_BASE}/user/me`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, {userProfile: {}});
+  if (response instanceof Response) {
+    const data = await response.json()
+    return { userProfile: data.user, roles: data.roles };
+  }
+  return response;
+}
+
 export async function getUserProfile(userId, jwt) {
   const url = new URL(`${LIP_API_BASE}/user/${userId}`);
   const func = () => fetch(url, {
