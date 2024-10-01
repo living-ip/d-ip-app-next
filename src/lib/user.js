@@ -105,3 +105,36 @@ export async function getUserRoles(userId, jwt) {
   }
   return response;
 }
+
+
+export async function getUserVotes(userId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/user/${userId}/votes`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
+export async function getUserChanges(userId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/user/${userId}/changes`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, []);
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
