@@ -10,7 +10,7 @@ import { initializeStore } from "@/lib/store"
 import Image from "next/image"
 import { IoArrowBackOutline } from "react-icons/io5"
 import { MainLayout } from "@/components/layouts/MainLayout"
-import { getUserProfile } from "@/lib/user"
+import { getOwnUserProfile } from "@/lib/user"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import CommentSection from '@/components/CommentSection'
@@ -129,7 +129,7 @@ export const getServerSideProps = async ({req, query}) => {
 		const [project, document, userProfile] = await Promise.all([
 			getProject(pid, sessionJWT),
 			getDocument(documentId, sessionJWT),
-			getUserProfile("TODO", sessionJWT).then(response => response.userProfile)
+			getOwnUserProfile(sessionJWT).then(response => response.userProfile)
 		]);
 
 		if (!userProfile) {

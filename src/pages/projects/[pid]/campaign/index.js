@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { getUserProfile } from "@/lib/user";
+import { getOwnUserProfile } from "@/lib/user";
 import { getProject } from "@/lib/project";
 import {getCreationsCampaigns, getProjectCreations} from "@/lib/creations";
 import { initializeStore } from "@/lib/store";
@@ -45,7 +45,7 @@ export default CampaignPage;
 
 export const getServerSideProps = async ({ req, query }) => {
   const sessionJWT = req.cookies["x_d_jwt"];
-  const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
+  const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
   if (!userProfile) {
     return {
       redirect: {

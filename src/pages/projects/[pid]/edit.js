@@ -3,7 +3,7 @@ import CreateEditForm from "@/components/form/CreateEditForm";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
 import {authStytchRequest} from "@/lib/stytch";
-import {getUserProfile, getUserRoles} from "@/lib/user";
+import {getOwnUserProfile, getUserRoles} from "@/lib/user";
 import {getProject, updateProject} from "@/lib/project";
 import {getCookie} from "cookies-next";
 import {initializeStore} from "@/lib/store";
@@ -60,7 +60,7 @@ export default function EditProject({project}) {
 
 export const getServerSideProps = async ({req, query}) => {
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getUserProfile("TODO", sessionJWT);
+    const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

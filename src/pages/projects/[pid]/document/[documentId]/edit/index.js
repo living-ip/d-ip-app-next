@@ -5,7 +5,7 @@ import {Dialog, DialogContent, DialogTrigger,} from "@/components/ui/dialog";
 import {createDocumentChange, getDocument, getDocumentChanges} from "@/lib/document";
 import {convertNameToGithubRepo} from "@/lib/utils";
 import {getProject} from "@/lib/project";
-import {getUserProfile} from "@/lib/user";
+import {getOwnUserProfile} from "@/lib/user";
 import {initializeStore, useStore} from "@/lib/store";
 import {MainLayout} from "@/components/layouts/MainLayout";
 import {TbArrowsSort} from "react-icons/tb";
@@ -150,7 +150,7 @@ export default function Index({project, document, changes}) {
 export const getServerSideProps = async ({req, query}) => {
 	const {pid, documentId} = query;
 	const sessionJWT = req.cookies["x_d_jwt"];
-	const {userProfile, roles} = await getUserProfile("TODO", sessionJWT);
+	const {userProfile, roles} = await getOwnUserProfile(sessionJWT);
 
 	const [project, document, userChangesRaw] = await Promise.all([
 		getProject(pid, sessionJWT),
