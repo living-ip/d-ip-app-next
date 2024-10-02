@@ -89,15 +89,16 @@ export default function ReadingPane({content}) {
 							<Edit size={16} className="mr-2"/>
 							<span>Edit</span>
 						</Toolbar.Button>
-						<Toolbar.Separator className="w-[1px] bg-gray-300 mx-1"/>
-						<Toolbar.Button
-							className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-							aria-label="Comment"
-							onClick={handleComment}
-						>
-							<MessageSquare size={16} className="mr-2"/>
-							<span>Comment</span>
-						</Toolbar.Button>
+						{/*TODO implement this when we can have "comment references"*/}
+						{/*<Toolbar.Separator className="w-[1px] bg-gray-300 mx-1"/>*/}
+						{/*<Toolbar.Button*/}
+						{/*	className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 rounded"*/}
+						{/*	aria-label="Comment"*/}
+						{/*	onClick={handleComment}*/}
+						{/*>*/}
+						{/*	<MessageSquare size={16} className="mr-2"/>*/}
+						{/*	<span>Comment</span>*/}
+						{/*</Toolbar.Button>*/}
 						<Selection.Arrow className="fill-white"/>
 					</Toolbar.Root>
 				</Selection.Content>
