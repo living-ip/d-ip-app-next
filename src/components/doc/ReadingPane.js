@@ -6,6 +6,8 @@ import {Edit, FilePlus, MessageSquare} from 'lucide-react'
 import {useRouter} from "next/router";
 import {createProjectDocument} from "@/lib/project";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
+import {createDocumentChange} from "@/lib/document";
+import {convertNameToGithubRepo} from "@/lib/utils";
 
 export default function ReadingPane({content}) {
 	const [selectedText, setSelectedText] = useState('');
@@ -32,12 +34,19 @@ export default function ReadingPane({content}) {
 		if (response.did) {
 			await router.push(`/projects/${router.query.pid}/document/${response.did}`);
 		}
+	// 	TODO error control flow & toast
 	}, [router, selectedText]);
 
-	const handleEdit = useCallback(() => {
+	const handleEdit = useCallback(async () => {
 		console.log('Editing:', selectedText);
-		// Implement your logic here
-	}, [selectedText]);
+		const change = await createDocumentChange(router.query.documentId, {
+			name: convertNameToGithubRepo(`Edit highlight: ${selectedText}`),
+		}, getAuthToken());
+		if (change.cid) {
+			await router.push(`/projects/${router.query.pid}/document/${router.query.documentId}/edit/${change.cid}`);
+		}
+	// 	TODO error control flow & toast
+	}, [router, selectedText]);
 
 	const handleComment = useCallback(() => {
 		console.log('Commenting on:', selectedText);
@@ -62,7 +71,7 @@ export default function ReadingPane({content}) {
 			</Selection.Trigger>
 			<Selection.Portal>
 				<Selection.Content asChild>
-					<Toolbar.Root className="flex p-2 space-x-2 bg-white rounded-lg shadow-md">
+					<Toolbar.Root className="flex z-50 p-2 space-x-2 bg-white rounded-lg shadow-md">
 						<Toolbar.Button
 							className="flex items-center p-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
 							aria-label="Create new sub-document"
