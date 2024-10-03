@@ -56,7 +56,7 @@ export default function CommentSection({ document }) {
   useEffect(() => {
     const fetchCommentUsers = async () => {
       try {
-        const users = await getCommentUsers(document.did)
+        const users = await getCommentUsers(document.did, getAuthToken())
         setCommentUsers(users)
         setIsLoading(false)
       } catch (error) {
@@ -83,12 +83,12 @@ export default function CommentSection({ document }) {
       setNewComment('')
 
       // Fetch updated comment users
-      const updatedUsers = await getCommentUsers(document.did)
+      const updatedUsers = await getCommentUsers(document.did, getAuthToken())
       setCommentUsers(updatedUsers)
     } catch (error) {
       console.error("Error adding comment:", error)
     }
-  }, [isAuthenticated, newComment, document.did])
+  }, [isAuthenticated, newComment, document.did, userProfile.user_id])
 
   if (isLoading) {
     return <div>Loading comments...</div>

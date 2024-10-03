@@ -36,6 +36,7 @@ export default function App({ Component, pageProps }) {
     setIsAuthenticated(false);
   }, []);
 
+  // TODO didnt we fix this?
   const setAuthCookie = useCallback(async (token) => {
     try {
       const response = await fetch('/api/set-auth-cookie', {
