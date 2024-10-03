@@ -1,12 +1,9 @@
 import Image from "next/image";
 import * as React from "react";
+import {useState} from "react";
 import {Button} from "@/components/ui/button";
-import {useRouter} from "next/router";
-import {LogInDialog} from "@/components/dialog/LogInDialog";
-import {useStytchUser} from "@stytch/nextjs";
 import Link from "next/link"
 import {DynamicWidget, useDynamicContext} from "@dynamic-labs/sdk-react-core";
-import {useEffect, useState} from "react";
 
 const FeaturePoint = ({src, title, description}) => (
 	<div className="flex flex-col grow max-md:mt-10">
@@ -99,11 +96,18 @@ export default function Home() {
 				</p>
 				{
 					auth ? (
-						<Link href={"/projects"}>
-							<Button className={"mt-4"}>
-								To Projects
-							</Button>
-						</Link>
+						<div className={"flex space-x-2"}>
+							<Link href={"/projects"}>
+								<Button variant={"secondary"} className={"mt-4"}>
+									Projects
+								</Button>
+							</Link>
+							<Link href={"/projects/pid-ce6b7d54c03840adb1f5390bbcf55e05/document/did-02b21de06ee646aeaaa4135c777d6a93"}>
+								<Button className={"mt-4"}>
+									Read the Taleo Humanity
+								</Button>
+							</Link>
+						</div>
 
 					) : (
 						<div className={"pt-4"}>
