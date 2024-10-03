@@ -8,18 +8,16 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Avatar, AvatarImage} from "@/components/ui/avatar";
 import {useEffect, useState} from "react";
 import {DynamicUserProfile, useDynamicContext} from "@dynamic-labs/sdk-react-core";
+import {useMediaQuery} from "usehooks-ts";
 
 export function NavBar() {
 	const router = useRouter();
 	const [userRoles, currentProject, userProfile] = useStore((state) => [state.userRoles, state.currentProject, state.userProfile]);
 	const {isAuthenticated, handleLogOut, setShowAuthFlow} = useDynamicContext();
 	const [auth, setAuth] = useState(isAuthenticated);
-	const [isMobile, setIsMobile] = useState(false);
+	const isMobile = useMediaQuery('(max-width: 768px)')
 
 	const initials = userProfile?.name?.split(' ').map((n) => n[0]).join('') || "LIP";
-
-	const homeHandler = () => router.push(auth ? "/projects" : "/");
-
 	const isAdmin = userProfile?.email === "dan@sibylline.xyz" || userProfile?.email === "m3taversal@gmail.com";
 
 	const canAccessAdminPanel = userRoles.some((role) => role.project === currentProject && role.role.access_admin_panel);
@@ -27,17 +25,6 @@ export function NavBar() {
 	useEffect(() => {
 		setAuth(isAuthenticated);
 	}, [isAuthenticated]);
-
-	useEffect(() => {
-		const checkScreenSize = () => {
-			setIsMobile(window.innerWidth < 768); // Adjust this breakpoint as needed
-		};
-
-		checkScreenSize();
-		window.addEventListener('resize', checkScreenSize);
-
-		return () => window.removeEventListener('resize', checkScreenSize);
-	}, []);
 
 	const navItems = [
 		...((canAccessAdminPanel && router.query.pid) ? [
@@ -66,7 +53,7 @@ export function NavBar() {
 					className="w-[110px] h-auto cursor-pointer"
 					width={110}
 					height={24}
-					onClick={homeHandler}
+					onClick={() => router.push(auth ? "/projects" : "/")}
 					priority
 				/>
 				{router.pathname !== '/onboard' && (
@@ -125,7 +112,6 @@ export function NavBar() {
 									}}>Log In</Button>
 								)
 							}
-
 						</NavigationMenuList>
 					</NavigationMenu>
 				)}
