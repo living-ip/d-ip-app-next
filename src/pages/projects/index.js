@@ -10,6 +10,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Link from "next/link";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { ChevronRight, Vote } from "lucide-react";
+import {convertGithubRepoToTitle} from "@/lib/utils";
 
 const DESIRED_ORDER = [
   "Claynosaurz",
@@ -51,18 +52,19 @@ export default function Projects({ projects, openVotingCampaigns }) {
           <h2 className="text-2xl font-semibold">Active Votes</h2>
           <Carousel className="w-full">
             <CarouselContent className="-ml-2 md:-ml-4">
-              {openVotingCampaigns.map((campaign) => (
-                <CarouselItem key={campaign.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
+              {openVotingCampaigns && openVotingCampaigns.map((changeVote) => (
+                <CarouselItem key={changeVote.cid} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
                   <Card className="bg-white hover:bg-gray-50 transition-colors border-none shadow-sm hover:shadow">
                     <CardContent className="flex flex-col gap-2 p-4">
-                      <h3 className="font-semibold truncate">{campaign.title}</h3>
-                      <p className="text-sm text-gray-600 truncate">{campaign.projectName}</p>
+                      <h3 className="font-semibold truncate">{convertGithubRepoToTitle(changeVote.name)}</h3>
+                      <p className="text-sm text-gray-600 truncate">{changeVote.description}</p>
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center text-sm text-gray-500">
                           <Vote className="w-4 h-4 mr-1" />
-                          <span>{campaign.voteCount} votes</span>
+                          {/*TODO impl*/}
+                          {/*<span>{changeVote.voteCount} votes</span>*/}
                         </div>
-                        <Link href={`/campaigns/${campaign.id}`} className="flex items-center text-sm text-blue-600 hover:underline">
+                        <Link href={`/projects/${changeVote.cid}`} className="flex items-center text-sm text-blue-600 hover:underline">
                           Vote now
                           <ChevronRight className="w-4 h-4 ml-1" />
                         </Link>
@@ -145,7 +147,7 @@ export async function getServerSideProps({ req }) {
   return {
     props: {
       projects,
-      openVotingCampaigns,
+      openVotingCampaigns: openVotingCampaigns.changes || [],
       initialZustandState: JSON.parse(JSON.stringify(zustandServerStore.getState())),
     },
   };
