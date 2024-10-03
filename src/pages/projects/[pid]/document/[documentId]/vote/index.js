@@ -1,5 +1,4 @@
 import {useRouter} from "next/router";
-import {authStytchRequest} from "@/lib/stytch";
 import {getProject} from "@/lib/project";
 import {getDocument, getDocumentChanges} from "@/lib/document";
 import {getChangeVotes} from "@/lib/change";

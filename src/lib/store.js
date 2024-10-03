@@ -2,9 +2,9 @@ import {createStore, useStore as useZustandStore} from "zustand";
 import {createContext, useContext} from "react";
 
 const getDefaultInitialState = () => ({
-	userProfile: undefined,
+	userProfile: {},
 	userRoles: [],
-	currentProject: undefined,
+	currentProject: {},
 	invalidPermissionsDialogOpen: false,
 });
 
