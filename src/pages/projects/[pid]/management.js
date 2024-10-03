@@ -400,7 +400,7 @@ export default function ManagementPanel({
 
 export async function getServerSideProps({req, query}) {
 	const sessionJWT = req.cookies["x_d_jwt"];
-	const {userProfile, roles} = await getOwnUserProfile(essionJWT);
+	const {userProfile, roles} = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {
