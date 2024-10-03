@@ -80,7 +80,7 @@ export default function DocumentRootPage({ project, document }) {
           <div className="text-base text-neutral-600">
             {isLoading ? (
               <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
               </div>
             ) : content ? (
               <ReadingPane content={content} />
