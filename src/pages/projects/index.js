@@ -11,6 +11,7 @@ import Link from "next/link";
 import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
 import {ChevronRight, Vote} from "lucide-react";
 import {convertGithubRepoToTitle} from "@/lib/utils";
+import { PencilRuler } from 'lucide-react';
 
 const DESIRED_ORDER = [
 	"Claynosaurz",
@@ -67,7 +68,7 @@ export default function Projects({projects, openVotingCampaigns}) {
 												</div>
 												<Link
 													href={`/projects/${changeVote.document.project_id}/document/${changeVote.document_id}/vote/${changeVote.cid}`}
-													className="flex items-center text-sm text-blue-600 hover:underline">
+													className="flex items-center text-sm text-primary hover:underline">
 													Vote now
 													<ChevronRight className="w-4 h-4 ml-1"/>
 												</Link>
@@ -87,7 +88,7 @@ export default function Projects({projects, openVotingCampaigns}) {
 						<h1 className="text-2xl sm:text-3xl font-bold">Projects</h1>
 						{isAuthenticated && (
 							<Link href="/projects/new">
-								<Button>Create Project</Button>
+								<Button><PencilRuler/></Button>
 							</Link>
 						)}
 					</div>
