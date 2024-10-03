@@ -3,7 +3,6 @@ import {Button} from "@/components/ui/button";
 import {deleteProject, getProjects} from "@/lib/project";
 import {Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader} from "@/components/ui/dialog";
 import {AlertDialog, AlertDialogContent, AlertDialogHeader} from "@/components/ui/alert-dialog";
-import {authStytchRequest} from "@/lib/stytch";
 import {useRouter} from "next/router";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 import {MainLayout} from "@/components/layouts/MainLayout";

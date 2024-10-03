@@ -55,32 +55,6 @@ export default function ManagementPanel({
 	const [invites, setInvites] = useState(initialInvites);
 	const [accessRequests, setAccessRequests] = useState(initialAccessRequests);
 
-	const handleAccessRequest = async (role, arid) => {
-		try {
-			if (role === "reject") {
-				await rejectAccessRequest(pid, arid, getAuthToken());
-				toast({
-					title: "Access Request Rejected",
-					description: "The access request has been rejected."
-				});
-			} else {
-				await acceptAccessRequest(pid, arid, role, getAuthToken());
-				toast({
-					title: "Access Request Accepted",
-					description: "The user has been granted access to the project."
-				});
-			}
-			setAccessRequests(prevRequests => prevRequests.filter(request => request.arid !== arid));
-		} catch (error) {
-			console.error("Failed to handle access request:", error);
-			toast({
-				title: "Error",
-				description: "Failed to handle the access request. Please try again.",
-				variant: "destructive"
-			});
-		}
-	};
-
 	const [rules, setRules] = useState(changesRules.map((rule, index) => ({
 		start: rule.start,
 		end: rule.end,
@@ -233,24 +207,6 @@ export default function ManagementPanel({
 			toast({
 				title: "Failed to update user role",
 				description: "An error occurred while updating the user. Please try again later.",
-				variant: "destructive"
-			});
-		}
-	};
-
-	const handleCancelInvite = async (iid) => {
-		try {
-			await cancelInvite(pid, iid, getAuthToken());
-			setInvites(prevInvites => prevInvites.filter(invite => invite.iid !== iid));
-			toast({
-				title: "Invite Cancelled",
-				description: "The invitation has been cancelled successfully."
-			});
-		} catch (error) {
-			console.error("Failed to cancel invite:", error);
-			toast({
-				title: "Error",
-				description: "Failed to cancel the invitation. Please try again.",
 				variant: "destructive"
 			});
 		}

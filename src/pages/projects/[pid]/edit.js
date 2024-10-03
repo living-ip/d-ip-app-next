@@ -2,10 +2,8 @@ import {Card, CardContent} from "@/components/ui/card";
 import CreateEditForm from "@/components/form/CreateEditForm";
 import {useRouter} from "next/router";
 import {fileToBase64} from "@/lib/utils";
-import {authStytchRequest} from "@/lib/stytch";
-import {getOwnUserProfile, getUserRoles} from "@/lib/user";
+import {getOwnUserProfile} from "@/lib/user";
 import {getProject, updateProject} from "@/lib/project";
-import {getCookie} from "cookies-next";
 import {initializeStore} from "@/lib/store";
 import {MainLayout} from "@/components/layouts/MainLayout";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
@@ -60,7 +58,7 @@ export default function EditProject({project}) {
 
 export const getServerSideProps = async ({req, query}) => {
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
+	const {userProfile, roles} = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {

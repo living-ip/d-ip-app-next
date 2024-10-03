@@ -1,7 +1,6 @@
 import {Card, CardContent} from "@/components/ui/card";
 import CreationForm from "@/components/form/CreationForm";
 import {useRouter} from "next/router";
-import {authStytchRequest} from "@/lib/stytch";
 import {getOwnUserProfile} from "@/lib/user";
 import {fileToBase64} from "@/lib/utils";
 import {
@@ -15,7 +14,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import {useState} from "react";
 import {createProjectDocument, getProject} from "@/lib/project";
-import {getCookie} from "cookies-next";
 import {initializeStore} from "@/lib/store";
 import {MainLayout} from "@/components/layouts/MainLayout";
 import {useToast} from "@/components/ui/use-toast";
@@ -108,7 +106,7 @@ export default function CreateNewDocument({project}) {
 
 export const getServerSideProps = async ({req, query}) => {
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
+	const {userProfile, roles} = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {
