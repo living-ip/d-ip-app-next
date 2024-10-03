@@ -17,6 +17,22 @@ export async function getDocument(documentId, jwt) {
   return response;
 }
 
+export async function getDocumentContent(documentId, jwt) {
+  const url = new URL(`${LIP_API_BASE}/document/${documentId}/content`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}
+
 export async function updateDocument(documentId, documentDetails, jwt) {
   const url = new URL(`${LIP_API_BASE}/document/${documentId}`);
   const func = () => fetch(url, {

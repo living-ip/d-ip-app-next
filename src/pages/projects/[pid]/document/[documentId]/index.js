@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/router"
 import dynamic from 'next/dynamic'
 import { getProject } from "@/lib/project"
-import { getDocument } from "@/lib/document"
+import { getDocument, getDocumentContent } from "@/lib/document"
 import { initializeStore } from "@/lib/store"
 import Image from "next/image"
 import { IoArrowBackOutline } from "react-icons/io5"
@@ -14,6 +14,8 @@ import { getOwnUserProfile } from "@/lib/user"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import CommentSection from '@/components/CommentSection'
+import { useMediaQuery } from 'usehooks-ts'
+import { getAuthToken } from "@dynamic-labs/sdk-react-core"
 
 // Dynamically import ReadingPane with SSR disabled
 const ReadingPane = dynamic(() => import("@/components/doc/ReadingPane"), { ssr: false })
@@ -21,27 +23,41 @@ const ReadingPane = dynamic(() => import("@/components/doc/ReadingPane"), { ssr:
 const Contributor = ({ src, name }) => (
   <div className="flex gap-3 py-2 mt-1 text-base leading-6">
     {src && (
-      <Image src={src} alt={name} className="shrink-0 w-6 aspect-square" width="24" height="24" />
+      <Image src={src} alt={name} className="shrink-0 w-6 aspect-square rounded-full" width="24" height="24" />
     )}
     <div>{name}</div>
   </div>
 )
 
-export default function Index({ project, document }) {
+export default function DocumentRootPage({ project, document }) {
   const router = useRouter()
-  const [isMobile, setIsMobile] = useState(false)
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const [content, setContent] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+    const fetchContent = async () => {
+      if (document && document.did) {
+        try {
+          setIsLoading(true)
+          const rawContent = await getDocumentContent(document.did, getAuthToken())
+          const decodedContent = Buffer.from(rawContent.content, 'base64').toString('utf-8')
+          setContent(decodedContent)
+        } catch (error) {
+          console.error("Error fetching document content:", error)
+          // You might want to set an error state here and display it to the user
+        } finally {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    fetchContent()
+  }, [document])
 
   const handleBack = () => router.push(`/projects/${encodeURIComponent(project.pid)}`)
   const handleVote = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/vote`)
   const handleEdit = () => router.push(`/projects/${encodeURIComponent(project.pid)}/document/${document.did}/edit`)
-
 
   const MainContent = () => (
     <div className="flex flex-col h-full">
@@ -62,8 +78,14 @@ export default function Index({ project, document }) {
       <div className="flex-1 overflow-y-auto px-5">
         <article>
           <div className="text-base text-neutral-600">
-            {document.content && (
-              <ReadingPane content={Buffer.from(document.content, 'base64').toString("utf-8")} />
+            {isLoading ? (
+              <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+              </div>
+            ) : content ? (
+              <ReadingPane content={content} />
+            ) : (
+              <p>No content available.</p>
             )}
           </div>
         </article>

@@ -60,7 +60,6 @@ export default function Index({project, document, change, changeVotes, userVoteP
 	]);
 	const [userVote, setUserVote] = useState(userVoteProp || 0);
 
-	console.log("change", change);
 	const files = change && change.diff_data ? parseDiff(change.diff_data) : [];
 	const voteTimeLeft = change && change.vote_timeout ? change.vote_timeout - Date.now() : 0;
 
