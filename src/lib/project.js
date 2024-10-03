@@ -138,3 +138,51 @@ export async function requestProjectAccess(projectId, jwt) {
   }
   return response;
 }
+
+export async function getOpenVotingCampaigns(){
+  // TODO impl
+  return [
+    {
+      id: "1",
+      title: "Voting Test 1",
+      projectName: "Dan Test 2",
+      voteCount: 69
+    },
+      {
+      id: "2",
+      title: "Voting Test 1",
+      projectName: "Dan Test 2",
+      voteCount: 69
+    },
+      {
+      id: "3",
+      title: "Voting Test 1",
+      projectName: "Dan Test 2",
+      voteCount: 69
+    },
+      {
+      id: "4",
+      title: "Voting Test 1",
+      projectName: "Dan Test 2",
+      voteCount: 69
+    },
+      {
+      id: "5",
+      title: "Voting Test 1",
+      projectName: "Dan Test 2",
+      voteCount: 69
+    },
+      {
+      id: "6",
+      title: "Voting Test 1",
+      projectName: "Dan Test 2",
+      voteCount: 69
+    },
+      {
+      id: "7",
+      title: "Voting Test 1",
+      projectName: "Dan Test 2",
+      voteCount: 69
+    }
+  ];
+}
