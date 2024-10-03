@@ -2,7 +2,7 @@ import {Card, CardContent} from "@/components/ui/card";
 import CreationForm from "@/components/form/CreationForm";
 import {useRouter} from "next/router";
 import {getOwnUserProfile} from "@/lib/user";
-import {fileToBase64} from "@/lib/utils";
+import {convertNameToGithubRepo, fileToBase64} from "@/lib/utils";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -18,11 +18,14 @@ import {initializeStore} from "@/lib/store";
 import {MainLayout} from "@/components/layouts/MainLayout";
 import {useToast} from "@/components/ui/use-toast";
 import {getAuthToken} from "@dynamic-labs/sdk-react-core";
+import {createDocumentChange} from "@/lib/document";
+import {Loader2} from "lucide-react";
 
 export default function CreateNewDocument({project}) {
 	const router = useRouter();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [newDid, setNewDid] = useState(undefined)
+	const [isCreatingChange, setIsCreatingChange] = useState(false);
 	const isDocument = true;
 
 	const {toast} = useToast()
@@ -61,8 +64,11 @@ export default function CreateNewDocument({project}) {
 	};
 
 	const startEdit = () => {
-		setIsDialogOpen(false);
-		router.push(`/projects/${encodeURI(project.pid)}/document/${newDid}/edit`);
+		setIsCreatingChange(true);
+		createDocumentChange(newDid, {name: convertNameToGithubRepo("Document Creation Draft")}, getAuthToken()).then((r) => {
+			console.log("Change created: ", r);
+			router.push(`/projects/${encodeURI(project.pid)}/document/${newDid}/edit/${r.cid}`);
+		});
 	};
 
 	return (
@@ -90,11 +96,17 @@ export default function CreateNewDocument({project}) {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogAction className={"w-1/5 bg-secondary"} onClick={handleDialogClose}>
+							<AlertDialogAction className={"w-1/5 bg-secondary text-secondary-foreground"} onClick={handleDialogClose}>
 								{"Ok"}
 							</AlertDialogAction>
 							<AlertDialogAction className={"w-1/4"} onClick={startEdit}>
-								{"Start writing"}
+								{
+									isCreatingChange ? (
+										<Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+										) : (
+									 <span>Start Writing</span>
+									)
+								}
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>

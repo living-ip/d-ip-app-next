@@ -33,39 +33,6 @@ export async function getDocumentContent(documentId, jwt) {
   return response;
 }
 
-export async function updateDocument(documentId, documentDetails, jwt) {
-  const url = new URL(`${LIP_API_BASE}/document/${documentId}`);
-  const func = () => fetch(url, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "x-lip-d-jwt": jwt,
-    },
-    body: JSON.stringify(documentDetails),
-  });
-  const response = await doApiCall(func, {});
-  if (response instanceof Response) {
-    return await response.json();
-  }
-  return response;
-}
-
-export async function deleteDocument(documentId, jwt) {
-  const url = new URL(`${LIP_API_BASE}/document/${documentId}`);
-  const func = () => fetch(url, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      "x-lip-d-jwt": jwt,
-    },
-  });
-  const response = await doApiCall(func, {});
-  if (response instanceof Response) {
-    return await response.json();
-  }
-  return response;
-}
-
 export async function createDocumentChange(documentId, changeDetails, jwt) {
   const url = new URL(`${LIP_API_BASE}/document/${documentId}/change`);
   const func = () => fetch(url, {
