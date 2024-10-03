@@ -138,3 +138,19 @@ export async function requestProjectAccess(projectId, jwt) {
   }
   return response;
 }
+
+export async function getOpenVotingCampaigns(jwt){
+  const url = new URL(`${LIP_API_BASE}/change/?t=open`);
+  const func = () => fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-lip-d-jwt": jwt,
+    },
+  });
+  const response = await doApiCall(func, {});
+  if (response instanceof Response) {
+    return await response.json();
+  }
+  return response;
+}

@@ -74,7 +74,6 @@ export default function Index({ project, document }) {
   const SideContent = () => (
     <div className="flex flex-col gap-6 p-5">
       <div className="flex flex-row gap-2 justify-start">
-        <Button variant="outline" disabled>Log History</Button>
         <Button onClick={handleVote}>Vote</Button>
         <Button variant="secondary" onClick={handleEdit}>Edit</Button>
       </div>
