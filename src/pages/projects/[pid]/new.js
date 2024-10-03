@@ -90,7 +90,7 @@ export default function CreateNewDocument({project}) {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogAction className={"w-1/5"} onClick={handleDialogClose}>
+							<AlertDialogAction className={"w-1/5 bg-secondary"} onClick={handleDialogClose}>
 								{"Ok"}
 							</AlertDialogAction>
 							<AlertDialogAction className={"w-1/4"} onClick={startEdit}>
