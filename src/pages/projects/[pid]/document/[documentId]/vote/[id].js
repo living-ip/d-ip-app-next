@@ -54,23 +54,10 @@ const DiffFile = ({hunks}) => {
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
 	const router = useRouter();
-	const [userRoles] = useStore((state) => [
-		state.userRoles,
-	]);
 	const [userVote, setUserVote] = useState(userVoteProp || 0);
 
 	const files = change && change.diff_data ? parseDiff(change.diff_data) : [];
 	const voteTimeLeft = change && change.vote_timeout ? change.vote_timeout - Date.now() : 0;
-
-	const userCanVote = () => {
-		if (!userRoles || !userRoles.length || !project || !project.pid) {
-			return false;
-		}
-		if (!userRoles.find((role) => role.project === project.pid && role.role && role.role.vote_on_change)) {
-			return false;
-		}
-		return true;
-	};
 
 	const ResultsSection = () => (
 		<>
@@ -120,13 +107,11 @@ export default function Index({project, document, change, changeVotes, userVoteP
 							<aside className="w-full lg:w-1/3">
 								{change.closed || change.merged ? (
 									<ResultsCard change={change} changeVotes={changeVotes}/>
-								) : userCanVote() ? (
+								) : (
 									<>
 										<VotingForm change={change} userVote={userVote} setUserVote={setUserVote}/>
 										<ResultsSection/>
 									</>
-								) : (
-									<ResultsSection/>
 								)}
 							</aside>
 						</div>
