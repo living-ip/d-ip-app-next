@@ -54,9 +54,8 @@ const DiffFile = ({hunks}) => {
 
 export default function Index({project, document, change, changeVotes, userVoteProp}) {
 	const router = useRouter();
-	const [userRoles, setInvalidPermissionsDialogOpen] = useStore((state) => [
+	const [userRoles] = useStore((state) => [
 		state.userRoles,
-		state.setInvalidPermissionsDialogOpen,
 	]);
 	const [userVote, setUserVote] = useState(userVoteProp || 0);
 
@@ -65,11 +64,9 @@ export default function Index({project, document, change, changeVotes, userVoteP
 
 	const userCanVote = () => {
 		if (!userRoles || !userRoles.length || !project || !project.pid) {
-			setInvalidPermissionsDialogOpen(true);
 			return false;
 		}
 		if (!userRoles.find((role) => role.project === project.pid && role.role && role.role.vote_on_change)) {
-			setInvalidPermissionsDialogOpen(true);
 			return false;
 		}
 		return true;
