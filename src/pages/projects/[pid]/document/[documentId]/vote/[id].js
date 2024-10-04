@@ -73,7 +73,7 @@ const ViewModeBadge = ({ mode, currentMode, onClick }) => (
 export default function Index({ project, document, change, changeVotes, userVoteProp }) {
   const router = useRouter();
   const [userVote, setUserVote] = useState(userVoteProp || 0);
-  const [viewMode, setViewMode] = useState('change');
+  const [viewMode, setViewMode] = useState('new');
 
   const files = change && change.diff_data ? parseDiff(change.diff_data) : [];
   const voteTimeLeft = change && change.vote_timeout ? change.vote_timeout - Date.now() : 0;
@@ -115,9 +115,9 @@ export default function Index({ project, document, change, changeVotes, userVote
           </div>
           <p className="mt-2 text-sm text-neutral-600 w-full max-w-3xl">{change.description || 'No description available'}</p>
           <div className="mt-4 flex space-x-2">
-            <ViewModeBadge mode="change" currentMode={viewMode} onClick={setViewMode} />
-            <ViewModeBadge mode="previous" currentMode={viewMode} onClick={setViewMode} />
             <ViewModeBadge mode="new" currentMode={viewMode} onClick={setViewMode} />
+            <ViewModeBadge mode="previous" currentMode={viewMode} onClick={setViewMode} />
+            <ViewModeBadge mode="change" currentMode={viewMode} onClick={setViewMode} />
           </div>
           <section className="mt-7 mb-10 w-full">
             <div className="flex gap-5 flex-col lg:flex-row">
