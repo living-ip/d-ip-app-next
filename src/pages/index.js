@@ -104,7 +104,7 @@ export default function Home() {
 							</Link>
 							<Link href={"/projects/pid-ce6b7d54c03840adb1f5390bbcf55e05/document/did-02b21de06ee646aeaaa4135c777d6a93"}>
 								<Button className={"mt-4"}>
-									Read the Taleo Humanity
+									Read TeleoHumanity Manifesto
 								</Button>
 							</Link>
 						</div>
