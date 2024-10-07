@@ -35,7 +35,7 @@ export default function Index({project, document, changesWithVotes}) {
 					<div className="flex flex-col w-full">
 						<div className="flex gap-3 items-center flex-wrap">
 							<Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid">
-								<IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.back()}/>
+								<IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.push(`/projects/${project.pid}/document/${document.did}`)}/>
 							</Button>
 							<h1 className="text-2xl sm:text-3xl leading-9 text-neutral-950">{document.name}</h1>
 						</div>
