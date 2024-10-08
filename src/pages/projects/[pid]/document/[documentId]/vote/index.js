@@ -8,21 +8,37 @@ import {initializeStore} from "@/lib/store";
 import {getOwnUserProfile} from "@/lib/user";
 import {Button} from "@/components/ui/button";
 import {IoArrowBackOutline} from "react-icons/io5";
+import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
+import {useToast} from "@/components/ui/use-toast";
 
 export default function Index({project, document, changesWithVotes}) {
 	const router = useRouter();
+	const {toast} = useToast();
+	const {isAuthenticated} = useDynamicContext();
 
-	const renderChangeCards = (changes) => (
-		<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			{changes.map((change, index) => (
-				<ChangeCard
-					key={index}
-					change={change}
-					onClick={() => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote/${change.cid}`)}
-				/>
-			))}
-		</div>
-	);
+	const renderChangeCards = (changes) => {
+		let handler;
+		if (isAuthenticated) {
+			handler = (change) => router.push(`/projects/${encodeURI(project.pid)}/document/${document.did}/vote/${change.cid}`);
+		} else {
+			handler = () => toast({
+				title: 'Login!',
+				description: 'Please login to vote or view changes'
+			});
+		}
+		return (
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+				{changes.map((change, index) => (
+					<ChangeCard
+						key={index}
+						change={change}
+						onClick={handler}
+					/>
+				))}
+			</div>
+		)
+	}
+
 
 	const ongoingChanges = changesWithVotes.filter(change => !change.closed && !change.merged);
 	const completedChanges = changesWithVotes.filter(change => change.closed || change.merged);
@@ -35,7 +51,8 @@ export default function Index({project, document, changesWithVotes}) {
 					<div className="flex flex-col w-full">
 						<div className="flex gap-3 items-center flex-wrap">
 							<Button variant="outline" className="p-2.5 rounded-sm border border-gray-200 border-solid">
-								<IoArrowBackOutline className="w-4 h-4 cursor-pointer" onClick={() => router.push(`/projects/${project.pid}/document/${document.did}`)}/>
+								<IoArrowBackOutline className="w-4 h-4 cursor-pointer"
+								                    onClick={() => router.push(`/projects/${project.pid}/document/${document.did}`)}/>
 							</Button>
 							<h1 className="text-2xl sm:text-3xl leading-9 text-neutral-950">{document.name}</h1>
 						</div>
@@ -77,7 +94,7 @@ export const getServerSideProps = async ({
 	const {pid, documentId} = query
 
 	const sessionJWT = req.cookies["x_d_jwt"];
-    const { userProfile, roles } = await getOwnUserProfile(sessionJWT);
+	const {userProfile, roles} = await getOwnUserProfile(sessionJWT);
 	if (!userProfile) {
 		return {
 			redirect: {
