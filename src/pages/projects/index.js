@@ -9,9 +9,10 @@ import {Card, CardContent} from "@/components/ui/card";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@/components/ui/carousel";
 import Link from "next/link";
 import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
-import {ChevronRight, Vote} from "lucide-react";
+import {ChevronRight, PencilRuler, Vote} from "lucide-react";
 import {convertGithubRepoToTitle} from "@/lib/utils";
-import { PencilRuler } from 'lucide-react';
+import {useRouter} from "next/router";
+import {useToast} from "@/components/ui/use-toast";
 
 const DESIRED_ORDER = [
 	"Claynosaurz",
@@ -24,6 +25,8 @@ const DESIRED_ORDER = [
 export default function Projects({projects, openVotingCampaigns}) {
 	const userRoles = useStore((state) => state.userRoles);
 	const {isAuthenticated} = useDynamicContext();
+	const router = useRouter();
+	const {toast} = useToast();
 
 	const sortProjects = (projectList) => {
 		return projectList.sort((a, b) => {
@@ -46,6 +49,16 @@ export default function Projects({projects, openVotingCampaigns}) {
 	const sortedYourProjects = sortProjects(yourProjects);
 	const sortedOtherProjects = sortProjects(otherProjects);
 
+	let voteHandler;
+	if (isAuthenticated) {
+		voteHandler = (changeVote) => router.push(`/projects/${changeVote.document.project_id}/document/${changeVote.document_id}/vote/${changeVote.cid}`);
+	} else {
+		voteHandler = () => toast({
+			title: 'Login!',
+			description: 'Please login to vote or view changes'
+		});
+	}
+
 	return (
 		<MainLayout>
 			<main className="flex flex-col gap-6 px-4 sm:px-6 lg:px-8 py-6 bg-gradient-to-b from-gray-50 to-white">
@@ -66,12 +79,12 @@ export default function Projects({projects, openVotingCampaigns}) {
 													{/*TODO impl*/}
 													{/*<span>{changeVote.voteCount} votes</span>*/}
 												</div>
-												<Link
-													href={`/projects/${changeVote.document.project_id}/document/${changeVote.document_id}/vote/${changeVote.cid}`}
+												<div
+													onClick={() => voteHandler(changeVote)}
 													className="flex items-center text-sm text-primary hover:underline">
 													Vote now
 													<ChevronRight className="w-4 h-4 ml-1"/>
-												</Link>
+												</div>
 											</div>
 										</CardContent>
 									</Card>
