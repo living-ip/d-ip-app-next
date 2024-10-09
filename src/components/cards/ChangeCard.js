@@ -28,7 +28,7 @@ export function ChangeCard({ change, onClick }) {
   return (
     <Card
       className="w-full bg-white hover:shadow-md transition-shadow duration-200 cursor-pointer"
-      onClick={onClick}
+      onClick={() => {onClick(change)}}
     >
       <CardHeader className="pb-2">
         <h2 className="text-lg font-semibold text-neutral-950 truncate">
