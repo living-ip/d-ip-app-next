@@ -10,6 +10,12 @@ import {MainLayout} from "@/components/layouts/MainLayout";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {getCreationsCampaigns, getProjectCreations} from "@/lib/creations";
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog";
+import ChatSheet from "@/components/chat/ChatSheet";
+
+const CHAT_ENABLED_PROJECTS = [
+	"pid-485b248df6064104bd0297ada2239c51",
+	"pid-ce6b7d54c03840adb1f5390bbcf55e05"
+]
 
 const ProjectHeader = ({projectName, contributorCount}) => {
 	const router = useRouter();
@@ -82,6 +88,15 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 									</Button>
 								</CreationsVotingDialog>
 							)}
+							{
+								CHAT_ENABLED_PROJECTS.includes(project.pid) && (
+									<ChatSheet>
+										<Button variant={"secondary"}>
+											Chat
+										</Button>
+									</ChatSheet>
+								)
+							}
 							<Button onClick={handleCreateNewDocument}>
 								Create New Document
 							</Button>
