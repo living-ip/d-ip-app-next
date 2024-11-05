@@ -14,7 +14,7 @@ import {getAgentChatHistory, sendMessage} from "@/lib/chat";
 
 const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-export default function ProjectChat({contextId, initialMessages = [], className = ""}) {
+export default function ProjectChat({initialMessages = [], className = ""}) {
 	const router = useRouter()
 	const {pid} = router.query
 
@@ -104,7 +104,7 @@ export default function ProjectChat({contextId, initialMessages = [], className 
 				variant: "destructive",
 			});
 		}
-	}, [contextId, pid, setMessages, toast]);
+	}, [pid, setMessages, toast]);
 
 	const handleSend = useCallback(() => {
 		if (newMessage.trim() === '') return;
