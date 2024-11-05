@@ -1,4 +1,4 @@
-import { BotMessageSquare } from "lucide-react";
+import { Bot } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 const MessageBackground = ({ role, children }) => {
@@ -20,7 +20,7 @@ export default function Message({ message }) {
   return (
     <div className={`flex ${role === 'assistant' ? 'items-start' : 'items-end'} gap-2 w-full mb-2`}>
       {role === 'assistant' && (
-        <BotMessageSquare className="h-5 w-5 mt-6 text-accent flex-shrink-0" />
+        <Bot className="h-5 w-5 mt-6 text-accent flex-shrink-0" />
       )}
       <MessageBackground role={role}>
         <div className="prose prose-sm max-w-none dark:prose-invert">
