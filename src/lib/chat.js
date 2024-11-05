@@ -1,8 +1,8 @@
 import {LIP_API_BASE} from "@/lib/constants";
 import {doApiCall} from "@/lib/api";
 
-export async function sendMessage(data) {
-	const url = new URL(`${LIP_API_BASE}/v2/agent/chat`);
+export async function sendMessage(pid, data) {
+	const url = new URL(`${LIP_API_BASE}/project/${pid}/agent`);
 	try {
 		const response = await fetch(url, {
 			method: "POST",
@@ -25,8 +25,8 @@ export async function sendMessage(data) {
 	}
 }
 
-export async function getAgentChatHistory(pid, aid=null) {
-	const url = new URL(`${LIP_API_BASE}/v2/agent/chat?pid=${pid}&aid=${aid}`);
+export async function getAgentChatHistory(pid) {
+	const url = new URL(`${LIP_API_BASE}/project/${pid}/agent`);
 	const func = () => fetch(url, {
 		method: "GET",
 		headers: {

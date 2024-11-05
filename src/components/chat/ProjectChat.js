@@ -4,22 +4,23 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {useLocalStorage} from 'usehooks-ts'
 import {SendIcon} from "lucide-react";
-import {getAgentChatHistory, sendMessage} from "@/lib/api/v2/chat";
 import Message from "@/components/chat/Message";
 import LoadingMessage from "@/components/chat/LoadingMessage";
 import {useToast} from "@/components/ui/use-toast";
 import {debounce} from "lodash";
 import {useRouter} from "next/router";
 import {Separator} from "@/components/ui/separator";
+import {getAgentChatHistory, sendMessage} from "@/lib/chat";
 
 const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-export default function ProposalChat({contextId, initialMessages = [], className = ""}) {
+export default function ProjectChat({contextId, initialMessages = [], className = ""}) {
 	const router = useRouter()
+	const {pid} = router.query
 
-	const [newMessage, setNewMessage] = useLocalStorage(`${sessionId}-newMessage`, "");
-	const [messages, setMessages] = useLocalStorage(`${sessionId}-messages`, initialMessages);
-	const [lastFetchTime, setLastFetchTime] = useLocalStorage(`${sessionId}-lastFetchTime`, 0);
+	const [newMessage, setNewMessage] = useLocalStorage(`${pid}-newMessage`, "");
+	const [messages, setMessages] = useLocalStorage(`${pid}-messages`, initialMessages);
+	const [lastFetchTime, setLastFetchTime] = useLocalStorage(`${pid}-lastFetchTime`, 0);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
 	const [streamedMessage, setStreamedMessage] = useState("");
@@ -37,7 +38,7 @@ export default function ProposalChat({contextId, initialMessages = [], className
 
 	useEffect(() => {
 		const fetchChatHistory = async () => {
-			if (proposal && proposal.pid) {
+			if (pid) {
 				try {
 					setIsInitialLoading(true);
 					const currentTime = Date.now();
@@ -48,7 +49,7 @@ export default function ProposalChat({contextId, initialMessages = [], className
 						return;
 					}
 
-					const history = await getAgentChatHistory(proposal.pid, sessionId);
+					const history = await getAgentChatHistory(pid);
 					if (history && history.chat) {
 						setMessages(history.chat);
 						setLastFetchTime(currentTime);
@@ -67,15 +68,16 @@ export default function ProposalChat({contextId, initialMessages = [], className
 		};
 
 		fetchChatHistory();
-	}, [proposal, sessionId, setMessages, toast, lastFetchTime, setLastFetchTime, messages.length]);
+	}, [setMessages, toast, lastFetchTime, setLastFetchTime, messages.length, pid]);
 
 	const callAgent = useCallback(async (message) => {
 		try {
-			const reader = await sendMessage({
-				content: message,
-				pid: proposal.pid,
-				agent_id: contextId
-			});
+			const reader = await sendMessage(
+				pid,
+				{
+					message
+				}
+			);
 
 			if (reader) {
 				setIsLoading(false);
@@ -102,7 +104,7 @@ export default function ProposalChat({contextId, initialMessages = [], className
 				variant: "destructive",
 			});
 		}
-	}, [contextId, proposal.pid, setMessages, toast]);
+	}, [contextId, pid, setMessages, toast]);
 
 	const handleSend = useCallback(() => {
 		if (newMessage.trim() === '') return;

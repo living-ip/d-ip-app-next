@@ -1,10 +1,10 @@
 // ChatSheet.jsx
 import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet"
-import ProposalChat from "@/components/chat/ProposalChat";
+import ProjectChat from "@/components/chat/ProjectChat";
 import {Separator} from "@/components/ui/separator";
 import { useMediaQuery } from 'usehooks-ts'
 
-export default function ChatSheet({children, contextId, pid, title = "Bizzed AI Chat"}) {
+export default function ChatSheet({children, contextId, pid, title = "AI Chat"}) {
 	const isMobile = useMediaQuery('(max-width: 768px)')
 	
 	if (isMobile) {
@@ -21,7 +21,7 @@ export default function ChatSheet({children, contextId, pid, title = "Bizzed AI 
 							<Separator/>
 						</SheetHeader>
 						<div className="h-[calc(100vh-10rem)] overflow-hidden pt-2">
-							<ProposalChat contextId={contextId} pid={pid}/>
+							<ProjectChat contextId={contextId} pid={pid}/>
 						</div>
 					</SheetContent>
 				</Sheet>
@@ -46,7 +46,7 @@ export default function ChatSheet({children, contextId, pid, title = "Bizzed AI 
 					<Separator />
 				</SheetHeader>
 				<div className="h-[calc(100vh-5rem)] overflow-hidden my-4">
-					<ProposalChat contextId={contextId} pid={pid}/>
+					<ProjectChat contextId={contextId} pid={pid}/>
 				</div>
 			</SheetContent>
 		</Sheet>

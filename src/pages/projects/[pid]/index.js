@@ -84,10 +84,10 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 								</CreationsVotingDialog>
 							)}
 							<ChatSheet>
-							<Button variant={"secondary"} onClick={handleCreateNewDocument}>
-								Chat
-							</Button>
-								</ChatSheet>
+								<Button variant={"secondary"}>
+									Chat
+								</Button>
+							</ChatSheet>
 							<Button onClick={handleCreateNewDocument}>
 								Create New Document
 							</Button>

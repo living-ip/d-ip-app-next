@@ -24,7 +24,7 @@ const MobileChatSheet = () => {
 				className="h-[calc(100vh-5rem)]"
 			>
 				<SheetHeader>
-					<SheetTitle>Bizzed AI</SheetTitle>
+					<SheetTitle>AI Chat</SheetTitle>
 					<Separator/>
 				</SheetHeader>
 				<div className="h-[calc(100vh-10rem)] overflow-hidden pt-2">
