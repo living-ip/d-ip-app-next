@@ -10,6 +10,7 @@ import {MainLayout} from "@/components/layouts/MainLayout";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {getCreationsCampaigns, getProjectCreations} from "@/lib/creations";
 import CreationsVotingDialog from "@/components/vote/CreationsVotingDialog";
+import ChatSheet from "@/components/chat/ChatSheet";
 
 const ProjectHeader = ({projectName, contributorCount}) => {
 	const router = useRouter();
@@ -82,6 +83,11 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 									</Button>
 								</CreationsVotingDialog>
 							)}
+							<ChatSheet>
+							<Button variant={"secondary"} onClick={handleCreateNewDocument}>
+								Chat
+							</Button>
+								</ChatSheet>
 							<Button onClick={handleCreateNewDocument}>
 								Create New Document
 							</Button>
