@@ -11,6 +11,7 @@ import {debounce} from "lodash";
 import {useRouter} from "next/router";
 import {Separator} from "@/components/ui/separator";
 import {getAgentChatHistory, sendMessage} from "@/lib/chat";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
@@ -49,7 +50,7 @@ export default function ProjectChat({initialMessages = [], className = ""}) {
 						return;
 					}
 
-					const history = await getAgentChatHistory(pid);
+					const history = await getAgentChatHistory(pid, getAuthToken());
 					if (history && history.chat) {
 						setMessages(history.chat);
 						setLastFetchTime(currentTime);
@@ -76,7 +77,8 @@ export default function ProjectChat({initialMessages = [], className = ""}) {
 				pid,
 				{
 					message
-				}
+				},
+				getAuthToken()
 			);
 
 			if (reader) {
