@@ -1,5 +1,6 @@
 import {LIP_API_BASE} from "@/lib/constants";
 import {doApiCall} from "@/lib/api";
+import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export async function sendMessage(pid, data) {
 	const url = new URL(`${LIP_API_BASE}/project/${pid}/agent`);
@@ -10,6 +11,7 @@ export async function sendMessage(pid, data) {
 			headers: {
 				"Accept": "text/event-stream",
 				"Content-Type": "application/json",
+				"x-lip-d-jwt": getAuthToken(),
 			},
 		});
 		console.log(response.statusText)
@@ -30,8 +32,9 @@ export async function getAgentChatHistory(pid) {
 	const func = () => fetch(url, {
 		method: "GET",
 		headers: {
-        "Content-Type": "application/json",
-        },
+			"Content-Type": "application/json",
+			"x-lip-d-jwt": getAuthToken(),
+		},
 	});
 	const response = await doApiCall(func, {});
 	if (response instanceof Response) {
