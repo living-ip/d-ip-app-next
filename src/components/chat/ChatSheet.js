@@ -3,14 +3,16 @@ import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger} from "@/comp
 import ProjectChat from "@/components/chat/ProjectChat";
 import {Separator} from "@/components/ui/separator";
 import { useMediaQuery } from 'usehooks-ts'
+import {useState} from "react";
 
 export default function ChatSheet({children, title = "AI Chat"}) {
 	const isMobile = useMediaQuery('(max-width: 768px)')
+	const [isChatOpen, setIsChatOpen] = useState(false)
 	
 	if (isMobile) {
 		return (
 			<>
-				<Sheet>
+				<Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
 					<SheetTrigger asChild>{children}</SheetTrigger>
 					<SheetContent
 						side="bottom"
@@ -30,7 +32,7 @@ export default function ChatSheet({children, title = "AI Chat"}) {
 	}
 
 	return (
-		<Sheet>
+		<Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
 			<SheetTrigger asChild>{children}</SheetTrigger>
 			<SheetContent
 				side="right"

@@ -88,15 +88,11 @@ const ProjectPage = ({project, documents, creations, campaigns}) => {
 									</Button>
 								</CreationsVotingDialog>
 							)}
-							{
-								CHAT_ENABLED_PROJECTS.includes(project.pid) && (
-									<ChatSheet>
-										<Button variant={"secondary"}>
-											Chat
-										</Button>
-									</ChatSheet>
-								)
-							}
+							<ChatSheet>
+								<Button variant={"secondary"}>
+									Chat
+								</Button>
+							</ChatSheet>
 							<Button onClick={handleCreateNewDocument}>
 								Create New Document
 							</Button>

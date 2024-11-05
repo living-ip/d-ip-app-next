@@ -15,12 +15,12 @@ import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 const CACHE_EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-export default function ProjectChat({initialMessages = [], className = ""}) {
+export default function ProjectChat() {
 	const router = useRouter()
 	const {pid} = router.query
 
 	const [newMessage, setNewMessage] = useLocalStorage(`${pid}-newMessage`, "");
-	const [messages, setMessages] = useLocalStorage(`${pid}-messages`, initialMessages);
+	const [messages, setMessages] = useLocalStorage(`${pid}-messages`, []);
 	const [lastFetchTime, setLastFetchTime] = useLocalStorage(`${pid}-lastFetchTime`, 0);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -136,7 +136,7 @@ export default function ProjectChat({initialMessages = [], className = ""}) {
 	}
 
 	return (
-		<div className={`flex flex-col h-full text-foreground py-4 ${className}`}>
+		<div className={`flex flex-col h-full text-foreground py-4`}>
 			<div className="flex-1 overflow-y-auto space-y-2 pb-2 min-h-0">
 				{messages.map((message, index) => (
 					<Message
