@@ -27,7 +27,7 @@ export async function sendMessage(pid, data, jwt) {
 }
 
 export async function getAgentChatHistory(pid, jwt) {
-	const url = new URL(`${LIP_API_BASE}/project/${pid}/chat`);
+	const url = new URL(`${LIP_AI_API_BASE}/project/${pid}/chat`);
 	const func = () => fetch(url, {
 		method: "GET",
 		headers: {
