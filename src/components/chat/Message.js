@@ -2,7 +2,7 @@ import { Bot } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 const MessageBackground = ({ role, children }) => {
-  const bgColor = role === 'assistant' ? 'bg-card/50' : 'bg-accent/20';
+  const bgColor = role === 'assistant' ? 'bg-green-100' : 'bg-accent';
   const alignment = role === 'assistant' ? 'justify-start' : 'justify-end';
 
   return (
@@ -20,7 +20,7 @@ export default function Message({ message }) {
   return (
     <div className={`flex ${role === 'assistant' ? 'items-start' : 'items-end'} gap-2 w-full mb-2`}>
       {role === 'assistant' && (
-        <Bot className="h-5 w-5 mt-6 text-accent flex-shrink-0" />
+        <Bot className="h-5 w-5 mt-6 text-green-800 flex-shrink-0" />
       )}
       <MessageBackground role={role}>
         <div className="prose prose-sm max-w-none dark:prose-invert">

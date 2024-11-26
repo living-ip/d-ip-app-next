@@ -1,9 +1,8 @@
-import {LIP_API_BASE} from "@/lib/constants";
+import {LIP_AI_API_BASE, LIP_API_BASE} from "@/lib/constants";
 import {doApiCall} from "@/lib/api";
-import {getAuthToken} from "@dynamic-labs/sdk-react-core";
 
 export async function sendMessage(pid, data, jwt) {
-	const url = new URL(`${LIP_API_BASE}/project/${pid}/agent`);
+	const url = new URL(`${LIP_AI_API_BASE}/project/${pid}/chat`);
 	try {
 		const response = await fetch(url, {
 			method: "POST",
@@ -28,7 +27,7 @@ export async function sendMessage(pid, data, jwt) {
 }
 
 export async function getAgentChatHistory(pid, jwt) {
-	const url = new URL(`${LIP_API_BASE}/project/${pid}/agent`);
+	const url = new URL(`${LIP_API_BASE}/project/${pid}/chat`);
 	const func = () => fetch(url, {
 		method: "GET",
 		headers: {
