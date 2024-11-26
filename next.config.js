@@ -11,6 +11,7 @@ const nextConfig = {
   },
   env: {
     LIP_API_BASE: process.env.LIP_API_BASE,
+    LIP_AI_API_BASE: process.env.LIP_AI_API_BASE,
     REDIRECT_URL: process.env.REDIRECT_URL,
     GCP_PROJECT_ID: process.env.GCP_PROJECT_ID,
     GCP_SERVICE_ACCOUNT_EMAIL: process.env.GCP_SERVICE_ACCOUNT_EMAIL,

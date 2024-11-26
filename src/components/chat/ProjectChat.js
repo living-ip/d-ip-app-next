@@ -76,7 +76,7 @@ export default function ProjectChat() {
 			const reader = await sendMessage(
 				pid,
 				{
-					message
+					content: message
 				},
 				getAuthToken()
 			);
